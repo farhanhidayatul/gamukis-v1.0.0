@@ -1,0 +1,50 @@
+.register-form {
+  width: min(100%, 520px);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  padding: clamp(24px, 4vw, 48px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 22px 55px rgba(82, 62, 0, 0.2);
+}
+
+.register-action-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.register-action-group > * {
+  flex: 1;
+}
+
+@media (max-width: 700px) {
+  .register-form {
+    max-height: none;
+    border-radius: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-form {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+
+  .register-action-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  .register-form {
+    width: min(100%, 350px);
+    max-height: calc(100dvh - 28px);
+    margin: 0 auto;
+    padding: 14px;
+    border-radius: 14px;
+  }
+}

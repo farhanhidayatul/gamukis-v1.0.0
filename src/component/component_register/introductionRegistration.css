@@ -1,0 +1,125 @@
+.introduction-container {
+  width: min(100%, 420px);
+  color: #fff;
+}
+
+.welcome-text-students {
+  margin: 0 0 22px;
+  color: #fff;
+  font-size: clamp(29px, 3vw, 38px);
+  line-height: 1.12;
+}
+
+.highlight {
+  color: #086fe2;
+}
+
+.welcome-text {
+  box-sizing: border-box;
+  width: min(100%, 420px);
+  margin-right: auto;
+  margin-left: auto;
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(82, 62, 0, 0.18);
+  color: #555;
+  overflow: hidden;
+}
+
+.welcome-text p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.custom-line {
+  height: 1px;
+  margin: 22px 0;
+  border: 0;
+  background: #d9d9d9;
+}
+
+.welcome-text ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: list-counter;
+}
+
+.welcome-text li {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 12px;
+  margin: 14px 0;
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.welcome-text li::before {
+  display: grid;
+  flex: 0 0 25px;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #0e81ff;
+  color: #fff;
+  content: counter(list-counter);
+  counter-increment: list-counter;
+  font-weight: 700;
+}
+
+.welcome-text li {
+  overflow-wrap: anywhere;
+}
+
+.next-button-1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 170px;
+  margin-left: auto;
+  margin-top: 44px;
+  padding: 13px 20px;
+  border: 0;
+  border-radius: 18px;
+  background: #fff;
+  color: #e7a900;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.next-button-1:hover {
+  background: #fff8dc;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 700px) {
+  .introduction-container {
+    width: 100%;
+  }
+
+  .welcome-text-students {
+    margin-bottom: 16px;
+    font-size: 28px;
+  }
+
+  .welcome-text {
+    width: min(100%, 540px);
+    padding: 22px clamp(18px, 5vw, 28px);
+    border-radius: 24px;
+  }
+
+  .next-button-1 {
+    width: 100%;
+  }
+}

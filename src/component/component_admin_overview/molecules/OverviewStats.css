@@ -1,0 +1,11 @@
+.overview-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 760px) {
+  .overview-stats {
+    grid-template-columns: 1fr;
+  }
+}

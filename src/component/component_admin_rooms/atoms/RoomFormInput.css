@@ -1,0 +1,29 @@
+.room-form-input {
+  display: grid;
+  gap: 7px;
+  color: #6b7b7f;
+  font: 700 11px Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.room-form-input__field {
+  min-width: 190px;
+  padding: 11px 12px;
+  color: #18313a;
+  border: 1px solid #d9e5e3;
+  background: #fff;
+  font: 14px Arial, sans-serif;
+}
+
+.room-form-input__field[type="number"] {
+  min-width: 100px;
+  width: 100px;
+}
+
+@media (max-width: 760px) {
+  .room-form-input__field,
+  .room-form-input__field[type="number"] {
+    width: 100%;
+    min-width: 0;
+  }
+}

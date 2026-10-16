@@ -1,0 +1,38 @@
+.history-row td {
+  padding: 20px 18px;
+  border-top: 1px solid #d9e5e3;
+  vertical-align: middle;
+}
+
+@media (max-width: 760px) {
+  .history-row,
+  .history-row td {
+    display: block;
+    width: 100%;
+  }
+
+  .history-row {
+    margin-bottom: 14px;
+    padding: 16px;
+    background: #fffdf7;
+    border-left: 4px solid #5b86f5;
+    box-shadow: 0 8px 20px rgba(24, 49, 58, 0.06);
+  }
+
+  .history-row td {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 8px 0;
+    border: 0;
+    text-align: right;
+  }
+
+  .history-row td::before {
+    content: attr(data-label);
+    color: #6b7b7f;
+    text-align: left;
+    font: 700 11px Arial, sans-serif;
+    text-transform: uppercase;
+  }
+}

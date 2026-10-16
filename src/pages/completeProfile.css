@@ -1,0 +1,477 @@
+.complete-profile-page {
+  --profile-blue: #4f7eff;
+  position: relative;
+  display: grid;
+  grid-template-columns: 51.3% 48.7%;
+  min-height: 100dvh;
+  overflow: hidden;
+  color: #353238;
+  background: #ffbe06 url("../images/bg_quiz_1.png") center / cover no-repeat;
+}
+
+.complete-profile-art,
+.complete-profile-content {
+  position: relative;
+  min-width: 0;
+}
+
+.complete-profile-art {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.complete-profile-character {
+  position: absolute;
+  bottom: -26px;
+  left: clamp(-8px, 1.2vw, 16px);
+  z-index: 3;
+  width: min(51vw, 590px);
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom;
+}
+
+.complete-profile-circle {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.complete-profile-circle-blue {
+  top: 47%;
+  left: -42%;
+  z-index: 1;
+  width: min(82vw, 940px);
+  aspect-ratio: 1;
+  background: #4e8aff;
+}
+
+.complete-profile-circle-cream {
+  top: 61%;
+  left: -20%;
+  z-index: 2;
+  width: min(60vw, 690px);
+  aspect-ratio: 1;
+  background: #fffdf5;
+}
+
+.complete-profile-content {
+  position: static;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  width: min(100%, 534px);
+  margin: 28px 0 0;
+}
+
+.complete-profile-heading {
+  position: absolute;
+  top: 58px;
+  left: clamp(28px, 3.6vw, 42px);
+  z-index: 4;
+  width: min(440px, calc(100% - 56px));
+}
+
+.complete-profile-step {
+  display: inline-block;
+  margin-bottom: 9px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #d68e00;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.complete-profile-heading h1 {
+  margin: 0 0 4px;
+  color: #302d32;
+  font-size: clamp(20px, 2vw, 24px);
+  line-height: 1.2;
+}
+
+.complete-profile-intro {
+  max-width: 440px;
+  margin: 0;
+  color: #746d66;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.complete-profile-card {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 28px 25px 24px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 36px rgba(155, 116, 11, 0.16);
+}
+
+.complete-profile-card h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.complete-profile-card-intro {
+  margin: 0 0 18px;
+  color: #817c7d;
+  font-size: 12px;
+}
+
+.complete-profile-roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+.complete-profile-roles legend {
+  width: 100%;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.complete-profile-role {
+  display: flex;
+  align-items: center;
+  min-height: 58px;
+  gap: 9px;
+  padding: 8px 11px;
+  border: 1px solid #e5e5e5;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.complete-profile-role.selected {
+  border-color: var(--profile-blue);
+  background: #f1f5ff;
+}
+
+.complete-profile-role input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.complete-profile-radio {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  border: 1px solid #bdbdbd;
+  border-radius: 50%;
+}
+
+.complete-profile-role.selected .complete-profile-radio {
+  border: 4px solid var(--profile-blue);
+}
+
+.complete-profile-role strong,
+.complete-profile-role small {
+  display: block;
+}
+
+.complete-profile-role strong {
+  font-size: 12px;
+}
+
+.complete-profile-role small {
+  margin-top: 3px;
+  color: #858186;
+  font-size: 9px;
+}
+
+.complete-profile-field {
+  display: block;
+  margin: 0 0 14px;
+}
+
+.complete-profile-field > span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.complete-profile-field input,
+.complete-profile-field select {
+  box-sizing: border-box;
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #dedede;
+  border-radius: 9px;
+  outline: none;
+  color: #353238;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.complete-profile-field input:focus,
+.complete-profile-field select:focus {
+  border-color: var(--profile-blue);
+  box-shadow: 0 0 0 3px rgba(79, 126, 255, 0.12);
+}
+
+.complete-profile-field input::placeholder,
+.complete-profile-field select:invalid {
+  color: #a5a1a2;
+}
+
+.complete-profile-field small {
+  display: block;
+  margin-top: 5px;
+  color: #888387;
+  font-size: 9px;
+}
+
+.complete-profile-submit {
+  width: 100%;
+  min-height: 45px;
+  margin-top: 25px;
+  border: 0;
+  border-radius: 9px;
+  color: #fff;
+  background: var(--profile-blue);
+  box-shadow: 0 4px 0 #315bd1;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.complete-profile-submit:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.complete-profile-error,
+.complete-profile-notice {
+  margin: 0 0 12px;
+  color: #a22e36;
+  font-size: 12px;
+}
+
+.complete-profile-notice {
+  color: #735108;
+}
+
+.complete-profile-notice p {
+  margin: 0 0 8px;
+}
+
+.complete-profile-status-button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #225b9a;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.complete-profile-status-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+@media (min-width: 1300px) {
+  .complete-profile-content {
+    width: min(46vw, 700px);
+    justify-self: center;
+  }
+
+  .complete-profile-card {
+    padding: 32px 34px 28px;
+    border-radius: 22px;
+  }
+
+  .complete-profile-card h2 {
+    font-size: 22px;
+  }
+
+  .complete-profile-card-intro {
+    margin-bottom: 22px;
+    font-size: 14px;
+  }
+
+  .complete-profile-roles {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .complete-profile-roles legend {
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .complete-profile-role {
+    min-height: 68px;
+    gap: 11px;
+    padding: 10px 14px;
+    border-radius: 10px;
+  }
+
+  .complete-profile-radio {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+  }
+
+  .complete-profile-role strong {
+    font-size: 14px;
+  }
+
+  .complete-profile-role small {
+    font-size: 10px;
+  }
+
+  .complete-profile-field {
+    margin-bottom: 18px;
+  }
+
+  .complete-profile-field > span {
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .complete-profile-field input,
+  .complete-profile-field select {
+    height: 48px;
+    padding: 0 14px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  .complete-profile-field small {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+
+  .complete-profile-submit {
+    min-height: 50px;
+    margin-top: 30px;
+    border-radius: 10px;
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1100px) {
+  .complete-profile-page {
+    grid-template-columns: 44% 56%;
+  }
+
+  .complete-profile-character {
+    bottom: -18px;
+    left: -4px;
+    width: min(48vw, 440px);
+  }
+
+  .complete-profile-circle-blue {
+    top: 48%;
+    left: -48%;
+    width: min(82vw, 690px);
+  }
+
+  .complete-profile-circle-cream {
+    top: 62%;
+    left: -25%;
+    width: min(61vw, 510px);
+  }
+
+  .complete-profile-content {
+    width: min(100%, 500px);
+    margin-top: 0;
+    padding: 0 24px;
+  }
+
+  .complete-profile-heading {
+    position: static;
+    width: auto;
+    margin: 32px 24px 20px;
+  }
+
+  .complete-profile-card {
+    padding: 22px 20px 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  .complete-profile-page {
+    display: block;
+    min-height: 100dvh;
+    overflow: visible;
+    padding: 24px 12px 32px;
+  }
+
+  .complete-profile-art {
+    display: none;
+  }
+
+  .complete-profile-content {
+    width: min(100%, 540px);
+    margin: 0 auto;
+  }
+
+  .complete-profile-heading {
+    position: static;
+    width: auto;
+    margin: 0 0 20px;
+    text-align: center;
+  }
+
+  .complete-profile-heading h1 {
+    font-size: 26px;
+  }
+
+  .complete-profile-intro {
+    margin: 0 auto;
+    font-size: 13px;
+  }
+
+  .complete-profile-card {
+    padding: 22px 18px 20px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .complete-profile-page {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .complete-profile-card {
+    padding: 20px 15px 18px;
+  }
+
+  .complete-profile-roles {
+    gap: 7px;
+  }
+
+  .complete-profile-role {
+    gap: 7px;
+    padding: 8px;
+  }
+
+  .complete-profile-role strong {
+    font-size: 11px;
+  }
+
+  .complete-profile-role small {
+    font-size: 8px;
+  }
+
+  .complete-profile-submit {
+    font-size: 14px;
+  }
+}

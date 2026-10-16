@@ -1,0 +1,492 @@
+.stats {
+  margin-top: 56px;
+  font-family: Arial, sans-serif;
+}
+
+.stats h1 {
+  margin: 0 0 22px;
+  color: #3f3f3f;
+  font-size: 36px;
+  line-height: 1.15;
+}
+
+.stats-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 158px;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 31.6px rgba(208, 219, 248, 0.8);
+}
+
+.stats-card-body {
+  display: grid;
+  grid-template-columns: 112px minmax(230px, 1fr) minmax(280px, 1.45fr) 76px;
+  gap: 32px;
+  align-items: center;
+  min-height: 158px;
+  padding: 22px 42px 22px 64px;
+  box-sizing: border-box;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.stats-card-body.is-blurred {
+  filter: blur(5px);
+  opacity: 0.32;
+  pointer-events: none;
+  user-select: none;
+}
+
+.stats-avatar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 112px;
+  height: 114px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #dce7ff;
+}
+
+.stats-avatar img {
+  width: 62px;
+  height: 156px;
+  object-fit: contain;
+  object-position: bottom;
+}
+
+.stats-avatar img.stats-avatar-img-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.stats-profile h2 {
+  margin: 0 0 3px;
+  color: #3f3f3f;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.stats-profile p {
+  margin: 0 0 14px;
+  color: #a1a1a1;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.stats-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  height: 38px;
+  padding: 6px 14px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+.stats-rank-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* Rank themes: Newbie, Rookie, Common, Beginner, Legendary */
+.stats-rank.rank-newbie {
+  background: linear-gradient(90deg, #6c3b17, #934c1b);
+}
+
+.stats-rank.rank-rookie {
+  background: linear-gradient(90deg, #a4abb5, #b8bec7);
+  color: #2b3038;
+}
+
+.stats-rank.rank-common {
+  background: linear-gradient(90deg, #1fa2ff, #12d8fa);
+}
+
+.stats-rank.rank-beginner {
+  background: linear-gradient(90deg, #f7b733, #fc4a1a);
+}
+
+.stats-rank.rank-legendary {
+  background: linear-gradient(90deg, #ff0844, #ff4e50);
+}
+
+.stats-progress-label {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin-bottom: 14px;
+  color: #aeb4d2;
+  font-size: 11px;
+}
+
+.stats-progress-label strong {
+  color: #557cff;
+  font-size: 20px;
+}
+
+.stats-progress-label strong.text-newbie {
+  color: #934c1b;
+}
+
+.stats-progress-label strong.text-rookie {
+  color: #717782;
+}
+
+.stats-progress-label strong.text-common {
+  color: #1fa2ff;
+}
+
+.stats-progress-label strong.text-beginner {
+  color: #f7b733;
+}
+
+.stats-progress-label strong.text-legendary {
+  color: #ff0844;
+}
+
+.stats-progress-label span:last-child {
+  text-align: right;
+}
+
+.stats-progress-track {
+  height: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #d8d8d8;
+}
+
+.stats-progress-value {
+  display: block;
+  width: 55%;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* Progress bar gradient designs matching the reference image */
+.stats-progress-value.bar-newbie {
+  background: linear-gradient(90deg, #df6a16, #873d09);
+}
+
+.stats-progress-value.bar-rookie {
+  background: linear-gradient(90deg, #8a919a, #303337);
+}
+
+.stats-progress-value.bar-common {
+  background: linear-gradient(90deg, #1fa2ff, #7f00ff);
+}
+
+.stats-progress-value.bar-beginner {
+  background: linear-gradient(90deg, #fbb034, #ffdd00);
+}
+
+.stats-progress-value.bar-legendary {
+  background: linear-gradient(90deg, #ff416c, #ff4b2b);
+}
+
+.stats-medal {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+@media screen and (max-width: 800px) {
+  .stats-card-body {
+    grid-template-columns: 82px 1fr 58px;
+    gap: 18px;
+    padding: 18px 20px;
+  }
+
+  .stats-avatar {
+    width: 82px;
+    height: 88px;
+    border-radius: 18px;
+  }
+
+  .stats-avatar img {
+    width: 48px;
+    height: 120px;
+  }
+
+  .stats-profile h2 {
+    font-size: 18px;
+  }
+
+  .stats-progress {
+    grid-column: 2 / -1;
+  }
+
+  .stats-medal {
+    grid-column: 3;
+    grid-row: 1;
+    width: 58px;
+    height: 58px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .stats {
+    margin-top: 32px;
+  }
+
+  .stats h1 {
+    margin-bottom: 14px;
+    font-size: 22px;
+  }
+
+  .stats-card {
+    min-height: 116px;
+    border-radius: 14px;
+  }
+
+  .stats-card-body {
+    grid-template-columns: 58px 1fr 40px;
+    gap: 10px;
+    min-height: 116px;
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .stats-avatar {
+    width: 58px;
+    height: 64px;
+    border-radius: 14px;
+  }
+
+  .stats-avatar img {
+    width: 36px;
+    height: 88px;
+  }
+
+  .stats-profile h2 {
+    font-size: 13px;
+  }
+
+  .stats-profile p {
+    margin-bottom: 7px;
+    font-size: 7px;
+    white-space: nowrap;
+  }
+
+  .stats-rank {
+    gap: 3px;
+    min-width: 72px;
+    padding: 5px 7px;
+    border-radius: 6px;
+    font-size: 8px;
+  }
+
+  .stats-rank span {
+    font-size: 9px;
+  }
+
+  .stats-progress-label {
+    margin-bottom: 7px;
+    font-size: 7px;
+  }
+
+  .stats-progress-label strong {
+    font-size: 14px;
+  }
+
+  .stats-progress-track {
+    height: 8px;
+  }
+
+  .stats-medal {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .stats-profile p {
+    font-size: 10px;
+    line-height: 1.3;
+    white-space: normal;
+  }
+
+  .stats-rank {
+    min-height: 28px;
+    font-size: 10px;
+  }
+
+  .stats-progress-label {
+    font-size: 9px;
+  }
+}
+
+/* ============================================================
+   GUEST BLUR & LOGIN/REGISTER OVERLAY FOR HOME PENCAPAIAN
+   ============================================================ */
+
+.stats-guest-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 18px;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 10;
+  animation: statsOverlayFadeIn 0.3s ease-out;
+}
+
+@keyframes statsOverlayFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.stats-guest-lock-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(85, 124, 255, 0.12);
+  border: 1px solid rgba(85, 124, 255, 0.35);
+  color: #3f68e0;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stats-lock-icon {
+  font-size: 12px;
+}
+
+.stats-guest-title {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b303a;
+  letter-spacing: 0.2px;
+}
+
+.stats-guest-desc {
+  margin: 0 0 14px 0;
+  font-size: 12px;
+  color: #636b78;
+  max-width: 440px;
+  line-height: 1.45;
+}
+
+.stats-guest-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stats-guest-login-btn {
+  background: linear-gradient(90deg, #557cff 0%, #3f68e0 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(85, 124, 255, 0.38);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stats-guest-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(85, 124, 255, 0.5);
+}
+
+.stats-guest-login-btn:active {
+  transform: translateY(0);
+}
+
+.stats-login-btn-icon {
+  font-size: 14px;
+}
+
+.stats-guest-register-btn {
+  background: #ffffff;
+  color: #557cff;
+  border: 1.5px solid #557cff;
+  border-radius: 10px;
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.stats-guest-register-btn:hover {
+  background: rgba(85, 124, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.stats-guest-register-btn:active {
+  transform: translateY(0);
+}
+
+@media screen and (max-width: 500px) {
+  .stats-guest-overlay {
+    padding: 10px 14px;
+  }
+
+  .stats-guest-title {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .stats-guest-desc {
+    font-size: 10px;
+    margin-bottom: 8px;
+    max-width: 280px;
+  }
+
+  .stats-guest-buttons {
+    gap: 8px;
+  }
+
+  .stats-guest-login-btn,
+  .stats-guest-register-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 8px;
+  }
+}

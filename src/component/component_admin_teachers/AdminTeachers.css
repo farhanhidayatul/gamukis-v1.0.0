@@ -1,0 +1,81 @@
+/* AdminTeachers — section wrapper, heading, badge, feedback states, and empty state */
+/* Tabel styles: lihat molecules/TeacherTable.css                                    */
+/* Baris & tombol: lihat atoms/TeacherRow.css                                        */
+
+.admin-teachers {
+  margin-top: 40px;
+}
+
+/* ── Heading ───────────────────────────────────────────────── */
+.admin-teachers__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-teachers__eyebrow {
+  margin: 0 0 6px;
+  color: #5b86f5;
+  font: 700 10px Arial, sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.admin-teachers__heading h2 {
+  margin: 0;
+  color: #18313a;
+  font: 700 28px Georgia, "Times New Roman", serif;
+}
+
+.admin-teachers__badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #eef1fd;
+  color: #3355c9;
+  font: 700 12px Arial, sans-serif;
+}
+
+/* ── Feedback states ───────────────────────────────────────── */
+.admin-teachers__error {
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #d85e4d;
+  background: #fff0ec;
+  color: #9d392d;
+  font: 14px Arial, sans-serif;
+}
+
+.admin-teachers__state {
+  padding: 20px;
+  color: #8a817c;
+  font: 14px Arial, sans-serif;
+}
+
+.admin-teachers__empty {
+  display: grid;
+  gap: 8px;
+  padding: 24px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(24, 49, 58, 0.06);
+}
+
+.admin-teachers__empty strong {
+  color: #18313a;
+  font: 700 16px Georgia, "Times New Roman", serif;
+}
+
+.admin-teachers__empty span {
+  color: #8a817c;
+  font: 13px Arial, sans-serif;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .admin-teachers {
+    margin-top: 24px;
+  }
+}

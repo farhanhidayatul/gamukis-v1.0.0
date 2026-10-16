@@ -1,0 +1,76 @@
+.login-container {
+    display: flex;
+  }
+
+.login-error-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(10, 24, 63, 0.48);
+}
+
+.login-error-popup {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 32px 28px 24px;
+  border: 3px solid #0b2d6b;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+  text-align: center;
+  animation: login-error-popup-in 180ms ease-out both;
+}
+
+.login-error-popup h2 {
+  margin: 0 0 12px;
+  color: #0b2d6b;
+  font-size: 24px;
+}
+
+.login-error-popup p {
+  margin: 0 0 24px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.login-error-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  border: 0;
+  background: transparent;
+  color: #777;
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.login-error-action {
+  min-width: 110px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #2196e0;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.login-error-action:hover {
+  background: #137fbe;
+}
+
+@keyframes login-error-popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

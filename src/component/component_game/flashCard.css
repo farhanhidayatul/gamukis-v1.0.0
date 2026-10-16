@@ -1,0 +1,105 @@
+/* src/component_home/Flashcards.css */
+.flashcards {
+    background-color: #fff3e0;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+.game-page .flashcards {
+  min-width: 0;
+  max-height: calc(100svh - 150px);
+  padding: 20px 24px 24px;
+  border-radius: 24px;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.curriculum-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.curriculum-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: #65d6dd;
+  font-size: 30px;
+}
+
+.game-page .flashcards h3 {
+  margin: 0 0 4px;
+  color: #524c4b;
+  font-size: 20px;
+}
+
+.game-page .flashcards p {
+  margin: 0;
+  color: #8a817c;
+  font-size: 12px;
+}
+
+.curriculum-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 16px 14px;
+  list-style: none;
+  border-radius: 14px;
+  background: rgba(255, 222, 111, 0.42);
+}
+
+.curriculum-item {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.curriculum-progress {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 3px solid #ffcf2f;
+  border-radius: 50%;
+  color: #fff;
+  background: #5b86f5;
+  font-size: 10px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+
+.curriculum-content {
+  min-width: 0;
+}
+
+.curriculum-content strong,
+.curriculum-content span {
+  display: block;
+}
+
+.curriculum-content strong {
+  margin-bottom: 4px;
+  color: #ef711a;
+  font-size: 11px;
+}
+
+.curriculum-content span {
+  color: #766e60;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+@media (max-width: 760px) {
+  .game-page .flashcards {
+    max-height: none;
+  }
+}
+  

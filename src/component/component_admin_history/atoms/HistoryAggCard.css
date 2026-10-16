@@ -1,0 +1,20 @@
+.history-agg-card {
+  display: grid;
+  gap: 8px;
+  padding: 18px 20px;
+  background: #fffdf7;
+  border-top: 4px solid var(--agg-color, #5b86f5);
+  box-shadow: 0 12px 28px rgba(24, 49, 58, 0.07);
+}
+
+.history-agg-card__label {
+  color: #6b7b7f;
+  font: 700 11px Arial, sans-serif;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.history-agg-card__value {
+  color: #18313a;
+  font: 700 32px/1 Georgia, "Times New Roman", serif;
+}

@@ -1,0 +1,17 @@
+.game-camera {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #102f36;
+  border: 0;
+  box-shadow: none;
+}
+
+.game-camera__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.25s ease-out;
+}

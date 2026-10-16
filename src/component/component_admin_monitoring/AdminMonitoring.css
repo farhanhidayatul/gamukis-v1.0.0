@@ -1,0 +1,64 @@
+/* AdminMonitoring — section wrapper, heading, badge, dan state halaman monitoring
+ *
+ * Style komponen anak dipindahkan ke:
+ *   atoms/RoomSummaryRow.css       — .room-summary-row*
+ *   atoms/SuspiciousPlayerCard.css — .suspicious-card*, .monitoring-clear*
+ *   molecules/MonitoringGrid.css   — .monitoring-grid, .monitoring-room-summary*, .monitoring-players*, .monitoring-cards
+ */
+
+.admin-monitoring {
+  margin-top: 40px;
+}
+
+/* ── Heading ───────────────────────────────────────────────── */
+.admin-monitoring__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-monitoring__eyebrow {
+  margin: 0 0 6px;
+  color: #d85e4d;
+  font: 700 10px Arial, sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.admin-monitoring__heading h2 {
+  margin: 0;
+  color: #18313a;
+  font: 700 28px Georgia, "Times New Roman", serif;
+}
+
+.admin-monitoring__badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font: 700 12px Arial, sans-serif;
+  white-space: nowrap;
+}
+
+.admin-monitoring__badge--warn {
+  background: #fff0ec;
+  color: #d85e4d;
+}
+
+.admin-monitoring__badge--ok {
+  background: #dff4ee;
+  color: #10504f;
+}
+
+.admin-monitoring__state {
+  padding: 20px;
+  color: #8a817c;
+  font: 14px Arial, sans-serif;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .admin-monitoring {
+    margin-top: 24px;
+  }
+}

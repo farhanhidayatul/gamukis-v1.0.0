@@ -1,0 +1,138 @@
+.notfound-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 32px 16px;
+  overflow: hidden;
+  background: #f4f8fc;
+  color: #19324d;
+}
+
+.notfound-page::before,
+.notfound-page::after {
+  position: fixed;
+  z-index: 0;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.notfound-page::before {
+  top: -80px;
+  left: -70px;
+  background: #ffd044;
+}
+
+.notfound-page::after {
+  right: -90px;
+  bottom: -90px;
+  background: #1d9fe8;
+}
+
+.notfound-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 620px);
+  padding: clamp(28px, 6vw, 64px);
+  border: 1px solid #e0eaf3;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 48px rgba(46, 87, 125, 0.14);
+  text-align: center;
+}
+
+.notfound-code {
+  margin-bottom: 4px;
+  color: #1d9fe8;
+  font-size: clamp(72px, 16vw, 148px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 0.9;
+}
+
+.notfound-eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  color: #e0a900;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.notfound-card h1 {
+  margin: 0;
+  color: #19324d;
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: 1.15;
+}
+
+.notfound-card p {
+  max-width: 460px;
+  margin: 16px auto 28px;
+  color: #678096;
+  font-size: clamp(14px, 2vw, 17px);
+  line-height: 1.6;
+}
+
+.notfound-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.notfound-primary,
+.notfound-secondary {
+  min-height: 44px;
+  padding: 11px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.notfound-primary {
+  border: 1px solid #1d9fe8;
+  background: #1d9fe8;
+  color: #fff;
+}
+
+.notfound-secondary {
+  border: 1px solid #d7e2eb;
+  background: #fff;
+  color: #3b5870;
+}
+
+.notfound-primary:hover,
+.notfound-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.notfound-primary:focus-visible,
+.notfound-secondary:focus-visible {
+  outline: 3px solid rgba(29, 159, 232, 0.28);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .notfound-page {
+    padding: 16px 12px;
+  }
+
+  .notfound-card {
+    border-radius: 18px;
+    padding: 32px 20px;
+  }
+
+  .notfound-actions {
+    flex-direction: column;
+  }
+
+  .notfound-primary,
+  .notfound-secondary {
+    width: 100%;
+  }
+}

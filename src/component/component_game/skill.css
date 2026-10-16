@@ -1,0 +1,100 @@
+.skill-effect {
+  position: absolute;
+  z-index: 4;
+  top: -18px;
+  left: -18px;
+  width: 84px;
+  height: 84px;
+  pointer-events: none;
+}
+
+.skill-ring,
+.skill-core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.skill-ring {
+  border: 3px solid #8cf7ff;
+  box-shadow: 0 0 12px #2de8ff, inset 0 0 10px #2de8ff;
+  animation: skillBurst 0.55s ease-out forwards;
+}
+
+.skill-ring-two {
+  animation-delay: 0.08s;
+  border-color: #fff2a6;
+}
+
+.skill-core {
+  inset: 28px;
+  background: #fff7ad;
+  box-shadow: 0 0 18px 8px #36e8ff;
+  animation: skillCore 0.55s ease-out forwards;
+}
+
+.skill-ember .skill-ring {
+  border-color: #ff814a;
+  box-shadow: 0 0 12px #ff4d2e, inset 0 0 10px #ff4d2e;
+}
+
+.skill-ember .skill-core { background: #fff0a1; box-shadow: 0 0 18px 8px #ff4d2e; }
+.skill-tidal .skill-ring { border-color: #4ac7ff; box-shadow: 0 0 12px #168dff, inset 0 0 10px #168dff; }
+.skill-tidal .skill-core { background: #d9f7ff; box-shadow: 0 0 18px 8px #168dff; }
+.skill-thorn .skill-ring { border-color: #9dff72; box-shadow: 0 0 12px #3acb55, inset 0 0 10px #3acb55; }
+.skill-thorn .skill-core { background: #e5ffba; box-shadow: 0 0 18px 8px #3acb55; }
+.skill-void .skill-ring { border-color: #bd8cff; box-shadow: 0 0 12px #713cff, inset 0 0 10px #713cff; }
+.skill-void .skill-core { background: #ead6ff; box-shadow: 0 0 18px 8px #713cff; }
+.skill-nova .skill-ring { border-color: #fff06b; box-shadow: 0 0 12px #ffad24, inset 0 0 10px #ffad24; }
+.skill-nova .skill-core { background: #fffbd0; box-shadow: 0 0 18px 8px #ffad24; }
+
+@keyframes skillBurst {
+  from { transform: scale(0.25); opacity: 1; }
+  to { transform: scale(1.15); opacity: 0; }
+}
+
+@keyframes skillCore {
+  from { transform: scale(0.4); opacity: 1; }
+  to { transform: scale(1.5); opacity: 0; }
+}
+
+.game-page .skills {
+  padding: 26px 44px 32px;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.game-page .skills h3 {
+  margin: 0 0 8px;
+  color: #5a4d05;
+  font-size: 18px;
+}
+
+.game-page .skills p {
+  margin: 0 0 26px;
+  color: #6d6340;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.game-page .skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 22px;
+}
+
+.game-page .skill-box {
+  min-height: 106px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #d7d7d7;
+  color: transparent;
+  box-sizing: border-box;
+}
+
+@media (max-width: 760px) {
+  .game-page .skills {
+    padding: 22px;
+  }
+}
+  

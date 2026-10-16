@@ -1,0 +1,436 @@
+:root {
+  --register-yellow: #ffbe06;
+  --register-blue: #0e81ff;
+  --register-paper: #fffdf5;
+}
+
+.register-container {
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--register-yellow);
+}
+
+.register-bg-assesoris {
+  position: relative;
+  display: grid;
+  grid-template-columns: 52% 48%;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--register-yellow) url("../images/bg_quiz_1.png") center / cover no-repeat;
+}
+
+.register-left,
+.register-right {
+  position: relative;
+  min-width: 0;
+}
+
+.register-left {
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.logo-gamukis-regist {
+  position: absolute;
+  top: clamp(42px, 5.8vw, 68px);
+  left: clamp(38px, 3.7vw, 48px);
+  z-index: 4;
+  width: clamp(210px, 22.5vw, 260px);
+  height: auto;
+}
+
+.logo-regist {
+  position: absolute;
+  bottom: -26px;
+  left: clamp(-8px, 1.2vw, 16px);
+  z-index: 3;
+  width: min(51vw, 590px);
+  object-fit: contain;
+}
+
+.circle-1,
+.circle-2 {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.circle-1 {
+  top: 47%;
+  left: -42%;
+  z-index: 1;
+  width: min(82vw, 940px);
+  height: min(82vw, 940px);
+  background: var(--register-blue);
+}
+
+.circle-2 {
+  top: 61%;
+  left: -20%;
+  z-index: 2;
+  width: min(60vw, 690px);
+  height: min(60vw, 690px);
+  background: var(--register-paper);
+}
+
+.register-right {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(132px, 19.5vh, 154px) clamp(32px, 6.4vw, 82px) 40px;
+}
+
+.register-error-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(17, 24, 39, 0.45);
+  animation: register-error-fade-in 180ms ease-out both;
+}
+
+.register-error-popup {
+  width: min(420px, 100%);
+  padding: 28px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+  color: #303030;
+  text-align: center;
+  animation: register-error-popup-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.register-error-popup h2 {
+  margin: 0 0 12px;
+  color: #d94841;
+  font-size: 22px;
+}
+
+.register-error-popup p {
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.register-error-popup button {
+  min-width: 110px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #4e8aff;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.register-error-popup button:hover {
+  background: #3675e8;
+}
+
+.otp-box {
+  display: flex;
+  gap: 5px;
+}
+
+.otp-input {
+  width: 40px;
+  text-align: center;
+}
+
+@keyframes register-error-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes register-error-popup-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 900px) {
+  .register-bg-assesoris {
+    grid-template-columns: 48% 52%;
+  }
+
+  .register-right {
+    padding: 80px 24px 32px;
+  }
+}
+
+@media (max-width: 700px) {
+  .register-bg-assesoris {
+    display: block;
+    min-height: 100dvh;
+    overflow: visible;
+    background-position: center;
+  }
+
+  .register-left {
+    display: block;
+    height: 112px;
+    padding: 22px 24px 0;
+  }
+
+  .circle-1,
+  .circle-2,
+  .logo-regist {
+    display: none;
+  }
+
+  .logo-gamukis-regist {
+    position: static;
+    width: 150px;
+  }
+
+  .register-right {
+    min-height: calc(100dvh - 112px);
+    padding: 10px 16px 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-left {
+    height: 92px;
+    padding: 18px 18px 0;
+  }
+
+  .register-right {
+    min-height: calc(100dvh - 92px);
+    padding: 4px 12px 24px;
+  }
+
+  .otp-box {
+    justify-content: center;
+    gap: clamp(4px, 2vw, 10px);
+  }
+
+  .otp-input {
+    width: clamp(34px, 11vw, 48px);
+    height: clamp(38px, 12vw, 50px);
+  }
+
+  .register-error-popup {
+    padding: 24px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .register-error-overlay,
+  .register-error-popup {
+    animation: none;
+  }
+}
+
+/* Tablet: keep the two visual areas, but scale the artwork to the viewport. */
+@media (min-width: 701px) and (max-width: 1100px) {
+  .register-bg-assesoris {
+    grid-template-columns: 44% 56%;
+  }
+
+  .register-left {
+    min-height: 100dvh;
+  }
+
+  .logo-gamukis-regist {
+    top: 28px;
+    left: 28px;
+    width: 190px;
+  }
+
+  .logo-regist {
+    bottom: -16px;
+    left: -4px;
+    width: min(48vw, 440px);
+  }
+
+  .circle-1 {
+    top: 48%;
+    left: -48%;
+    width: min(82vw, 690px);
+    height: min(82vw, 690px);
+  }
+
+  .circle-2 {
+    top: 62%;
+    left: -25%;
+    width: min(61vw, 510px);
+    height: min(61vw, 510px);
+  }
+
+  .register-right {
+    padding: 72px 24px 32px;
+  }
+
+  .introduction-container {
+    width: 100%;
+  }
+
+  .welcome-text-students {
+    font-size: 30px;
+  }
+
+  .welcome-text {
+    padding: 20px;
+  }
+}
+
+/* Phone landscape: preserve the split composition in the short viewport. */
+@media (max-width: 700px) and (orientation: landscape) {
+  .register-container {
+    overflow: auto;
+  }
+
+  .register-bg-assesoris {
+    display: grid;
+    grid-template-columns: 44% 56%;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .register-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    min-height: 240px;
+    padding: 0;
+  }
+
+  .logo-gamukis-regist {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    width: min(30vw, 145px);
+    transform: translateX(-50%);
+  }
+
+  .logo-regist {
+    display: block;
+    bottom: -20px;
+    left: 50%;
+    width: min(62vw, 340px);
+    transform: translateX(-50%);
+  }
+
+  .circle-1 {
+    display: block;
+    top: 38%;
+    left: 50%;
+    width: min(75vw, 540px);
+    height: min(75vw, 540px);
+    transform: translateX(-50%);
+  }
+
+  .circle-2 {
+    display: block;
+    top: 56%;
+    left: 50%;
+    width: min(55vw, 390px);
+    height: min(55vw, 390px);
+    transform: translateX(-50%);
+  }
+
+  .register-right {
+    align-items: center;
+    min-height: 100dvh;
+    padding: 18px 14px;
+  }
+
+  .introduction-container {
+    width: min(100%, 350px);
+    margin: 0 auto;
+  }
+
+  .welcome-text-students {
+    margin-bottom: 10px;
+    font-size: clamp(18px, 5vh, 24px);
+    text-align: center;
+  }
+
+  .welcome-text {
+    width: 100%;
+    padding: clamp(10px, 2.5vh, 16px);
+    border-radius: 14px;
+  }
+
+  .welcome-text p {
+    font-size: clamp(9px, 2.5vh, 12px);
+    text-align: center;
+  }
+
+  .welcome-text li {
+    justify-content: center;
+    gap: clamp(5px, 1.5vw, 8px);
+    margin: clamp(5px, 1.8vh, 8px) 0;
+    font-size: clamp(8px, 2vh, 10px);
+    text-align: center;
+  }
+
+  .welcome-text li::before {
+    flex-basis: clamp(16px, 4vh, 19px);
+    width: clamp(16px, 4vh, 19px);
+    height: clamp(16px, 4vh, 19px);
+    font-size: clamp(8px, 1.8vh, 10px);
+  }
+
+  .next-button-1 {
+    width: min(140px, 38vw);
+    margin: 14px auto 0;
+    padding: clamp(7px, 2vh, 9px) 14px;
+    font-size: clamp(10px, 2.5vh, 13px);
+  }
+}
+
+/* Phone portrait: focus on the registration content and remove the artwork. */
+@media (max-width: 700px) and (orientation: portrait) {
+  .register-container {
+    overflow-y: auto;
+  }
+
+  .register-bg-assesoris {
+    display: block;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .register-left {
+    display: none;
+  }
+
+  .register-right {
+    display: flex;
+    min-height: 100dvh;
+    padding: 24px 12px;
+  }
+
+  .introduction-container {
+    width: min(100%, 540px);
+    margin: 0 auto;
+  }
+
+  .welcome-text-students {
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 28px;
+    text-align: center;
+  }
+
+  .welcome-text {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .welcome-text p {
+    text-align: center;
+  }
+
+  .next-button-1 {
+    width: min(100%, 220px);
+    margin: 28px auto 0;
+  }
+}

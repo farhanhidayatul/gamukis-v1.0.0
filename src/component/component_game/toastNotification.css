@@ -1,0 +1,117 @@
+.gamukis-toast-container {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  width: 90%;
+  max-width: 440px;
+}
+
+.gamukis-toast-item {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.2);
+  animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.gamukis-toast-item.exiting {
+  animation: toastSlideOut 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.92);
+  }
+}
+
+/* Toast Variants */
+.gamukis-toast-success {
+  background: rgba(16, 185, 129, 0.9);
+  border: 1px solid rgba(110, 231, 183, 0.45);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+}
+
+.gamukis-toast-error,
+.gamukis-toast-danger {
+  background: rgba(239, 68, 68, 0.9);
+  border: 1px solid rgba(252, 165, 165, 0.45);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.35);
+}
+
+.gamukis-toast-warning {
+  background: rgba(245, 158, 11, 0.92);
+  color: #1c1917;
+  border: 1px solid rgba(253, 230, 138, 0.5);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+}
+
+.gamukis-toast-info {
+  background: rgba(14, 116, 144, 0.9);
+  border: 1px solid rgba(125, 211, 252, 0.45);
+  box-shadow: 0 8px 24px rgba(14, 116, 144, 0.35);
+}
+
+.gamukis-toast-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gamukis-toast-message {
+  flex: 1;
+  line-height: 1.35;
+}
+
+.gamukis-toast-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+  height: auto !important;
+}
+
+.gamukis-toast-close:hover {
+  opacity: 1;
+}
+

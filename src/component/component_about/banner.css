@@ -1,0 +1,520 @@
+.promo-banner-2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(270deg, 
+    rgb(35, 104, 236) 0%, 
+    rgb(28, 120, 232) 25%, 
+    rgb(21, 136, 228) 50%, 
+    rgb(14, 153, 224) 75%, 
+    rgb(0, 171, 209) 100%);
+    overflow: hidden; /* Sembunyikan konten yang melebihi elemen ini */
+    padding: 20px; /* Add padding if necessary to create space between the navbar and the banner */
+    position: relative; /* Needed for the pseudo-element to be positioned correctly */
+}
+
+.promo-banner-2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%; /* Adjust as needed */
+    width: 2px;
+    opacity: 0.5;
+}
+
+.banner-background-2 {
+    display: block;
+    width: 640px;
+    height: 440px;
+    align-items: baseline;
+    background-size: cover;
+    position: relative;
+    overflow: hidden; /* Sembunyikan konten yang melebihi elemen ini */
+    padding-top: 0; /* Correct the padding */
+}
+
+.promo-images-2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-image: url(../../images/VEKTOR.svg);
+    width: 768px;
+    height: 500px;
+    left: 420px;
+    position: absolute;
+}
+
+.background-interior-2 {
+    background-image: url(../../images/Hiasan-2.svg);
+    background-size: contain; /* Atur gambar agar tetap terlihat sepenuhnya */
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%; /* Sesuaikan dengan elemen induk */
+    max-height: 400px; /* Pastikan tidak melebihi tinggi elemen .banner-background */
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    z-index: 1; /* Tetap seperti ini */
+}
+
+.promo-text-2 h2 {
+    margin: 0;
+    font-size: 60px;
+    color: #fff;
+    padding-bottom: 1%;
+}
+
+.promo-text-2 h3 {
+    margin-top: 100px;
+    font-size: 30px;
+    color: #478193;
+    padding-top: 20px; /* Adjust padding to avoid content overflow */
+}
+
+.promo-text-2 p {
+    margin: 5px 0;
+    font-size: 18px;
+    color: #fff;
+    opacity: 75%;
+}
+
+@media screen and (min-width: 360px) and (max-width: 500px) {
+    .promo-banner-2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(270deg, 
+        rgb(35, 104, 236) 0%, 
+        rgb(28, 120, 232) 25%, 
+        rgb(21, 136, 228) 50%, 
+        rgb(14, 153, 224) 75%, 
+        rgb(0, 171, 209) 100%);
+        overflow: hidden; /* Sembunyikan konten yang melebihi elemen ini */
+        padding: 20px; /* Add padding if necessary to create space between the navbar and the banner */
+        position: relative; /* Needed for the pseudo-element to be positioned correctly */
+    }
+    
+    .promo-banner-2::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%; /* Adjust as needed */
+        width: 2px;
+        opacity: 0.5;
+    }
+    
+    .banner-background-2 {
+        display: block;
+        width: 320px;
+        height: 100px;
+        align-items: baseline;
+        background-size: cover;
+        position: relative;
+        overflow: hidden; /* Sembunyikan konten yang melebihi elemen ini */
+        padding-top: 0; /* Correct the padding */
+    }
+    
+    .promo-images-2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        background-image: url(../../images/VEKTOR.svg);
+        width: 295px;
+        height: 100%;
+        left: 115px;
+        position: absolute;
+    }
+    
+    .background-interior-2 {
+        background-image: url(../../images/Hiasan-2.svg);
+        background-size: contain; /* Atur gambar agar tetap terlihat sepenuhnya */
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 100%; /* Sesuaikan dengan elemen induk */
+        max-height: 200px; /* Pastikan tidak melebihi tinggi elemen .banner-background */
+        position: absolute;
+        top: 20px;
+        left: 10px;
+        z-index: 1; /* Tetap seperti ini */
+    }
+    
+    .promo-text-2 h2 {
+        margin: 0;
+        font-size: 15px;
+        color: #fff;
+        padding-bottom: 1%;
+    }
+    
+    .promo-text-2 h3 {
+        margin-top: 20px;
+        font-size: 7.5px;
+        color: #478193;
+        padding-top: 20px; /* Adjust padding to avoid content overflow */
+    }
+    
+    .promo-text-2 p {
+        margin: 0.5px 0;
+        font-size: 6px;
+        color: #fff;
+        opacity: 75%;
+        width: 150px;
+    }
+
+
+}
+
+@media screen and (min-width: 740px) and (max-width: 860px) {
+    .promo-banner-2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(270deg, 
+        rgb(35, 104, 236) 0%, 
+        rgb(28, 120, 232) 25%, 
+        rgb(21, 136, 228) 50%, 
+        rgb(14, 153, 224) 75%, 
+        rgb(0, 171, 209) 100%);
+        overflow: hidden; /* Sembunyikan konten yang melebihi elemen ini */
+        padding: 20px; /* Add padding if necessary to create space between the navbar and the banner */
+        position: relative; /* Needed for the pseudo-element to be positioned correctly */
+    }
+    
+    .promo-banner-2::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%; /* Adjust as needed */
+        width: 2px;
+        opacity: 0.5;
+    }
+    
+    .banner-background-2 {
+        display: block;
+        width: 640px;
+        height: 440px;
+        align-items: baseline;
+        background-size: cover;
+        position: relative;
+        overflow: hidden; /* Sembunyikan konten yang melebihi elemen ini */
+        padding-top: 0; /* Correct the padding */
+    }
+    
+    .promo-images-2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        background-image: url(../../images/VEKTOR.svg);
+        width: 768px;
+        height: 500px;
+        left: 420px;
+        position: absolute;
+    }
+    
+    .background-interior-2 {
+        background-image: url(../../images/Hiasan-2.svg);
+        background-size: contain; /* Atur gambar agar tetap terlihat sepenuhnya */
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 100%; /* Sesuaikan dengan elemen induk */
+        max-height: 400px; /* Pastikan tidak melebihi tinggi elemen .banner-background */
+        position: absolute;
+        top: 20px;
+        left: 10px;
+        z-index: 1; /* Tetap seperti ini */
+    }
+    
+    .promo-text-2 h2 {
+        margin: 0;
+        font-size: 60px;
+        color: #fff;
+        padding-bottom: 1%;
+    }
+    
+    .promo-text-2 h3 {
+        margin-top: 100px;
+        font-size: 30px;
+        color: #478193;
+        padding-top: 20px; /* Adjust padding to avoid content overflow */
+    }
+    
+    .promo-text-2 p {
+        margin: 5px 0;
+        font-size: 18px;
+        color: #fff;
+        opacity: 75%;
+    }
+
+
+}
+
+@media (max-width: 860px) {
+    .promo-banner-2 {
+        min-height: 300px;
+        padding: clamp(16px, 4vw, 28px);
+    }
+
+    .banner-background-2 {
+        width: min(58%, 520px);
+        height: 300px;
+        z-index: 2;
+    }
+
+    .promo-images-2 {
+        right: 0;
+        left: auto;
+        width: 58%;
+        height: 82%;
+        background-position: right center;
+        opacity: 0.8;
+    }
+
+    .background-interior-2 {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background-position: center;
+    }
+
+    .promo-text-2 h3 {
+        margin: 0 0 8px;
+        padding: 0;
+        font-size: clamp(18px, 3vw, 26px);
+    }
+
+    .promo-text-2 h2 {
+        font-size: clamp(34px, 7vw, 52px);
+        line-height: 1.02;
+    }
+
+    .promo-text-2 p {
+        max-width: 42ch;
+        font-size: clamp(12px, 1.8vw, 15px);
+        line-height: 1.45;
+    }
+}
+
+@media (max-width: 540px) {
+    .promo-banner-2 {
+        min-height: 340px;
+        align-items: flex-start;
+        padding: 18px;
+    }
+
+    .banner-background-2 {
+        width: 100%;
+        height: auto;
+        min-height: 240px;
+        overflow: visible;
+    }
+
+    .promo-images-2 {
+        right: -12%;
+        bottom: 0;
+        width: 76%;
+        height: 56%;
+        opacity: 0.42;
+    }
+
+    .promo-text-2 {
+        position: relative;
+        z-index: 2;
+        max-width: 92%;
+    }
+
+    .promo-text-2 h3 {
+        margin-bottom: 8px;
+        font-size: 18px;
+    }
+
+    .promo-text-2 h2 {
+        font-size: clamp(36px, 12vw, 48px);
+    }
+
+    .promo-text-2 p {
+        max-width: 36ch;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 540px) {
+    .promo-banner-2 {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 8px;
+        min-height: clamp(300px, 92vw, 380px);
+        padding: 18px 14px;
+        align-items: center;
+    }
+
+    .banner-background-2 {
+        width: auto;
+        min-width: 0;
+    }
+
+    .promo-text-2 h3 {
+        margin-bottom: 6px;
+        font-size: clamp(15px, 4vw, 18px);
+    }
+
+    .promo-text-2 h2 {
+        font-size: clamp(28px, 8vw, 40px);
+        line-height: 0.98;
+    }
+
+    .promo-text-2 p {
+        margin-top: 8px;
+        font-size: clamp(10px, 2.8vw, 13px);
+        line-height: 1.35;
+    }
+
+    .promo-images-2 {
+        top: 50%;
+        right: 0;
+        bottom: auto;
+        width: 52%;
+        height: 72%;
+        transform: translateY(-50%);
+        background-position: center;
+        opacity: 1;
+    }
+}
+
+/* Responsive team banner layout */
+.promo-banner-2 {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(12px, 3vw, 40px);
+    min-height: clamp(340px, 42vw, 520px);
+    padding: clamp(24px, 5vw, 48px) clamp(28px, 9vw, 90px);
+    isolation: isolate;
+}
+
+.promo-banner-2::before {
+    display: none;
+}
+
+.background-interior-2 {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    background-position: center;
+}
+
+.banner-background-2 {
+    display: flex;
+    align-items: center;
+    width: auto;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+    z-index: 2;
+}
+
+.promo-content {
+    width: 100%;
+}
+
+.promo-text-2 {
+    max-width: 100%;
+}
+
+.promo-text-2 h3 {
+    margin: 0 0 8px;
+    padding: 0;
+    font-size: clamp(18px, 2.4vw, 28px);
+    line-height: 1.2;
+}
+
+.promo-text-2 h2 {
+    margin: 0;
+    padding: 0;
+    font-size: clamp(36px, 6vw, 60px);
+    line-height: 1.02;
+}
+
+.promo-text-2 p {
+    max-width: 42ch;
+    margin: 12px 0 0;
+    font-size: clamp(13px, 1.5vw, 17px);
+    line-height: 1.5;
+}
+
+.promo-images-2 {
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    left: auto;
+    width: min(58%, 800px);
+    height: 100%;
+    transform: translateY(-50%);
+    background-position: right center;
+    background-size: contain;
+    opacity: 1;
+    z-index: 1;
+}
+
+@media (max-width: 540px) {
+    .promo-banner-2 {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 8px;
+        min-height: clamp(300px, 92vw, 380px);
+        padding: 18px 14px;
+        align-items: center;
+    }
+
+    .banner-background-2 {
+        width: auto;
+        min-width: 0;
+    }
+
+    .promo-text-2 {
+        max-width: 100%;
+    }
+
+    .promo-text-2 h3 {
+        margin-bottom: 6px;
+        font-size: clamp(15px, 4vw, 18px);
+    }
+
+    .promo-text-2 h2 {
+        font-size: clamp(28px, 8vw, 40px);
+        line-height: 0.98;
+    }
+
+    .promo-text-2 p {
+        max-width: 100%;
+        margin-top: 8px;
+        font-size: clamp(10px, 2.8vw, 13px);
+        line-height: 1.35;
+    }
+
+    .promo-images-2 {
+        top: 50%;
+        right: 0;
+        bottom: auto;
+        width: 52%;
+        height: 72%;
+        transform: translateY(-50%);
+        background-position: center;
+        opacity: 1;
+    }
+}

@@ -1,0 +1,805 @@
+.game-wrapper {
+  margin: 0;
+  padding: 0;
+  height: 100vh; /* Use viewport height to ensure it fills the screen */
+  background: #0b2630;
+  font-family: "Source Sans Pro", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-wrapper .player-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1em;
+  display: flex;
+  gap: 0.5em;
+  align-items: flex-start;
+}
+
+@media (min-width: 601px) {
+  .game-wrapper .player-info__identity {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-wrapper .player-info__main-row,
+  .game-wrapper .player-info__actions {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .game-wrapper .player-info__main-row label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+  }
+}
+
+.game-wrapper label {
+  display: block;
+  font-weight: bold;
+}
+
+.game-wrapper input[type="text"],
+.game-wrapper button {
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 18px;
+  height: 44px;
+  border-radius: 4px;
+  outline: 0;
+}
+
+.game-wrapper input[type="text"] {
+  outline: 0;
+  padding-left: 0.5em;
+  border: 3px solid #222034;
+  width: 150px;
+  text-transform: uppercase;
+}
+.game-wrapper input[type="text"]:focus {
+  border-color: #f000ff;
+}
+
+.game-wrapper button {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  background: #59ff5a;
+  border: 0;
+  border-bottom: 2px solid #1e830b;
+  cursor: pointer;
+}
+.game-wrapper button:active {
+  position: relative;
+  top: 1px;
+}
+
+/* Characters */
+.game-wrapper .grid-cell {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+}
+.game-wrapper .Character {
+  transition: transform 0.22s linear;
+}
+.game-wrapper .Character.you {
+  z-index: 1;
+}
+.game-wrapper .Character.you .Character_you-arrow {
+  display: block;
+}
+.game-wrapper .Character_you-arrow {
+  display: none;
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  width: 21px;
+  height: 15px;
+  transform: translateX(-50%);
+  background-size: 21px 15px;
+  background: url(../../images/arrow.png) no-repeat no-repeat;
+}
+.game-wrapper .Character_sprite {
+  overflow: hidden;
+  top: -9px;
+  transform: scale(3);
+  transform-origin: top left;
+  background: url(../../images/characters.png);
+}
+
+.game-wrapper .Character_shadow {
+  background: url('../../images/shadow.png') no-repeat;
+  background-size: 48px 48px;
+}
+
+.game-wrapper .Character_name-container {
+  position: absolute;
+  top: -33px;
+  left: -15px;
+  font-size: 15px;
+  padding: 3px 6px 3px;
+  border-radius: 6px;
+  background: #333;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.game-wrapper .Character[data-direction="right"] .Character_sprite {
+  background-position-x: 16px;
+}
+.game-wrapper .Character[data-color="red"] .Character_sprite {
+  background-position-y: -16px;
+}
+.game-wrapper .Character[data-color="orange"] .Character_sprite {
+  background-position-y: -32px;
+}
+.game-wrapper .Character[data-color="yellow"] .Character_sprite {
+  background-position-y: -48px;
+}
+.game-wrapper .Character[data-color="green"] .Character_sprite {
+  background-position-y: -64px;
+}
+.game-wrapper .Character[data-color="purple"] .Character_sprite {
+  background-position-y: -80px;
+}
+.game-wrapper .Character_shadow {
+  background: url(../../images/shadow.png) no-repeat no-repeat;
+}
+
+.game-wrapper .Character_name-container {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 5px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: #333;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.game-wrapper .Character_coins {
+  margin-left: 1px;
+  color: gold;
+}
+
+.game-wrapper .player-health {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 5px;
+  line-height: 1;
+  min-height: 16px;
+}
+
+.game-wrapper .heart {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 16px;
+  flex: 0 0 18px;
+}
+
+.game-wrapper .heart-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.game-wrapper .heart-in {
+  opacity: 1;
+}
+
+.game-wrapper .heart-out {
+  opacity: 0;
+}
+
+.game-wrapper .heart-empty .heart-in {
+  opacity: 0;
+}
+
+.game-wrapper .heart-empty .heart-out {
+  opacity: 1;
+}
+
+@keyframes hpBlinkIn {
+  0%, 49.99% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes hpBlinkOut {
+  0%, 49.99% { opacity: 0; }
+  50%, 100% { opacity: 1; }
+}
+
+.game-wrapper .player-health--blinking .heart-in {
+  animation: hpBlinkIn 700ms steps(1, end) infinite;
+}
+
+.game-wrapper .player-health--blinking .heart-out {
+  animation: hpBlinkOut 700ms steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-wrapper .player-health--blinking .heart-in,
+  .game-wrapper .player-health--blinking .heart-out {
+    animation: none;
+  }
+
+  .game-wrapper .player-health--blinking .heart-in {
+    opacity: 1;
+  }
+
+  .game-wrapper .player-health--blinking .heart-out {
+    opacity: 0;
+  }
+}
+
+/* Coins */
+.game-wrapper .Coin_sprite {
+  top: 8px;
+  left: 14px;
+  background: url(../../images/coin.png) no-repeat no-repeat;
+  animation: coinFloat 0.8s ease-in-out infinite alternate;
+  transform: scale(1);
+  transform-origin: top left;
+}
+@keyframes coinFloat {
+  from {
+    transform: translateY(-1px) scale(1);
+  }
+  to {
+    transform: translateY(1px) scale(1);
+  }
+}
+.game-wrapper .Coin_shadow {
+  top: 8px;
+  left: 14px;
+  background: url(../../images/coin-shadow.png) no-repeat no-repeat;
+  background-size: 16px 16px;
+}
+
+.controls {
+  z-index: 20;
+  position: absolute;
+  bottom: 20px;
+  right: 24px;
+  left: 24px;
+  display: none;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.movement-pad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  background: rgba(10, 34, 42, 0.72);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+
+.desktop-skill-control {
+  pointer-events: auto;
+}
+
+.controls button {
+  width: 50px;
+  height: 50px;
+  background-color: #59ff5a;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #222034;
+  cursor: pointer;
+  box-shadow: 0 4px #1e830b;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.controls button {
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.controls button:active {
+  box-shadow: none;
+  transform: translateY(3px) scale(0.95);
+  filter: brightness(0.92);
+}
+
+.controls .skill-button {
+  width: 92px;
+  height: 42px;
+  margin-top: 12px;
+  background-color: #ffdb55;
+  box-shadow: 0 4px #a86d19;
+}
+
+.controls .skill-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.controls .row {
+  display: flex;
+  justify-content: center;
+}
+
+.controls .row:first-child {
+  margin-bottom: -12px;
+}
+
+.controls .row:last-child {
+  margin-top: -12px;
+}
+
+.controls .row button:nth-child(2) {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.mobile-skill-grid {
+  display: none;
+}
+
+@media (any-pointer: coarse), (max-width: 1024px) and (hover: none) {
+  .game-wrapper .controls {
+    z-index: 20;
+    position: absolute;
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left));
+    width: auto;
+    transform: none;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    pointer-events: none;
+  }
+
+  .game-wrapper .movement-pad,
+  .game-wrapper .mobile-skill-grid {
+    pointer-events: auto;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    background: rgba(10, 34, 42, 0.72);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .game-wrapper .movement-pad {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .game-wrapper .controls .row {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+  }
+
+  .game-wrapper .controls .row button,
+  .game-wrapper .controls .row button:nth-child(2) {
+    width: 48px;
+    height: 48px;
+    margin: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 14px;
+    background: linear-gradient(160deg, #71ff70, #35dc59);
+    box-shadow: 0 4px #16813a, inset 0 1px rgba(255, 255, 255, 0.5);
+    font-size: 22px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .game-wrapper .mobile-skill-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(54px, 1fr));
+    gap: 6px;
+    max-width: 230px;
+  }
+
+  .game-wrapper .controls .mobile-skill-button {
+    width: auto;
+    min-width: 54px;
+    height: 42px;
+    margin: 0;
+    padding: 3px 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    background: #f5c943;
+    box-shadow: 0 3px #95651c;
+    color: #26384c;
+    font-size: 9px;
+    line-height: 1;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .game-wrapper .controls .mobile-skill-button span {
+    font-size: 10px;
+    opacity: 0.7;
+  }
+
+  .game-wrapper .controls .mobile-skill-button:disabled {
+    opacity: 0.58;
+    cursor: wait;
+  }
+
+  .game-wrapper .desktop-skill-control {
+    display: none;
+  }
+}
+
+@keyframes pixel-character-step {
+  from { transform: scale(3) translateY(0); }
+  to { transform: scale(3) translateY(-1px); }
+}
+
+.game-wrapper .Character.moving:not([data-color="man"]) .Character_sprite {
+  animation: pixel-character-step 0.16s steps(2) infinite alternate;
+}
+
+@media (max-width: 600px) {
+  .game-wrapper .controls {
+    right: max(8px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: max(8px, env(safe-area-inset-left));
+    gap: 6px;
+  }
+
+  .game-wrapper .controls .row button,
+  .game-wrapper .controls .row button:nth-child(2) {
+    width: 42px;
+    height: 42px;
+    font-size: 19px;
+  }
+
+  .game-wrapper .mobile-skill-grid {
+    grid-template-columns: repeat(3, minmax(44px, 1fr));
+    gap: 5px;
+    padding: 6px;
+  }
+
+  .game-wrapper .controls .mobile-skill-button {
+    min-width: 44px;
+    height: 38px;
+    font-size: 8px;
+  }
+}
+
+/* Directional 4-beat walk cycles for humanoid character (char-man-1.svg) */
+@keyframes walk-man-down {
+  0% { background-position-x: 0px; }
+  25% { background-position-x: -20px; }
+  50% { background-position-x: -39px; }
+  75% { background-position-x: -20px; }
+  100% { background-position-x: 0px; }
+}
+
+@keyframes walk-man-up {
+  0% { background-position-x: 0px; }
+  25% { background-position-x: -20px; }
+  50% { background-position-x: -39px; }
+  75% { background-position-x: -20px; }
+  100% { background-position-x: 0px; }
+}
+
+@keyframes walk-man-left {
+  0% { background-position-x: 0px; }
+  25% { background-position-x: -20px; }
+  50% { background-position-x: -39px; }
+  75% { background-position-x: -20px; }
+  100% { background-position-x: 0px; }
+}
+
+@keyframes walk-man-right {
+  0% { background-position-x: 0px; }
+  25% { background-position-x: -20px; }
+  50% { background-position-x: -39px; }
+  75% { background-position-x: -20px; }
+  100% { background-position-x: 0px; }
+}
+
+/* Backward-compatible keyframe aliases */
+@keyframes walk-down {
+  0% { background-position-x: 0px; }
+  25% { background-position-x: -20px; }
+  50% { background-position-x: -39px; }
+  75% { background-position-x: -20px; }
+  100% { background-position-x: 0px; }
+}
+
+@keyframes walk-up {
+  0% { background-position-x: 0px; }
+  25% { background-position-x: -20px; }
+  50% { background-position-x: -39px; }
+  75% { background-position-x: -20px; }
+  100% { background-position-x: 0px; }
+}
+
+@keyframes walk-left {
+  0% { background-position-x: 0px; }
+  25% { background-position-x: -20px; }
+  50% { background-position-x: -39px; }
+  75% { background-position-x: -20px; }
+  100% { background-position-x: 0px; }
+}
+
+@keyframes walk-right {
+  0% { background-position-x: 0px; }
+  25% { background-position-x: -20px; }
+  50% { background-position-x: -39px; }
+  75% { background-position-x: -20px; }
+  100% { background-position-x: 0px; }
+}
+
+.game-wrapper .Character_svg {
+  top: -20px;
+  width: 19px;  /* Adjust to frameWidth */
+  height: 36px; /* Adjust to frameHeight */
+  background: url('../../images/char-man-1.svg') no-repeat; /* Use the correct path to your SVG */
+}
+
+/* Adjustments for SVG characters */
+.game-wrapper .Character[data-color="man"],
+.game-wrapper .Character.has-svg-character {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.game-wrapper .Character[data-color="man"] .Character_name-container,
+.game-wrapper .Character.has-svg-character .Character_name-container {
+  top: -38px;
+  left: 9.5px;
+  transform: translateX(-50%);
+}
+
+.game-wrapper .Character[data-color="man"] .Character_you-arrow,
+.game-wrapper .Character.has-svg-character .Character_you-arrow {
+  top: -26px;
+  left: 14px;
+  transform: translateX(-50%);
+}
+
+.game-wrapper .Character[data-color="man"] .Character_shadow,
+.game-wrapper .Character.has-svg-character .Character_shadow {
+  bottom: -2px;
+}
+
+/* Game-specific character animation for SVG - Resting Idle Stances */
+.game-wrapper .Character[data-color="man"][data-direction="down"] .Character_svg,
+.game-wrapper .Character.has-svg-character[data-direction="down"] .Character_svg,
+.game-wrapper .Character[data-direction="down"] .Character_svg {
+  background-position-x: -20px;
+  background-position-y: 0px;
+}
+
+.game-wrapper .Character[data-color="man"][data-direction="up"] .Character_svg,
+.game-wrapper .Character.has-svg-character[data-direction="up"] .Character_svg,
+.game-wrapper .Character[data-direction="up"] .Character_svg {
+  background-position-x: -20px;
+  background-position-y: -37px;
+}
+
+.game-wrapper .Character[data-color="man"][data-direction="left"] .Character_svg,
+.game-wrapper .Character.has-svg-character[data-direction="left"] .Character_svg,
+.game-wrapper .Character[data-direction="left"] .Character_svg {
+  background-position-x: -20px;
+  background-position-y: -72px;
+}
+
+.game-wrapper .Character[data-color="man"][data-direction="right"] .Character_svg,
+.game-wrapper .Character.has-svg-character[data-direction="right"] .Character_svg,
+.game-wrapper .Character[data-direction="right"] .Character_svg {
+  background-position-x: -20px;
+  background-position-y: -110px;
+}
+
+/* Authentic 4-beat directional walk cycles with 0.44s step-end timing */
+.game-wrapper .Character.moving[data-color="man"][data-direction="down"] .Character_svg,
+.game-wrapper .Character.moving.has-svg-character[data-direction="down"] .Character_svg,
+.game-wrapper .Character.moving[data-direction="down"] .Character_svg {
+  background-position-y: 0px;
+  animation: walk-man-down 0.44s step-end infinite;
+}
+
+.game-wrapper .Character.moving[data-color="man"][data-direction="up"] .Character_svg,
+.game-wrapper .Character.moving.has-svg-character[data-direction="up"] .Character_svg,
+.game-wrapper .Character.moving[data-direction="up"] .Character_svg {
+  background-position-y: -37px;
+  animation: walk-man-up 0.44s step-end infinite;
+}
+
+.game-wrapper .Character.moving[data-color="man"][data-direction="left"] .Character_svg,
+.game-wrapper .Character.moving.has-svg-character[data-direction="left"] .Character_svg,
+.game-wrapper .Character.moving[data-direction="left"] .Character_svg {
+  background-position-y: -72px;
+  animation: walk-man-left 0.44s step-end infinite;
+}
+
+.game-wrapper .Character.moving[data-color="man"][data-direction="right"] .Character_svg,
+.game-wrapper .Character.moving.has-svg-character[data-direction="right"] .Character_svg,
+.game-wrapper .Character.moving[data-direction="right"] .Character_svg {
+  background-position-y: -110px;
+  animation: walk-man-right 0.44s step-end infinite;
+}
+
+@media (max-width: 600px) {
+  .game-wrapper {
+    height: 100svh;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .game-wrapper .player-info {
+    top: 0;
+    right: 0;
+    left: 0;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px;
+    background: rgba(10, 34, 42, 0.78);
+  }
+
+  .game-wrapper .player-info label {
+    font-size: 11px;
+  }
+
+  .game-wrapper .player-info input[type="text"] {
+    width: clamp(100px, 36vw, 140px);
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .game-wrapper .player-info button {
+    height: 36px;
+    font-size: 12px;
+  }
+
+  .game-wrapper .leaderboard-inGame {
+    top: 124px;
+    right: 8px;
+    width: min(48vw, 190px);
+    max-height: 34vh;
+    overflow: auto;
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .game-wrapper .leaderboard-inGame .leaderboard-container-text {
+    gap: 4px;
+    margin: 0 0 4px;
+    padding: 3px;
+    font-size: 9px;
+  }
+
+  .game-wrapper .leaderboard-inGame .leaderboard-decs-text-1 {
+    width: auto;
+  }
+
+  .game-wrapper .leaderboard-inGame .leaderboard-item {
+    gap: 3px;
+    padding: 2px;
+  }
+
+  .game-wrapper .leaderboard-inGame .rank-leaderboard {
+    width: 16px;
+    min-width: 16px;
+    margin-right: 2px;
+  }
+
+  .game-wrapper .leaderboard-inGame .medal {
+    width: 18px;
+    height: 18px;
+  }
+
+  .game-wrapper .leaderboard-inGame .player-name,
+  .game-wrapper .leaderboard-inGame .top-three .player-name,
+  .game-wrapper .leaderboard-inGame .top-ten .player-name,
+  .game-wrapper .leaderboard-inGame .regular .player-name {
+    width: auto;
+    min-width: 0;
+    height: 22px;
+    flex: 1 1 auto;
+    font-size: 9px;
+  }
+
+  .game-wrapper .leaderboard-inGame .player-name .player-name-text {
+    min-width: 0;
+    margin-left: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .game-wrapper .leaderboard-inGame .player-name .player-coins-text {
+    margin-right: 4px;
+  }
+
+  .game-wrapper .leaderboard-inGame .profile-container {
+    gap: 4px;
+  }
+
+  .game-wrapper .leaderboard-inGame .profile-out-color {
+    width: 22px;
+    height: 22px;
+  }
+
+  .game-wrapper .leaderboard-inGame .profile-pic {
+    width: 18px;
+    height: 20px;
+  }
+
+  .game-wrapper .leaderboard-inGame .player-self {
+    padding: 4px;
+    border-width: 2px;
+  }
+
+  .game-wrapper .leaderboard-inGame .player-self .player-name {
+    min-width: 0;
+    max-width: none;
+  }
+
+  .game-wrapper .controls {
+    bottom: 8px;
+  }
+
+  .game-wrapper .controls button {
+    width: 44px;
+    height: 44px;
+    margin: 4px;
+    font-size: 16px;
+  }
+
+  .game-wrapper .controls .skill-button {
+    width: 104px;
+    height: 38px;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,340 @@
+.about-page {
+  min-height: 100vh;
+  overflow: hidden;
+  background: #fffaf0;
+}
+
+.about-page,
+.about-page * {
+  box-sizing: border-box;
+}
+
+.about-page .wrapper {
+  position: relative;
+  z-index: 5;
+  min-height: 76px;
+  height: auto;
+  padding: 10px clamp(16px, 4vw, 56px);
+  box-shadow: 0 3px 14px rgba(40, 54, 86, 0.12);
+}
+
+.about-page .ImgContainer > .ImgContainer-2 {
+  margin-left: 0;
+}
+
+.about-page .Img {
+  display: block;
+  width: clamp(120px, 13vw, 172px);
+  max-width: 100%;
+}
+
+.about-page .navigation {
+  gap: clamp(2px, 1vw, 14px);
+  padding: 0;
+}
+
+.about-page .navigation > li {
+  padding: 6px;
+}
+
+.about-page .navigation > li > a {
+  padding: 10px 12px;
+  font-size: clamp(14px, 1.2vw, 17px);
+}
+
+.about-page .navigation > li > a.active {
+  padding: 10px 16px;
+  background: #fcd03e;
+}
+
+.about-page .btn-login {
+  flex: 0 0 auto;
+  width: clamp(142px, 15vw, 190px);
+  margin: 0;
+}
+
+.about-content {
+  width: 100%;
+}
+
+.about-page .promo-banner-2 {
+  min-height: clamp(330px, 37vw, 500px);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(18px, 4vw, 64px);
+  padding: clamp(32px, 5vw, 72px) clamp(24px, 7vw, 108px);
+  background-color: #fbd249;
+}
+
+.about-page .promo-text-2 h3 {
+  color: #28658b;
+  font-size: clamp(20px, 2.4vw, 32px);
+}
+
+.about-page .promo-text-2 h2 {
+  font-size: clamp(42px, 6.3vw, 78px);
+}
+
+.about-page .promo-text-2 p {
+  max-width: 46ch;
+  font-size: clamp(14px, 1.35vw, 18px);
+}
+
+.about-page .promo-images-2 {
+  width: min(58%, 820px);
+}
+
+.about-page .shortcard {
+  width: 100%;
+  padding: clamp(26px, 4vw, 52px) clamp(16px, 4vw, 48px) 64px;
+  background: #fbd249;
+}
+
+.about-page .flex-container-button {
+  flex-wrap: wrap;
+  gap: clamp(10px, 2vw, 22px);
+  padding: 4px 12px 28px;
+  background: transparent;
+}
+
+.about-page .buttonLogo,
+.about-page .buttonLogo.active {
+  display: grid;
+  width: clamp(76px, 9vw, 108px);
+  height: clamp(76px, 9vw, 108px);
+  place-items: center;
+  margin: 0;
+  padding: 12px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 7px 18px rgba(117, 84, 0, 0.12);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.about-page .buttonLogo:hover {
+  transform: translateY(-3px);
+}
+
+.about-page .buttonLogo.active {
+  border-color: #4385ff;
+  box-shadow: 0 0 0 4px rgba(67, 133, 255, 0.16), 0 8px 18px rgba(58, 83, 130, 0.16);
+}
+
+.about-page .buttonLogo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  object-fit: contain;
+}
+
+.about-page .affiliate-description {
+  width: min(100%, 1160px);
+  grid-template-columns: minmax(180px, 0.36fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(16px, 2.4vw, 30px);
+  padding: clamp(24px, 4vw, 48px);
+  border-radius: clamp(16px, 2vw, 24px);
+}
+
+.about-page .affiliate-description > p {
+  max-width: 70ch;
+  overflow-wrap: anywhere;
+}
+
+.about-page .bitdsul-activities,
+.about-page .bitdsul-team {
+  min-width: 0;
+}
+
+.about-page .bitdsul-team-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.about-page .bitdsul-member-card {
+  min-width: 0;
+}
+
+.about-page .bitdsul-member-details h4,
+.about-page .bitdsul-member-details p,
+.about-page .bitdsul-member-bio {
+  overflow-wrap: anywhere;
+}
+
+.about-page .bitdsul-activity-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.about-page .bitdsul-activity-card img {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+}
+
+@media (max-width: 900px) {
+  .about-page .promo-banner-2 {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 18px;
+    padding-inline: clamp(22px, 5vw, 48px);
+  }
+
+  .about-page .bitdsul-team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-page .affiliate-description {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .about-page .wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 10px;
+    padding: 10px 14px;
+  }
+
+  .about-page .Img {
+    width: clamp(108px, 28vw, 148px);
+  }
+
+  .about-page .navigation {
+    order: 3;
+    flex: 1 0 100%;
+    justify-content: center;
+    gap: clamp(0px, 1.5vw, 10px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .about-page .navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .about-page .navigation > li {
+    flex: 0 0 auto;
+    padding: 2px;
+  }
+
+  .about-page .navigation > li > a,
+  .about-page .navigation > li > a.active {
+    padding: 8px clamp(8px, 2.8vw, 14px);
+    font-size: clamp(12px, 3vw, 15px);
+  }
+
+  .about-page .btn-login {
+    width: clamp(128px, 36vw, 168px);
+    min-height: 38px;
+  }
+
+  .about-page .promo-banner-2 {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 370px;
+    padding: 34px clamp(20px, 7vw, 42px);
+  }
+
+  .about-page .banner-background-2 {
+    position: relative;
+    z-index: 2;
+    align-items: flex-start;
+  }
+
+  .about-page .promo-text-2 {
+    max-width: min(88%, 520px);
+  }
+
+  .about-page .promo-text-2 h2 {
+    font-size: clamp(42px, 11vw, 66px);
+  }
+
+  .about-page .promo-text-2 p {
+    max-width: 38ch;
+  }
+
+  .about-page .promo-images-2 {
+    top: auto;
+    right: -8%;
+    bottom: 0;
+    width: 76%;
+    height: 72%;
+    transform: none;
+    background-position: right bottom;
+    opacity: 0.72;
+  }
+
+  .about-page .shortcard {
+    padding: 28px 14px 40px;
+  }
+
+  .about-page .flex-container-button {
+    gap: 12px;
+    padding-bottom: 22px;
+  }
+
+  .about-page .buttonLogo,
+  .about-page .buttonLogo.active {
+    width: 72px;
+    height: 72px;
+    padding: 10px;
+  }
+
+  .about-page .affiliate-description {
+    gap: 20px;
+    padding: clamp(20px, 5vw, 32px);
+  }
+}
+
+@media (max-width: 520px) {
+  .about-page .bitdsul-team-grid,
+  .about-page .bitdsul-activity-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-page .bitdsul-member-card {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .about-page .bitdsul-member-photo {
+    flex-basis: 68px;
+    width: 68px;
+    height: 68px;
+  }
+
+  .about-page .bitdsul-activity-card img {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 380px) {
+  .about-page .wrapper {
+    padding-inline: 10px;
+  }
+
+  .about-page .promo-banner-2 {
+    min-height: 340px;
+    padding-inline: 18px;
+  }
+
+  .about-page .promo-text-2 {
+    max-width: 100%;
+  }
+
+  .about-page .promo-text-2 h2 {
+    font-size: 40px;
+  }
+
+  .about-page .buttonLogo,
+  .about-page .buttonLogo.active {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page .buttonLogo {
+    transition: none;
+  }
+}

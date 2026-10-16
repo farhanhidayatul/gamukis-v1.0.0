@@ -1,0 +1,30 @@
+.game-map {
+  position: relative;
+  transform-origin: top left;
+  background: #102f36;
+
+  /* TAMBAHKAN PROPERTI INI: Memaksa browser merender pixel secara tajam */
+  image-rendering: pixelated;         /* Chrome, Edge, Opera */
+  image-rendering: crisp-edges;        /* Safari */
+  image-rendering: -moz-crisp-edges;   /* Firefox lama */
+}
+
+.game-map__tiles {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.game-map__foreground-row {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 16px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}

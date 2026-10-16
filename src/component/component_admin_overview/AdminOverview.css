@@ -1,0 +1,16 @@
+/* AdminOverview — section wrapper halaman overview admin */
+
+/* Style grid kartu statistik dipindah ke → molecules/OverviewStats.css */
+/* Style kartu statistik dipindah ke → atoms/StatCard.css */
+/* Style banner status dipindah ke → atoms/StatusBanner.css */
+
+.admin-overview {
+  margin-top: 40px;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .admin-overview {
+    margin-top: 28px;
+  }
+}

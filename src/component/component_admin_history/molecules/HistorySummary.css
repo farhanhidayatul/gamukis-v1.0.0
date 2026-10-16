@@ -1,0 +1,12 @@
+.history-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 760px) {
+  .history-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,0 +1,63 @@
+.address-container {
+    display: relative;
+    align-items: center;
+    gap: 5px;
+    padding: 20px 0;
+}
+
+.input-alamat {
+    width: 100%;
+    max-width: 525px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  .label-address {
+    color: grey;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+@media (max-width: 1920px) and (max-height: 1080px) { /* Laptop */
+  .address-container {
+    display: relative;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 0;
+}
+
+  .input-alamat{
+      display: block;
+      width: 93.5%; /* Responsif */
+      height: 10px;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 8px;
+      font-size: 12px;
+      border: 2px solid gray; /* Default border */
+      transition: border-color 0.3s ease;
+      outline: none;
+  }
+  
+  /* Warna label */
+  .label-address {
+      color: grey;
+      font-size: 14px;
+      font-weight: 500;
+  }
+}
+
+@media (max-width: 1024px) { /* Laptop */
+
+}
+
+@media (max-width: 768px) { /* Tablet */
+
+}
+
+@media (max-width: 480px) { /* Mobile */
+
+}

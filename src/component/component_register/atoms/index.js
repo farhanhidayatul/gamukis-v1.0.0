@@ -1,0 +1,11 @@
+export { default as ButtonBack } from '../component_register_asset/buttonBack';
+export { default as ButtonNext } from '../component_register_asset/buttonNext';
+export { default as ButtonRegisterGoogle } from '../component_register_asset/buttonRegisterGoogle';
+export { default as CheckboxJenisKelamin } from '../component_register_asset/checkboxJenisKelamin';
+export { default as InputAlamat } from '../component_register_asset/inputAlamat';
+export { default as InputConfirmPassword } from '../component_register_asset/inputConfirmPassword';
+export { default as InputEmail } from '../component_register_asset/inputEmail';
+export { default as InputNamaSekolah } from '../component_register_asset/inputNamaSekolah';
+export { default as InputPassword } from '../component_register_asset/inputPassword';
+export { default as InputTanggalLahir } from '../component_register_asset/inputTanggalLahir';
+export { default as InputUsername } from '../component_register_asset/inputUsername';

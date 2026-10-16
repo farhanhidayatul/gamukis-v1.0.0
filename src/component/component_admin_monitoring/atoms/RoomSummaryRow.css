@@ -1,0 +1,28 @@
+.room-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #d9e5e3;
+  font: 14px Arial, sans-serif;
+}
+
+.room-summary-row strong {
+  color: #18313a;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.room-summary-row span {
+  color: #6b7b7f;
+}
+
+.room-summary-row__warn {
+  color: #d85e4d;
+  font-weight: 700;
+}
+
+.room-summary-row__ok {
+  color: #176b68;
+  font-weight: 700;
+}

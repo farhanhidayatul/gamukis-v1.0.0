@@ -1,0 +1,78 @@
+.admin-memberships {
+  margin-top: 40px;
+}
+
+.admin-memberships__feedback,
+.admin-memberships__success {
+  margin: 0 0 18px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  font: 14px Arial, sans-serif;
+}
+
+.admin-memberships__success {
+  border-left: 4px solid #3c9a68;
+  background: #edf9f0;
+  color: #21663e;
+}
+
+.admin-memberships__muted {
+  margin: 0 0 14px;
+  color: #8a817c;
+  font: 14px Arial, sans-serif;
+}
+
+.admin-memberships__table-wrap {
+  overflow-x: auto;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.admin-memberships__table-wrap table {
+  min-width: 680px;
+}
+
+.admin-memberships__grant {
+  margin-top: 24px;
+}
+
+.admin-memberships__form {
+  align-items: flex-end;
+}
+
+.admin-memberships__form select {
+  min-width: 190px;
+  max-width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #dedbd7;
+  border-radius: 9px;
+  background: #fff;
+  color: #18313a;
+  font: 14px Arial, sans-serif;
+}
+
+.admin-memberships__form select:focus-visible {
+  outline: 2px solid #5b86f5;
+  outline-offset: 2px;
+}
+
+.admin-memberships__form button:disabled,
+.admin-memberships__table-wrap button:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+
+@media (max-width: 760px) {
+  .admin-memberships {
+    margin-top: 24px;
+  }
+
+  .admin-memberships__form {
+    align-items: stretch;
+  }
+
+  .admin-memberships__form select {
+    width: 100%;
+  }
+}

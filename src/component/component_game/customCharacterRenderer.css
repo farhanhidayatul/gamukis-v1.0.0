@@ -1,0 +1,32 @@
+.sprite-character-action-head-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: var(--idle-frame-x, 0%) var(--idle-frame-y, 0%);
+  background-size: 400% 400%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+
+.sprite-character-preview.direction-back .sprite-character-action-head-sheet {
+  z-index: 3;
+}
+
+.sprite-character-preview.action-walk .sprite-character-action-head-sheet {
+  transform: translateY(var(--idle-body-y, 0px));
+}
+
+.sprite-character-preview.action-walk.direction-left .sprite-character-action-head-sheet {
+  transform: translateY(calc(var(--idle-body-y, 0px) + 2px));
+}
+
+.sprite-character-preview.action-walk.direction-right .sprite-character-action-head-sheet {
+  transform: translateY(calc(var(--idle-body-y, 0px) + 9px));
+}
+
+.sprite-character-preview.action-skill1 .sprite-character-hands {
+  display: none !important;
+}

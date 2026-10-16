@@ -1,0 +1,291 @@
+.affiliate-description {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(150px, 0.34fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 18px 28px;
+  width: min(100%, 1040px);
+  margin: 0 auto;
+  padding: clamp(22px, 4vw, 40px) clamp(20px, 5vw, 48px);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(54, 74, 118, 0.12);
+}
+
+.affiliate-description-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.affiliate-description-eyebrow {
+  color: #71809b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.affiliate-description-heading h2 {
+  margin: 0;
+  color: #25345a;
+  font-size: clamp(22px, 3vw, 30px);
+}
+
+.affiliate-description-category {
+  color: #368ed2;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.affiliate-description p {
+  margin: 0;
+  color: #536078;
+  font-size: clamp(14px, 1.6vw, 16px);
+  line-height: 1.75;
+}
+
+.affiliate-photo {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 4px 0 0;
+}
+
+.affiliate-photo-placeholder {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 180px;
+  aspect-ratio: 16 / 7;
+  padding: 24px;
+  border: 2px dashed #b8c8e2;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f4f8ff, #eef6ff);
+  color: #71809b;
+  text-align: center;
+}
+
+.affiliate-photo-placeholder svg {
+  width: 38px;
+  height: 38px;
+  fill: none;
+  stroke: #7d9bc8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.affiliate-photo-placeholder strong {
+  color: #405477;
+  font-size: 15px;
+}
+
+.affiliate-photo-placeholder span,
+.affiliate-photo figcaption {
+  font-size: 13px;
+}
+
+.affiliate-photo figcaption {
+  margin-top: 8px;
+  color: #71809b;
+  text-align: center;
+}
+
+.bitdsul-activities {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.bitdsul-activity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.bitdsul-activity-card {
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid #e7edf7;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(54, 74, 118, 0.07);
+}
+
+.bitdsul-activity-card img {
+  display: block;
+  width: 100%;
+  height: clamp(190px, 28vw, 330px);
+  object-fit: contain;
+  background: #f2f5fa;
+}
+
+.bitdsul-activity-card figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px 16px;
+  color: #536078;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.bitdsul-activity-card figcaption span {
+  color: #368ed2;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bitdsul-team {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.bitdsul-team-heading {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.bitdsul-team-heading h3 {
+  margin: 7px 0;
+  color: #25345a;
+  font-size: clamp(20px, 2.5vw, 26px);
+}
+
+.bitdsul-team-heading p {
+  color: #71809b;
+  font-size: 14px;
+}
+
+.bitdsul-team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.bitdsul-member-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e7edf7;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #fff, #f8fbff);
+  box-shadow: 0 6px 18px rgba(54, 74, 118, 0.07);
+}
+
+.bitdsul-member-photo {
+  flex: 0 0 76px;
+  width: 76px;
+  height: 76px;
+  overflow: hidden;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background-color: #eaf1fb;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 0 2px #fbd249;
+}
+
+.bitdsul-member-details {
+  min-width: 0;
+}
+
+.bitdsul-member-number {
+  color: #368ed2;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bitdsul-member-details h4 {
+  margin: 3px 0;
+  color: #25345a;
+  font-size: 15px;
+}
+
+.affiliate-description .bitdsul-member-details p,
+.bitdsul-member-bio {
+  display: block;
+  margin: 0;
+  color: #71809b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.bitdsul-member-bio {
+  margin-top: 5px;
+  color: #536078;
+}
+
+.bitdsul-member-linkedin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 9px;
+  color: #2877c7;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.bitdsul-member-linkedin:hover,
+.bitdsul-member-linkedin:focus-visible {
+  color: #174d8b;
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .affiliate-description {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 22px 20px;
+    border-radius: 16px;
+  }
+
+  .affiliate-description-heading {
+    gap: 4px;
+  }
+
+  .affiliate-photo-placeholder {
+    min-height: 150px;
+    aspect-ratio: 4 / 3;
+    padding: 18px;
+  }
+
+  .bitdsul-team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .bitdsul-activity-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .bitdsul-activity-card img {
+    height: 230px;
+  }
+
+  .bitdsul-member-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .bitdsul-member-photo {
+    flex-basis: 68px;
+    width: 68px;
+    height: 68px;
+  }
+}
