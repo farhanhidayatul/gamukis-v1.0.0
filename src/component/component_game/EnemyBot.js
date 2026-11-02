@@ -224,7 +224,12 @@ const getDefaultName = (type) => {
 };
 
 const EnemyBot = ({ bot, onDeathComplete }) => {
-  const isBotValid = Boolean(bot && typeof bot.x === 'number' && typeof bot.y === 'number');
+  const isBotValid = Boolean(
+    bot &&
+    Number.isFinite(bot.x) &&
+    Number.isFinite(bot.y) &&
+    !(bot.x === 0 && bot.y === 0)
+  );
   const rawHealth = isBotValid ? bot.health : 3;
   const rawState = isBotValid ? bot.state : 'idle';
   const rawIsDying = isBotValid ? Boolean(bot.isDying) : false;

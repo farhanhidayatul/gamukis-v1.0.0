@@ -2,18 +2,11 @@
   margin-top: 40px;
 }
 
-.admin-memberships__feedback,
-.admin-memberships__success {
+.admin-memberships__feedback {
   margin: 0 0 18px;
   padding: 13px 16px;
   border-radius: 12px;
   font: 14px Arial, sans-serif;
-}
-
-.admin-memberships__success {
-  border-left: 4px solid #3c9a68;
-  background: #edf9f0;
-  color: #21663e;
 }
 
 .admin-memberships__muted {
@@ -27,6 +20,26 @@
   margin: 0;
   padding: 0;
   box-shadow: none;
+}
+
+.admin-memberships__header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-memberships__header-row h3 {
+  margin: 0;
+}
+
+.admin-memberships__actions-cell {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .admin-memberships__table-wrap table {

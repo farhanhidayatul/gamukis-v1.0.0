@@ -1,0 +1,37 @@
+.character-slot-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid #cbd5e1;
+  font-size: 11px;
+  color: #475569;
+}
+
+.character-slot-info.full {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+.slot-label {
+  color: #64748b;
+}
+
+.slot-badge strong {
+  color: #2563eb;
+}
+
+.character-slot-info.full .slot-badge strong {
+  color: #dc2626;
+}
+
+.slot-warning {
+  background: #ef4444;
+  color: white;
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  font-weight: 700;
+}

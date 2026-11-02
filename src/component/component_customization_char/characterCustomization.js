@@ -1,11 +1,18 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import characterArtwork from '../../images/asset_background_anime.png';
 import CategoryTab from './atoms/CategoryTab';
 import HairStyleButton from './atoms/HairStyleButton';
 import SwatchButton from './atoms/SwatchButton';
 import CharacterPreview from './molecules/CharacterPreview';
 import ClothingOptionButton from './atoms/ClothingOptionButton';
+import TemplateGallery from './molecules/TemplateGallery';
+import {
+  fetchCharacterTemplates,
+  createCharacter,
+  updateCharacter,
+  setActiveCharacter
+} from '../../database/characterApi';
 
 // Hair style 1
 import hair1MaleBlack from '../../images/asset_game/character/hair/hair_1_male_black.png';
@@ -64,8 +71,6 @@ const makeActionSpriteMap = (context, action, type) => Object.fromEntries(contex
 }));
 
 const maleIdleSprites = {
-  // The latest shirt artwork is stored in the full 4×4 directional sheets.
-  // Keep pants and shoes on their existing preview assets.
   shirt: makeIdleSpriteMap(maleIdleShirtContext, 'shirt', 'sheet'),
   pants: makeIdleSpriteMap(maleIdlePantsContext, 'pants'),
   shoes: makeIdleSpriteMap(maleIdleShoesContext, 'shoes')
@@ -159,6 +164,88 @@ const hairSprites = {
 };
 const skinTones = ['#F6D7B5', '#E7C09A', '#C78B5C', '#8A5636'];
 
+// Default static templates fallback in case backend fetch is unavailable
+const DEFAULT_FALLBACK_TEMPLATES = [
+  {
+    templateId: 'warrior-classic',
+    name: 'Pejuang Klasik',
+    description: 'Karakter pejuang dengan setelan api dan sepatu boots hitam.',
+    appearance: {
+      version: 1,
+      gender: 'Laki-laki',
+      hair: 'short',
+      hairColor: '#1D2430',
+      skinTone: '#F6D7B5',
+      outfit: { shirt: 'shirt-fire', pants: 'pants-black', shoes: 'shoes-boots_black' }
+    }
+  },
+  {
+    templateId: 'frost-mage',
+    name: 'Penyihir Es',
+    description: 'Karakter elegan dengan rambut bergelombang dan jubah es.',
+    appearance: {
+      version: 1,
+      gender: 'Laki-laki',
+      hair: 'wave',
+      hairColor: '#3B82F6',
+      skinTone: '#F6D7B5',
+      outfit: { shirt: 'shirt-ice', pants: 'pants-light_gray', shoes: 'shoes-sneakers_blue' }
+    }
+  },
+  {
+    templateId: 'forest-ranger',
+    name: 'Penjelajah Hutan',
+    description: 'Karakter penjelajah dengan sanggul rambut coklat dan celana cargo.',
+    appearance: {
+      version: 1,
+      gender: 'Laki-laki',
+      hair: 'bun',
+      hairColor: '#F39E4E',
+      skinTone: '#E7C09A',
+      outfit: { shirt: 'shirt-camo', pants: 'pants-green_cargo', shoes: 'shoes-boots_brown' }
+    }
+  },
+  {
+    templateId: 'purple-knight',
+    name: 'Ksatria Ungu',
+    description: 'Karakter berwibawa dengan rambut bob ungu dan jubah ungu.',
+    appearance: {
+      version: 1,
+      gender: 'Laki-laki',
+      hair: 'bob',
+      hairColor: '#7B5EF3',
+      skinTone: '#F6D7B5',
+      outfit: { shirt: 'shirt-purple', pants: 'pants-brown', shoes: 'shoes-low_red' }
+    }
+  },
+  {
+    templateId: 'shadow-ninja',
+    name: 'Ninja Api',
+    description: 'Karakter lincah berambut merah dengan setelan api dan sepatu hitam.',
+    appearance: {
+      version: 1,
+      gender: 'Laki-laki',
+      hair: 'short',
+      hairColor: '#EF4444',
+      skinTone: '#C78B5C',
+      outfit: { shirt: 'shirt-fire', pants: 'pants-black', shoes: 'shoes-low_black' }
+    }
+  },
+  {
+    templateId: 'novice-adventurer',
+    name: 'Petualang Pemula',
+    description: 'Karakter standar siap bertualang di dunia Gamukis.',
+    appearance: {
+      version: 1,
+      gender: 'Laki-laki',
+      hair: 'bun',
+      hairColor: '#1D2430',
+      skinTone: '#F6D7B5',
+      outfit: { shirt: 'shirt-original', pants: 'pants-original', shoes: 'shoes-original' }
+    }
+  }
+];
+
 const loadSavedAppearance = () => {
   try {
     const appearance = JSON.parse(window.localStorage.getItem('gamukis_character_appearance') || '{}');
@@ -192,7 +279,7 @@ const viewDirections = [
   },
   {
     id: 'right', label: 'Samping kanan', symbol: '→', maleBodyRow: 99.5, femaleBodyRow: 100,
-    hairFrame: { row: 3, top: 3, width: 16, height: 14, columnOffsets: [0, 1, 2, 3] }
+    hairFrame: { row: 3, top: 3, width: 16, height: 14, columnOffsets: [0, 1, 2, 4] }
   },
   {
     id: 'back', label: 'Belakang', symbol: '↓', maleBodyRow: 32.86, femaleBodyRow: 100 / 3,
@@ -200,7 +287,7 @@ const viewDirections = [
   },
   {
     id: 'left', label: 'Samping kiri', symbol: '←', maleBodyRow: 66.67, femaleBodyRow: 66.67,
-    hairFrame: { row: 2, top: 2, width: 16, height: 14, columnOffsets: [0, 1, 2, 3] }
+    hairFrame: { row: 2, top: 2, width: 16, height: 14, columnOffsets: [0, 0, 1, 2] }
   }
 ];
 
@@ -221,6 +308,7 @@ const getOptionSet = (activeTab) => {
 
 const CharacterCustomization = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [initialAppearance] = useState(loadSavedAppearance);
   const [activeTab, setActiveTab] = useState('Rambut');
   const [gender, setGender] = useState(initialAppearance.gender || 'Laki-laki');
@@ -233,12 +321,40 @@ const CharacterCustomization = () => {
   const [selectedPants, setSelectedPants] = useState(() => savedOption('pants', pantsOptions, pantsOptions.find(({ id }) => id === 'pants-original') || pantsOptions[0]));
   const [selectedShoes, setSelectedShoes] = useState(() => savedOption('shoes', shoeOptions, shoeOptions.find(({ id }) => id === 'shoes-original') || shoeOptions[0]));
 
+  // Template and character slot state
+  const [templates, setTemplates] = useState(DEFAULT_FALLBACK_TEMPLATES);
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+  const [characterName, setCharacterName] = useState('');
+  const [editingCharacterId, setEditingCharacterId] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [statusMessage, setStatusMessage] = useState(null);
+
+  // Auto-dismiss status message popup after 3.5 seconds
+  useEffect(() => {
+    if (!statusMessage) return undefined;
+    const timer = setTimeout(() => {
+      setStatusMessage(null);
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, [statusMessage]);
+
+  useEffect(() => {
+    fetchCharacterTemplates()
+      .then((serverTemplates) => {
+        if (serverTemplates && serverTemplates.length > 0) {
+          setTemplates(serverTemplates);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const optionSet = useMemo(() => {
     const options = getOptionSet(activeTab);
     return activeTab === 'Rambut' && gender === 'Laki-laki'
       ? options.filter(({ id }) => hairSprites[id])
       : options;
   }, [activeTab, gender]);
+
   const availableHairColorOptions = gender === 'Laki-laki' && hairSprites[selectedHair]
     ? hairColorOptions.filter(({ color }) => hairSprites[selectedHair][color])
     : hairColorOptions;
@@ -267,6 +383,139 @@ const CharacterCustomization = () => {
     setSelectedShoes(option);
   };
 
+  // Apply a template directly to current customization controls
+  const handleSelectTemplate = (template) => {
+    if (!template?.appearance) return;
+    const { appearance } = template;
+
+    setSelectedTemplateId(template.templateId);
+    if (appearance.gender) setGender(appearance.gender);
+    if (appearance.hair) setSelectedHair(appearance.hair);
+    if (appearance.hairColor) setHairColor(appearance.hairColor);
+    if (appearance.skinTone) setSkinTone(appearance.skinTone);
+
+    const outfit = appearance.outfit || {};
+    if (outfit.shirt) {
+      const matched = shirtOptions.find((opt) => opt.id === outfit.shirt || opt.id === `shirt-${outfit.shirt}`);
+      if (matched) setSelectedShirt(matched);
+    }
+    if (outfit.pants) {
+      const matched = pantsOptions.find((opt) => opt.id === outfit.pants || opt.id === `pants-${outfit.pants}`);
+      if (matched) setSelectedPants(matched);
+    }
+    if (outfit.shoes) {
+      const matched = shoeOptions.find((opt) => opt.id === outfit.shoes || opt.id === `shoes-${outfit.shoes}`);
+      if (matched) setSelectedShoes(matched);
+    }
+
+    if (!characterName) {
+      setCharacterName(template.name);
+    }
+  };
+
+  // Load a saved character into editor
+  const handleLoadCharacter = (char) => {
+    if (!char?.data) return;
+    setEditingCharacterId(char.id);
+    setCharacterName(char.name || '');
+
+    const appearance = char.data;
+    if (appearance.gender) setGender(appearance.gender);
+    if (appearance.hair) setSelectedHair(appearance.hair);
+    if (appearance.hairColor) setHairColor(appearance.hairColor);
+    if (appearance.skinTone) setSkinTone(appearance.skinTone);
+
+    const outfit = appearance.outfit || {};
+    if (outfit.shirt) {
+      const matched = shirtOptions.find((opt) => opt.id === outfit.shirt || opt.id === `shirt-${outfit.shirt}`);
+      if (matched) setSelectedShirt(matched);
+    }
+    if (outfit.pants) {
+      const matched = pantsOptions.find((opt) => opt.id === outfit.pants || opt.id === `pants-${outfit.pants}`);
+      if (matched) setSelectedPants(matched);
+    }
+    if (outfit.shoes) {
+      const matched = shoeOptions.find((opt) => opt.id === outfit.shoes || opt.id === `shoes-${outfit.shoes}`);
+      if (matched) setSelectedShoes(matched);
+    }
+    setStatusMessage({ type: 'info', text: `Karakter "${char.name}" dimuat.` });
+  };
+
+  // Load character passed from Profile page via location state
+  useEffect(() => {
+    if (location.state?.character) {
+      handleLoadCharacter(location.state.character);
+    }
+  }, [location.state]);
+
+  const buildAppearancePayload = () => ({
+    version: 1,
+    gender,
+    hair: selectedHair,
+    hairColor,
+    skinTone,
+    outfit: {
+      shirt: selectedShirt?.id,
+      pants: selectedPants?.id,
+      shoes: selectedShoes?.id
+    },
+    shirtSpriteSheets: Object.fromEntries(
+      Object.entries(maleShirtSpriteSets).map(([action, sprites]) => [
+        action,
+        sprites[selectedShirt?.id?.replace(/^shirt-/, '')] || null
+      ])
+    ),
+    layers: ['legs', 'pants', 'shoes', 'body', 'shirt', 'head', 'hands'],
+    frameGrid: { columns: 4, rows: 4, directions: ['front', 'back', 'left', 'right'] },
+    compatibleActions: ['idle', 'walk', 'skill']
+  });
+
+  const handleConfirmAndSave = async () => {
+    setIsSaving(true);
+    setStatusMessage(null);
+
+    const appearancePayload = buildAppearancePayload();
+
+    // 1. Always save to localStorage so inGame.js / guests / instant preview work immediately
+    window.localStorage.setItem('gamukis_character_outfit', JSON.stringify({
+      shirt: selectedShirt?.id,
+      pants: selectedPants?.id,
+      shoes: selectedShoes?.id
+    }));
+    window.localStorage.setItem('gamukis_character_appearance', JSON.stringify(appearancePayload));
+
+    // 2. Try saving to backend if logged in
+    try {
+      const name = characterName.trim() || 'Karakter Saya';
+      if (editingCharacterId) {
+        await updateCharacter(editingCharacterId, name, appearancePayload);
+        setStatusMessage({
+          type: 'success',
+          text: `Karakter "${name}" berhasil dikonfirmasi dan diperbarui di profil Anda!`
+        });
+      } else {
+        const created = await createCharacter(name, appearancePayload);
+        if (created?.character?.id) {
+          setEditingCharacterId(created.character.id);
+          await setActiveCharacter(created.character.id);
+        }
+        setStatusMessage({
+          type: 'success',
+          text: `Karakter "${name}" berhasil dikonfirmasi dan disimpan ke profil Anda!`
+        });
+      }
+    } catch (err) {
+      // If error is 401/403/unauthenticated, guest mode applies seamlessly
+      console.warn('Backend character save skipped or failed:', err.message);
+      setStatusMessage({
+        type: 'success',
+        text: 'Karakter berhasil dikonfirmasi dan disimpan ke profil lokal Anda!'
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const selectedClothing = activeTab === 'Baju' ? selectedShirt : activeTab === 'Celana' ? selectedPants : selectedShoes;
   const selectedHairSprite = gender === 'Laki-laki' && hairSprites[selectedHair]
     ? hairSprites[selectedHair][hairColor] || null
@@ -282,57 +531,87 @@ const CharacterCustomization = () => {
     <div className="character-customization-page">
       <div className="customization-layout">
         <section className="customization-visual">
-          <div className="step-badge">LANGKAH 4 DARI 4</div>
-          <h1>Kustomisasi Karakter</h1>
-          <p>Buat karakter unikmu sendiri untuk memulai petualangan belajar di Gamukis.</p>
+          <div className="step-badge">KUSTOMISASI KARAKTER</div>
+          <h1>Karakter Anda</h1>
+          <p>Pilih template siap pakai atau rancang penampilan unik untuk memulai petualangan di Gamukis.</p>
           <div className="customization-art" aria-hidden="true">
             <img src={characterArtwork} alt="" />
           </div>
 
+          {statusMessage && (
+            <div className={`status-popup-toast status-banner status-${statusMessage.type}`} role="alert">
+              <span className="status-popup-icon">
+                {statusMessage.type === 'success' ? '✓' : statusMessage.type === 'error' ? '✕' : 'ℹ'}
+              </span>
+              <span className="status-popup-text">{statusMessage.text}</span>
+              <button
+                type="button"
+                className="status-popup-close"
+                onClick={() => setStatusMessage(null)}
+                aria-label="Tutup notifikasi"
+              >
+                ×
+              </button>
+            </div>
+          )}
         </section>
 
         <aside className="customization-panel">
           <div className="character-preview-column">
-          <div className="customization-preview">
-            <CharacterPreview
-              gender={gender}
-              selectedHair={selectedHair}
-              hairColor={hairColor}
-              hairSprite={selectedHairSprite}
-              characterSprite={selectedCharacterSprite}
-              viewDirection={selectedViewDirection}
-              viewDirections={viewDirections}
-              onViewDirectionChange={setViewDirectionId}
-              skinTone={skinTone}
-              previewAction={previewAction}
-              clothingSprites={{
-                shirt: selectedShirt?.sprites?.[selectedViewDirection.id],
-                pants: selectedPants?.sprites?.[selectedViewDirection.id],
-                shoes: selectedShoes?.sprites?.[selectedViewDirection.id]
-              }}
-              maleClothingSprites={{
-                shirt: (previewAction === 'idle' ? maleIdleSprites.shirt : maleActionClothingSprites[previewAction]?.shirt)?.[selectedShirt?.id?.replace(/^shirt-/, '')] || maleIdleSprites.shirt[selectedShirt?.id?.replace(/^shirt-/, '')],
-                pants: (previewAction === 'idle' ? maleIdleSprites.pants : maleActionClothingSprites[previewAction]?.pants)?.[selectedPants?.id?.replace(/^pants-/, '')] || maleIdleSprites.pants[selectedPants?.id?.replace(/^pants-/, '')],
-                shoes: (previewAction === 'idle' ? maleIdleSprites.shoes : maleActionClothingSprites[previewAction]?.shoes)?.[selectedShoes?.id?.replace(/^shoes-/, '')] || maleIdleSprites.shoes[selectedShoes?.id?.replace(/^shoes-/, '')]
-              }}
-            />
-          </div>
-          <div className="character-action-controls" role="group" aria-label="Simulasi gerakan karakter">
-            {[{ id: 'idle', label: 'Idle' }, { id: 'walk', label: 'Walk' }, ...Array.from({ length: 6 }, (_, index) => ({ id: `skill${index + 1}`, label: `Skill ${index + 1}`, disabled: index > 0 }))].map((action) => (
-              <button
-                key={action.id}
-                type="button"
-                className={`character-action-button ${previewAction === action.id ? 'selected' : ''}`}
-                aria-pressed={previewAction === action.id}
-                disabled={action.disabled}
-                title={action.disabled ? 'Aset animasi skill ini belum tersedia' : action.id === 'skill1' ? 'Simulasi skill 1 (Fireball)' : `Simulasi ${action.label}`}
-                onClick={() => setPreviewAction(action.id)}
-              >{action.label}</button>
-            ))}
-          </div>
+            <div className="customization-preview">
+              <CharacterPreview
+                gender={gender}
+                selectedHair={selectedHair}
+                hairColor={hairColor}
+                hairSprite={selectedHairSprite}
+                characterSprite={selectedCharacterSprite}
+                viewDirection={selectedViewDirection}
+                viewDirections={viewDirections}
+                onViewDirectionChange={setViewDirectionId}
+                skinTone={skinTone}
+                previewAction={previewAction}
+                clothingSprites={{
+                  shirt: selectedShirt?.sprites?.[selectedViewDirection.id],
+                  pants: selectedPants?.sprites?.[selectedViewDirection.id],
+                  shoes: selectedShoes?.sprites?.[selectedViewDirection.id]
+                }}
+                maleClothingSprites={{
+                  shirt: (previewAction === 'idle' ? maleIdleSprites.shirt : maleActionClothingSprites[previewAction]?.shirt)?.[selectedShirt?.id?.replace(/^shirt-/, '')] || maleIdleSprites.shirt[selectedShirt?.id?.replace(/^shirt-/, '')],
+                  pants: (previewAction === 'idle' ? maleIdleSprites.pants : maleActionClothingSprites[previewAction]?.pants)?.[selectedPants?.id?.replace(/^pants-/, '')] || maleIdleSprites.pants[selectedPants?.id?.replace(/^pants-/, '')],
+                  shoes: (previewAction === 'idle' ? maleIdleSprites.shoes : maleActionClothingSprites[previewAction]?.shoes)?.[selectedShoes?.id?.replace(/^shoes-/, '')] || maleIdleSprites.shoes[selectedShoes?.id?.replace(/^shoes-/, '')]
+                }}
+              />
+            </div>
+            <div className="character-action-controls" role="group" aria-label="Simulasi gerakan karakter">
+              {[{ id: 'idle', label: 'Idle' }, { id: 'walk', label: 'Walk' }, ...Array.from({ length: 6 }, (_, index) => ({ id: `skill${index + 1}`, label: `Skill ${index + 1}`, disabled: index > 0 }))].map((action) => (
+                <button
+                  key={action.id}
+                  type="button"
+                  className={`character-action-button ${previewAction === action.id ? 'selected' : ''}`}
+                  aria-pressed={previewAction === action.id}
+                  disabled={action.disabled}
+                  title={action.disabled ? 'Aset animasi skill ini belum tersedia' : action.id === 'skill1' ? 'Simulasi skill 1 (Fireball)' : `Simulasi ${action.label}`}
+                  onClick={() => setPreviewAction(action.id)}
+                >{action.label}</button>
+              ))}
+            </div>
           </div>
 
           <div className="customization-controls">
+            {/* Optional character name field */}
+            <div className="character-name-input-group">
+              <label htmlFor="char-name-input">Nama Karakter:</label>
+              <input
+                id="char-name-input"
+                type="text"
+                className="char-name-input"
+                placeholder="cth. Kesatria Gamukis"
+                value={characterName}
+                maxLength={50}
+                onChange={(e) => setCharacterName(e.target.value)}
+              />
+            </div>
+
             <div className="customization-tabs" role="tablist" aria-label="Kategori karakter">
               {tabs.map((tab) => (
                 <CategoryTab
@@ -345,131 +624,132 @@ const CharacterCustomization = () => {
             </div>
 
             <div className="customization-section">
-            {activeTab === 'Rambut' && (
-              <>
-                <h2>Jenis Rambut</h2>
-                <div className="option-grid option-grid-hair">
-                  {optionSet.map((option) => (
-                    <HairStyleButton
-                      key={option.id}
-                      option={option}
-                      isSelected={selectedHair === option.id}
-                      sprite={gender === 'Laki-laki' && hairSprites[option.id] ? hairSprites[option.id][hairColor] || null : null}
-                      onSelect={() => handleOptionSelect(option)}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
+              {activeTab === 'Rambut' && (
+                <>
+                  <h2>Jenis Rambut</h2>
+                  <div className="option-grid option-grid-hair">
+                    {optionSet.map((option) => (
+                      <HairStyleButton
+                        key={option.id}
+                        option={option}
+                        isSelected={selectedHair === option.id}
+                        sprite={gender === 'Laki-laki' && hairSprites[option.id] ? hairSprites[option.id][hairColor] || null : null}
+                        onSelect={() => handleOptionSelect(option)}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
 
-            {activeTab !== 'Rambut' && (
-              <>
-                <h2>{activeTab}</h2>
-                <div className="option-grid">
-                  {optionSet.map((option) => (
-                    <ClothingOptionButton
-                      key={option.id}
-                      label={option.label}
-                      category={activeTab.toLowerCase()}
-                      sprite={option.preview || option.sprites?.front || option.sprites?.[Object.keys(option.sprites || {})[0]]}
-                      isSelected={option.id === selectedClothing?.id}
-                      onClick={() => handleOptionSelect(option)}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
+              {activeTab !== 'Rambut' && (
+                <>
+                  <h2>{activeTab}</h2>
+                  <div className="option-grid">
+                    {optionSet.map((option) => (
+                      <ClothingOptionButton
+                        key={option.id}
+                        option={option}
+                        isSelected={selectedClothing?.id === option.id}
+                        onSelect={() => handleOptionSelect(option)}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
 
-            <div className="divider" />
+              <div className="divider" />
 
-            <h2>Gender Character</h2>
-            <div className="gender-toggle" role="group" aria-label="Pilih gender karakter">
-              {['Laki-laki', 'Perempuan'].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  className={`toggle-pill ${gender === item ? 'selected' : ''}`}
-                  onClick={() => {
-                    setGender(item);
-                    if (item === 'Laki-laki') {
-                      const nextHair = hairSprites[selectedHair] ? selectedHair : 'bun';
-                      const nextHairColors = hairSprites[nextHair];
-                      setSelectedHair(nextHair);
-                      if (!nextHairColors[hairColor]) {
-                        const fallbackColor = hairColorOptions.find(({ color }) => nextHairColors[color])?.color;
-                        if (fallbackColor) setHairColor(fallbackColor);
+              <h2>Jenis Kelamin</h2>
+              <div className="gender-selector" role="group" aria-label="Pilih jenis kelamin">
+                {['Laki-laki', 'Perempuan'].map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    className={`gender-button ${gender === item ? 'selected' : ''}`}
+                    onClick={() => {
+                      setGender(item);
+                      if (item === 'Laki-laki') {
+                        if (!hairSprites[selectedHair]) {
+                          setSelectedHair(hairStyles[0].id);
+                        }
+                        const nextHairColors = hairSprites[selectedHair] || hairSprites[hairStyles[0].id];
+                        if (nextHairColors && !nextHairColors[hairColor]) {
+                          const fallbackColor = hairColorOptions.find(({ color }) => nextHairColors[color])?.color;
+                          if (fallbackColor) setHairColor(fallbackColor);
+                        }
                       }
-                    }
-                  }}
-                  aria-pressed={gender === item}
-                >
-                  {item}
-                </button>
-              ))}
+                    }}
+                    aria-pressed={gender === item}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+
+              <div className="divider" />
+
+              <h2>Warna Kulit</h2>
+              <div className="option-grid color-grid">
+                {skinTones.map((tone) => (
+                  <SwatchButton
+                    key={tone}
+                    label={`Warna kulit ${tone}`}
+                    color={tone}
+                    isSelected={skinTone === tone}
+                    onClick={() => setSkinTone(tone)}
+                  />
+                ))}
+              </div>
+
+              <div className="divider" />
+
+              <h2>Warna Rambut</h2>
+              <div className="option-grid color-grid wide-grid">
+                {availableHairColorOptions.map(({ label, color }) => (
+                  <SwatchButton
+                    key={color}
+                    label={`Warna rambut ${label}`}
+                    color={color}
+                    isSelected={hairColor === color}
+                    onClick={() => setHairColor(color)}
+                  />
+                ))}
+              </div>
+
+              <div className="divider" />
+
+              {/* Template Gallery */}
+              <TemplateGallery
+                templates={templates}
+                selectedTemplateId={selectedTemplateId}
+                onSelectTemplate={handleSelectTemplate}
+              />
             </div>
 
-            <div className="divider" />
-
-            <h2>Warna Kulit</h2>
-            <div className="option-grid color-grid">
-              {skinTones.map((tone) => (
-                <SwatchButton
-                  key={tone}
-                  label={`Warna kulit ${tone}`}
-                  color={tone}
-                  isSelected={skinTone === tone}
-                  onClick={() => setSkinTone(tone)}
-                />
-              ))}
-            </div>
-
-            <div className="divider" />
-
-            <h2>Warna Rambut</h2>
-            <div className="option-grid color-grid wide-grid">
-              {availableHairColorOptions.map(({ label, color }) => (
-                <SwatchButton
-                  key={color}
-                  label={`Warna rambut ${label}`}
-                  color={color}
-                  isSelected={hairColor === color}
-                  onClick={() => setHairColor(color)}
-                />
-              ))}
-            </div>
-            </div>
-
-            <button type="button" className="confirm-button" onClick={() => {
-              window.localStorage.setItem('gamukis_character_outfit', JSON.stringify({
-                shirt: selectedShirt?.id,
-                pants: selectedPants?.id,
-                shoes: selectedShoes?.id
-              }));
-              window.localStorage.setItem('gamukis_character_appearance', JSON.stringify({
-                version: 1,
-                gender,
-                hair: selectedHair,
-                hairColor,
-                skinTone,
-                outfit: {
-                  shirt: selectedShirt?.id,
-                  pants: selectedPants?.id,
-                  shoes: selectedShoes?.id
-                },
-                shirtSpriteSheets: Object.fromEntries(
-                  Object.entries(maleShirtSpriteSets).map(([action, sprites]) => [
-                    action,
-                    sprites[selectedShirt?.id?.replace(/^shirt-/, '')] || null
-                  ])
-                ),
-                layers: ['legs', 'pants', 'shoes', 'body', 'shirt', 'head', 'hands'],
-                frameGrid: { columns: 4, rows: 4, directions: ['front', 'back', 'left', 'right'] },
-                compatibleActions: ['idle', 'walk', 'skill']
-              }));
-              navigate('/profile');
-            }}>
-              Konfirmasi Karakter Anda
+            <button
+              type="button"
+              className="confirm-button"
+              disabled={isSaving}
+              onClick={handleConfirmAndSave}
+            >
+              {isSaving ? 'Menyimpan...' : 'Konfirmasi Karakter Anda'}
             </button>
+            <div className="customization-nav-links">
+              <button
+                type="button"
+                className="secondary-nav-button"
+                onClick={() => navigate('/profile')}
+              >
+                Lihat di Profil
+              </button>
+              <button
+                type="button"
+                className="secondary-nav-button"
+                onClick={() => navigate('/inGame')}
+              >
+                Masuk ke Game &rarr;
+              </button>
+            </div>
           </div>
         </aside>
       </div>

@@ -183,4 +183,39 @@ const TiledMapCanvas = () => {
   );
 };
 
+const renderForegroundMap = (canvas, images) => {
+  const context = canvas.getContext('2d');
+  if (!context) return;
+
+  canvas.width = mapWidth;
+  canvas.height = mapHeight;
+  context.imageSmoothingEnabled = false;
+  context.clearRect(0, 0, mapWidth, mapHeight);
+
+  depthSortedLayers.forEach(({ layer, parents }) => {
+    if (layer.visible === false || parents.some((parent) => parent.visible === false)) return;
+    const parentOpacity = parents.reduce((opacity, parent) => opacity * (parent.opacity ?? 1), 1);
+    context.globalAlpha = parentOpacity * (layer.opacity ?? 1);
+
+    const layerOffsetX = (layer.x || 0) * mapTileSize + (layer.offsetx || 0);
+    const layerOffsetY = (layer.y || 0) * mapTileSize + (layer.offsety || 0);
+    const width = layer.width || tiledMap.width;
+
+    layer.data.forEach((rawGid, index) => {
+      const gid = (rawGid >>> 0) & GID_MASK;
+      if (!gid) return;
+      const tileset = findTileset(gid);
+      const image = tileset && images.get(tileset.name);
+      if (!tileset || !image) return;
+
+      const x = (index % width) * mapTileSize + layerOffsetX;
+      const y = Math.floor(index / width) * mapTileSize + layerOffsetY;
+      drawTile(context, image, tileset, rawGid, x, y);
+    });
+  });
+
+  context.globalAlpha = 1;
+};
+
+export { renderMap, renderForegroundMap };
 export default TiledMapCanvas;

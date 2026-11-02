@@ -1,0 +1,236 @@
+/* PlanModal.css - Admin Membership Plan Customization Modal */
+.admin-plan-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: inherit;
+}
+
+.admin-plan-modal__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .admin-plan-modal__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-plan-modal__role-selector {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.admin-plan-modal__role-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-shared-border, #333);
+  background: var(--admin-shared-surface, #1e1e24);
+  color: var(--admin-shared-text, #fff);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.admin-plan-modal__role-btn.is-active {
+  background: #3b82f6;
+  border-color: #60a5fa;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.admin-plan-modal__role-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-plan-modal__input,
+.admin-plan-modal__select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--admin-shared-border, #3a3a44);
+  background: var(--admin-shared-bg, #121217);
+  color: var(--admin-shared-text, #f0f0f5);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.admin-plan-modal__input:focus,
+.admin-plan-modal__select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.admin-plan-modal__input:disabled {
+  background: #202028;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.admin-plan-modal__duration-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-plan-modal__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--admin-shared-muted, #a0a0b0);
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-plan-modal__perks-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--admin-shared-border, #2e2e38);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-plan-modal__perks-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #60a5fa;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-plan-modal__perk-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+}
+
+.admin-plan-modal__perk-row:last-child {
+  border-bottom: none;
+}
+
+.admin-plan-modal__perk-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-plan-modal__perk-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--admin-shared-text, #f0f0f5);
+}
+
+.admin-plan-modal__perk-desc {
+  font-size: 12px;
+  color: var(--admin-shared-muted, #8a8a9a);
+}
+
+.admin-plan-modal__toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.admin-plan-modal__toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.admin-plan-modal__toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #374151;
+  transition: 0.2s;
+  border-radius: 24px;
+}
+
+.admin-plan-modal__toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.admin-plan-modal__toggle-switch input:checked + .admin-plan-modal__toggle-slider {
+  background-color: #10b981;
+}
+
+.admin-plan-modal__toggle-switch input:checked + .admin-plan-modal__toggle-slider:before {
+  transform: translateX(20px);
+}
+
+.admin-plan-modal__custom-perk-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-plan-modal__btn-icon-del {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.admin-plan-modal__btn-icon-del:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.admin-plan-modal__btn-add-perk {
+  align-self: flex-start;
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  border: 1px dashed #3b82f6;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-plan-modal__btn-add-perk:hover {
+  background: rgba(59, 130, 246, 0.25);
+}
+
+.admin-plan-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--admin-shared-border, #2e2e38);
+}

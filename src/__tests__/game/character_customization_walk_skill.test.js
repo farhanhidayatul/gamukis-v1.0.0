@@ -124,10 +124,13 @@ describe('Character Customization - Walk Left & Skill 1 Direction Visual Fixes',
     });
 
     it('should configure skill 1 frame variables for all 4 directions', () => {
-      expect(cssContent).toMatch(/direction-front\s*\{[^}]*--skill-frame-x-0:\s*-4\.2%/);
-      expect(cssContent).toMatch(/direction-back\s*\{[^}]*--skill-frame-x-0:\s*-4\.41%/);
+      expect(cssContent).toMatch(/direction-front\s*\{[^}]*--skill-frame-x-0:\s*-3\.4%/);
+      expect(cssContent).toMatch(/direction-back\s*\{[^}]*--skill-frame-x-0:\s*-4\.59%/);
       expect(cssContent).toMatch(/direction-left\s*\{[^}]*--skill-frame-x-0:\s*-3\.38%/);
       expect(cssContent).toMatch(/direction-right\s*\{[^}]*--skill-frame-x-0:\s*-7\.11%/);
+      expect(cssContent).toMatch(/direction-front\s*\{[^}]*--skill-frame-x-3:\s*108%/);
+      expect(cssContent).toMatch(/direction-back\s*\{[^}]*--skill-frame-x-3:\s*108%/);
+      expect(cssContent).toMatch(/direction-right\s*\{[^}]*--skill-frame-x-3:\s*108%/);
     });
 
     it('should use skill frame variables in character-action-frames keyframe', () => {
@@ -140,7 +143,13 @@ describe('Character Customization - Walk Left & Skill 1 Direction Visual Fixes',
     });
 
     it('should synchronize body and shirt translation in action-skill1 without idle offset drift', () => {
-      expect(cssContent).toMatch(/\.sprite-character-preview\.action-skill1\s+\.sprite-character-shirt-part\s*\{[^}]*transform:\s*translate3d\(0px,\s*var\(--idle-body-y,\s*0px\),\s*0\)\s*scale\(1\.1\)\s*!important/);
+      expect(cssContent).toMatch(/\.sprite-character-preview\.action-skill1\s+\.sprite-character-shirt-part\s*\{[^}]*transform:\s*translate3d\(var\(--skill-shirt-shift-x,\s*0px\),\s*var\(--idle-body-y,\s*0px\),\s*0\)\s*scale\(1\.1\)\s*!important/);
+      expect(cssContent).toMatch(/@keyframes\s+character-action-frames\s*\{[\s\S]*?--skill-shirt-shift-x:\s*var\(--skill-shirt-shift-x-0/);
+    });
+
+    it('should align legs and pants with shirt using --skill-legs-shift-x in action-skill1', () => {
+      expect(cssContent).toMatch(/\.sprite-character-preview\.action-skill1\s+\.sprite-character-pants-part[\s\S]*?var\(--skill-legs-shift-x,\s*0px\)/);
+      expect(cssContent).toMatch(/@keyframes\s+character-action-frames\s*\{[\s\S]*?--skill-legs-shift-x:\s*var\(--skill-legs-shift-x-0/);
     });
 
     it('should align head and hair across all 4 directions in action-skill1', () => {
@@ -171,20 +180,15 @@ describe('Character Customization - Walk Left & Skill 1 Direction Visual Fixes',
     });
   });
 
-  describe('4. Skill 1 Front View Cleanliness - No Stray Idle Cuff Pixels', () => {
-    const frontFireballShirts = [
-      'skill/fireball/shirt/camo/fireball_shirt_camo_sheet.png',
-      'skill/fireball/shirt/fire/fireball_shirt_fire_sheet.png',
-      'skill/fireball/shirt/ice/fireball_shirt_ice_sheet.png',
-      'skill/fireball/shirt/original/fireball_shirt_original_sheet.png',
-      'skill/fireball/shirt/purple/fireball_shirt_purple_sheet.png',
+  describe('4. Skill 1 Front View Cleanliness - No Stray Idle Cuff Pixels in Body Base Sheets', () => {
+    const frontFireballBodies = [
       'skill/fireball/char_male_use_skill_fireball_body_color_1.png',
       'skill/fireball/char_male_use_skill_fireball_body_color_2.png',
       'skill/fireball/char_male_use_skill_fireball_body_color_3.png',
       'skill/fireball/char_male_use_skill_fireball_body_color_4.png'
     ];
 
-    frontFireballShirts.forEach((relPath) => {
+    frontFireballBodies.forEach((relPath) => {
       it(`fireball asset ${relPath} should contain 0 stray idle cuff pixels in row 0 (front) col 0 wings`, () => {
         const fullPath = path.join(frontendImagesDir, relPath);
         expect(fs.existsSync(fullPath)).toBe(true);

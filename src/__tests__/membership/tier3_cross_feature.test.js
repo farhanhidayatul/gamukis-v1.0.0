@@ -26,6 +26,25 @@ import {
   setupMockStorage
 } from './helpers/testHarness';
 
+const mockFirebaseAuth = { currentUser: null };
+const mockFirebaseAuthListeners = new Set();
+const mockObserveAuthState = jest.fn((callback) => {
+  mockFirebaseAuthListeners.add(callback);
+  callback(mockFirebaseAuth.currentUser);
+  return () => mockFirebaseAuthListeners.delete(callback);
+});
+
+jest.mock('../../database/firebaseAuth', () => ({
+  __esModule: true,
+  auth: mockFirebaseAuth,
+  observeAuthState: mockObserveAuthState,
+  onAuthStateChanged: jest.fn((_auth, callback) => {
+    mockFirebaseAuthListeners.add(callback);
+    callback(mockFirebaseAuth.currentUser);
+    return () => mockFirebaseAuthListeners.delete(callback);
+  })
+}));
+
 const MembershipPlans = loadComponent('../../../pages/membershipPlans');
 const MembershipDashboard = loadComponent('../../../pages/membershipDashboard');
 
@@ -34,6 +53,8 @@ describe('Tier 3: Cross-Feature Interactions (R1, R2, R3)', () => {
 
   afterEach(() => {
     if (mockFetch) mockFetch.restore();
+    mockFirebaseAuth.currentUser = null;
+    mockFirebaseAuthListeners.clear();
     jest.clearAllMocks();
   });
 
@@ -238,7 +259,30 @@ describe('Tier 3: Cross-Feature Interactions (R1, R2, R3)', () => {
     expect(token).toBeNull();
   });
 
-  it('3.8 should include resolved token in both plans and dashboard requests', async () => {
+  it('3.8 should prefer the active Firebase token over a stored manual token', async () => {
+    setupMockStorage({ gamukis_manual_token: 'stale_manual_token' });
+    const firebaseUser = {
+      getIdToken: jest.fn(async () => 'current_firebase_token')
+    };
+    mockFirebaseAuth.currentUser = firebaseUser;
+
+    await expect(getAuthToken()).resolves.toBe('current_firebase_token');
+    expect(firebaseUser.getIdToken).toHaveBeenCalledTimes(1);
+  });
+
+  it('3.9 should surface Firebase token errors without falling back to a manual token', async () => {
+    setupMockStorage({ gamukis_manual_token: 'stale_manual_token' });
+    const tokenError = new Error('Firebase token refresh failed');
+    mockFirebaseAuth.currentUser = {
+      getIdToken: jest.fn(async () => {
+        throw tokenError;
+      })
+    };
+
+    await expect(getAuthToken()).rejects.toBe(tokenError);
+  });
+
+  it('3.10 should include resolved token in both plans and dashboard requests', async () => {
     setupMockStorage({ gamukis_manual_token: 'dual_auth_token_456' });
     mockFetch = setupMockFetch({
       '/memberships/plans': { status: 200, data: { plans: mockSiswaPlans } },
@@ -253,7 +297,7 @@ describe('Tier 3: Cross-Feature Interactions (R1, R2, R3)', () => {
   });
 
   itIf(Boolean(MembershipPlans && MembershipDashboard))(
-    '3.9 should synchronize active plan indicator on Plans page with Dashboard title',
+    '3.11 should synchronize active plan indicator on Plans page with Dashboard title',
     async () => {
       setupMockStorage({ gamukis_manual_token: 'test_token' });
       mockFetch = setupMockFetch({
@@ -283,7 +327,7 @@ describe('Tier 3: Cross-Feature Interactions (R1, R2, R3)', () => {
   );
 
   itIf(Boolean(MembershipPlans && MembershipDashboard))(
-    '3.10 should synchronize pending order banner on Dashboard with Plans page action button',
+    '3.12 should synchronize pending order banner on Dashboard with Plans page action button',
     async () => {
       setupMockStorage({ gamukis_manual_token: 'test_token' });
       mockFetch = setupMockFetch({

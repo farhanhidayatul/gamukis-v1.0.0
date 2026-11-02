@@ -2,10 +2,30 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './timer.css';
 
-const Timer = ({ initialMinutes = 0, initialSeconds = 0, onTimeUp, onWarning, warningThreshold = 30 }) => {
+const Timer = ({
+  initialMinutes = 0,
+  initialSeconds = 0,
+  gameStartedAt = null,
+  durationMs = 5 * 60 * 1000,
+  onTimeUp,
+  onWarning,
+  warningThreshold = 30
+}) => {
   const initialTotalSeconds = initialMinutes * 60 + initialSeconds;
   const initialTotalSecondsRef = useRef(initialTotalSeconds);
-  const deadlineRef = useRef(Date.now() + initialTotalSeconds * 1000);
+  const deadlineRef = useRef(
+    gameStartedAt && Number.isFinite(Number(gameStartedAt))
+      ? Number(gameStartedAt) + Number(durationMs)
+      : Date.now() + initialTotalSeconds * 1000
+  );
+
+  // Update deadline if gameStartedAt updates
+  useEffect(() => {
+    if (gameStartedAt && Number.isFinite(Number(gameStartedAt))) {
+      deadlineRef.current = Number(gameStartedAt) + Number(durationMs);
+    }
+  }, [gameStartedAt, durationMs]);
+
   const onTimeUpRef = useRef(onTimeUp);
   const onWarningRef = useRef(onWarning);
   const lastWarnedSecondRef = useRef(null);
@@ -18,9 +38,10 @@ const Timer = ({ initialMinutes = 0, initialSeconds = 0, onTimeUp, onWarning, wa
   useEffect(() => {
     let hasFinished = false;
     const updateTimer = () => {
+      const remainingMs = Math.max(0, deadlineRef.current - Date.now());
       const nextRemainingSeconds = Math.max(
         0,
-        Math.ceil((deadlineRef.current - Date.now()) / 1000)
+        Math.ceil(remainingMs / 1000)
       );
       setRemainingSeconds(nextRemainingSeconds);
       setIsTimeAlmostUp(nextRemainingSeconds <= initialTotalSecondsRef.current / 2);
@@ -41,7 +62,7 @@ const Timer = ({ initialMinutes = 0, initialSeconds = 0, onTimeUp, onWarning, wa
       }
     };
 
-    const timer = window.setInterval(updateTimer, 250);
+    const timer = window.setInterval(updateTimer, 100);
     updateTimer();
 
     return () => window.clearInterval(timer);

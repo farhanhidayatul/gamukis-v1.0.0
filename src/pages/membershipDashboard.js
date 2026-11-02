@@ -109,7 +109,9 @@ const MembershipDashboard = () => {
   const [cancelling, setCancelling] = useState(false);
   const [retryingPayment, setRetryingPayment] = useState(false);
   const [paymentRetryError, setPaymentRetryError] = useState('');
+  const cancelDialogRef = useRef(null);
   const cancelButtonRef = useRef(null);
+  const cancelDialogOpenerRef = useRef(null);
   const accountSignature = [
     auth?.currentUser?.uid || auth?.currentUser?.email || 'anonymous',
     readManualUser()?.id || readManualUser()?.email || 'manual'
@@ -196,13 +198,15 @@ const MembershipDashboard = () => {
       setReloadKey((value) => value + 1);
     };
 
-    window.addEventListener('gamukis-manual-auth-change', refreshForAccountChange);
-    const unsubscribe = observeAuthState((user) => {
+    const handleAuthUser = (user) => {
       const nextFirebaseAccount = user?.uid || user?.email || null;
       if (firebaseAccountRef.current === nextFirebaseAccount) return;
       firebaseAccountRef.current = nextFirebaseAccount;
       refreshForAccountChange();
-    });
+    };
+
+    window.addEventListener('gamukis-manual-auth-change', refreshForAccountChange);
+    const unsubscribe = observeAuthState(handleAuthUser);
     return () => {
       window.removeEventListener('gamukis-manual-auth-change', refreshForAccountChange);
       unsubscribe?.();
@@ -210,13 +214,41 @@ const MembershipDashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (showCancelDialog) cancelButtonRef.current?.focus();
+    if (!showCancelDialog) return undefined;
+    cancelButtonRef.current?.focus();
+    return () => {
+      const opener = cancelDialogOpenerRef.current;
+      if (opener?.isConnected) opener.focus();
+    };
   }, [showCancelDialog]);
 
   useEffect(() => {
     if (!showCancelDialog) return undefined;
     const handleEscape = (event) => {
       if (event.key === 'Escape' && !cancelling) setShowCancelDialog(false);
+      if (event.key !== 'Tab') return;
+
+      const dialog = cancelDialogRef.current;
+      if (!dialog) return;
+      const focusable = dialog.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const focusIsOutsideDialog = !dialog.contains(document.activeElement);
+      if (event.shiftKey && (document.activeElement === first || focusIsOutsideDialog)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || focusIsOutsideDialog)) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
@@ -341,7 +373,8 @@ const MembershipDashboard = () => {
                   </button>
                 )}
                 {isPaidMembership && (
-                  <button className="membership-dashboard-button membership-dashboard-button-danger" type="button" onClick={() => {
+                  <button className="membership-dashboard-button membership-dashboard-button-danger" type="button" onClick={(event) => {
+                    cancelDialogOpenerRef.current = event.currentTarget;
                     setCancelError('');
                     setShowCancelDialog(true);
                   }}>
@@ -502,11 +535,13 @@ const MembershipDashboard = () => {
           }}
         >
           <section
+            ref={cancelDialogRef}
             className="membership-dashboard-modal"
             role="dialog"
             aria-modal="true"
             aria-labelledby="membership-cancel-title"
             aria-describedby="membership-cancel-description"
+            tabIndex="-1"
           >
             <button
               ref={cancelButtonRef}

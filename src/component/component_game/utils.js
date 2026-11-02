@@ -94,9 +94,21 @@ export const getRandomSafeSpot = (mapData) => {
     if (candidates.length) return randomFromArray(candidates);
   }
 
-  return randomFromArray([
-    { x: 8, y: 5 }, { x: 12, y: 5 }, { x: 16, y: 5 }, { x: 20, y: 5 },
-    { x: 8, y: 8 }, { x: 12, y: 8 }, { x: 16, y: 8 }, { x: 20, y: 8 },
-    { x: 8, y: 11 }, { x: 12, y: 11 }, { x: 16, y: 11 }, { x: 20, y: 11 },
-  ]);
+  const fallbackSafeSpots = [
+    { x: 12, y: 12 },
+    { x: 16, y: 11 },
+    { x: 20, y: 11 },
+    { x: 22, y: 16 },
+    { x: 15, y: 20 },
+    { x: 26, y: 18 },
+    { x: 30, y: 16 },
+    { x: 20, y: 24 }
+  ];
+
+  if (mapData) {
+    const validWalkable = fallbackSafeSpots.filter((s) => !isSolid(s.x, s.y, mapData));
+    if (validWalkable.length) return randomFromArray(validWalkable);
+  }
+
+  return randomFromArray(fallbackSafeSpots);
 };

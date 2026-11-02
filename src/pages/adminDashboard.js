@@ -182,7 +182,7 @@ const AdminDashboard = ({ section = "overview" }) => {
           )}
           {activeSection === "memberships" && <AdminMemberships />}
           {activeSection === "history" && (
-            <AdminHistory histories={histories} isLoading={isLoading} />
+            <AdminHistory histories={histories} setHistories={setHistories} isLoading={isLoading} />
           )}
         </section>
       </main>

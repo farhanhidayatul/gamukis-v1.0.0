@@ -32,16 +32,22 @@ const Camera = ({ player, mapWidth, mapHeight, tileSize, zoom = 2, children }) =
   const scaledMapWidth = (mapWidth || 0) * zoom;
   const scaledMapHeight = (mapHeight || 0) * zoom;
   const scaledTileSize = (tileSize || 0) * zoom;
-  const maxCameraX = Math.max(scaledMapWidth - (viewportSize.width || 0), 0);
-  const maxCameraY = Math.max(scaledMapHeight - (viewportSize.height || 0), 0);
-  const playerX = (player && typeof player.x === 'number' && !isNaN(player.x)) ? player.x : 0;
-  const playerY = (player && typeof player.y === 'number' && !isNaN(player.y)) ? player.y : 0;
-  const cameraX = player
-    ? Math.min(Math.max(playerX * scaledTileSize - (viewportSize.width || 0) / 2 + scaledTileSize / 2, 0), maxCameraX)
-    : 0;
-  const cameraY = player
-    ? Math.min(Math.max(playerY * scaledTileSize - (viewportSize.height || 0) / 2 + scaledTileSize / 2, 0), maxCameraY)
-    : 0;
+
+  // Use measured viewport or fallback to window dimensions to prevent initial 0x0 glitch
+  const currentVpWidth = viewportSize.width || (typeof window !== 'undefined' ? window.innerWidth : 800);
+  const currentVpHeight = viewportSize.height || (typeof window !== 'undefined' ? window.innerHeight : 600);
+
+  const maxCameraX = Math.max(scaledMapWidth - currentVpWidth, 0);
+  const maxCameraY = Math.max(scaledMapHeight - currentVpHeight, 0);
+
+  // Fallback to island center (12, 12) rather than ocean (0, 0)
+  const defaultSpawnGridX = 12;
+  const defaultSpawnGridY = 12;
+  const playerX = (player && typeof player.x === 'number' && !isNaN(player.x)) ? player.x : defaultSpawnGridX;
+  const playerY = (player && typeof player.y === 'number' && !isNaN(player.y)) ? player.y : defaultSpawnGridY;
+
+  const cameraX = Math.min(Math.max(playerX * scaledTileSize - currentVpWidth / 2 + scaledTileSize / 2, 0), maxCameraX);
+  const cameraY = Math.min(Math.max(playerY * scaledTileSize - currentVpHeight / 2 + scaledTileSize / 2, 0), maxCameraY);
 
   return (
     <div className="game-camera" ref={viewportRef}>

@@ -282,7 +282,7 @@ const VIEW_DIRECTIONS = {
  * Renders the 8 layered components (legs, body, pants, hands, shoes, shirt, head, hair)
  * exactly mapped to character appearance customization, direction, and walk/idle animation.
  */
-export const CustomCharacterRenderer = ({ appearance, direction = 'down', isMoving = false, isSkillActive = false, skillIndex = 0 }) => {
+export const CustomCharacterRenderer = ({ appearance, direction = 'down', isMoving = false, isSkillActive = false, skillIndex = 0, style }) => {
   if (!appearance || typeof appearance !== 'object') return null;
 
   const gender = appearance.gender === 'Perempuan' ? 'Perempuan' : 'Laki-laki';
@@ -367,14 +367,15 @@ export const CustomCharacterRenderer = ({ appearance, direction = 'down', isMovi
       className="Character_custom-avatar-wrapper"
       style={{
         position: 'absolute',
-        top: '-30px',
-        left: '50%',
-        transform: 'translateX(-50%) scale(0.48)',
+        top: '-91px',
+        left: '8px',
+        transform: 'translateX(-50%) scale(0.30)',
         transformOrigin: 'bottom center',
         width: '62px',
         height: '107px',
         pointerEvents: 'none',
-        zIndex: 2
+        zIndex: 2,
+        ...style
       }}
     >
       <div className={`sprite-character-preview action-${previewAction} gender-${gender === 'Laki-laki' ? 'male' : 'female'} hair-${selectedHair} direction-${viewDirection.id}`}>
@@ -405,8 +406,8 @@ export const CustomCharacterRenderer = ({ appearance, direction = 'down', isMovi
                 style={{ backgroundImage: `url(${maleClothingSprites.pants})` }}
               />
             )}
-            {/* 4. Hands Layer */}
-            {previewAction !== 'skill1' && (
+            {/* 4. Hands Layer - shown on idle or walk front/back to prevent side walk clipping */}
+            {gender === 'Laki-laki' && (previewAction === 'idle' || (previewAction === 'walk' && (viewDirection.id === 'front' || viewDirection.id === 'back'))) && (
               <>
                 <span
                   className="sprite-character-hands sprite-character-hand-left"
@@ -440,24 +441,13 @@ export const CustomCharacterRenderer = ({ appearance, direction = 'down', isMovi
                 style={{ backgroundImage: `url(${maleClothingSprites.shirt})` }}
               />
             )}
-            {/* 7. Head Directional Image */}
-            {previewAction === 'walk' && maleWalkSkinSprites[`walk-head-${skinColorIndex}`] ? (
-              <span
-                className="sprite-character-action-head-sheet"
-                aria-hidden="true"
-                style={{ backgroundImage: `url(${maleWalkSkinSprites[`walk-head-${skinColorIndex}`]})` }}
-              />
-            ) : (
-              <img
-                className="sprite-character-head-image"
-                src={previewAction === 'skill1'
-                  ? (maleSkillSkinSprites[`skill1-Head_${viewDirection.id}-${skinColorIndex}`]
-                    || skinSprite(`Head_${viewDirection.id}`, maleHeadsByDirection[viewDirection.id] || maleHeadFront))
-                  : (skinSprite(`Head_${viewDirection.id}`, maleHeadsByDirection[viewDirection.id] || maleHeadFront))}
-                alt=""
-                aria-hidden="true"
-              />
-            )}
+            {/* 7. Head Directional Image - unified with CharacterPreview to prevent atlas head jitter */}
+            <img
+              className="sprite-character-head-image"
+              src={skinSprite(`Head_${viewDirection.id}`, maleHeadsByDirection[viewDirection.id] || maleHeadFront)}
+              alt=""
+              aria-hidden="true"
+            />
           </>
         ) : (
           <>
@@ -474,6 +464,7 @@ export const CustomCharacterRenderer = ({ appearance, direction = 'down', isMovi
         {/* 8. Hair Layer */}
         {hairSprite && (
           <span
+            key={previewAction}
             className="sprite-character-hair"
             style={{
               backgroundImage: `url(${hairSprite})`,
@@ -638,6 +629,11 @@ const Player = ({
   if (!player) return null;
   const { name, coins, color, direction, x, y } = player;
 
+  // Coordinate validity guard: never render uninitialized, NaN, or ocean-void (0, 0) coordinates
+  if (!Number.isFinite(x) || !Number.isFinite(y) || (x === 0 && y === 0) || x < mapData.minX || x > mapData.maxX || y < mapData.minY || y > mapData.maxY) {
+    return null;
+  }
+
   // Determine custom appearance candidate
   const candidateAppearance = appearance || player?.appearance || player?.customization || null;
   const hasAppearanceData = Boolean(
@@ -647,21 +643,19 @@ const Player = ({
     (candidateAppearance.gender || candidateAppearance.hair || candidateAppearance.outfit || candidateAppearance.shirt || candidateAppearance.skin || candidateAppearance.pants || candidateAppearance.shoes)
   );
 
-  // If player appearance is present, NEVER treat as a guest so custom avatars always render
-  const effectiveIsGuest = hasAppearanceData
-    ? false
-    : (isCurrentPlayer
-        ? Boolean(isGuest)
-        : (player?.isGuest !== undefined ? Boolean(player.isGuest) : Boolean(isGuest)));
+  // If player is a guest / unregistered user, they MUST strictly use the default character assets
+  const isGuestPlayer = isCurrentPlayer
+    ? Boolean(isGuest)
+    : (player?.isGuest !== undefined ? Boolean(player.isGuest) : Boolean(isGuest));
 
-  const hasCustomAppearance = !effectiveIsGuest && hasAppearanceData;
+  // Custom wardrobe appearance is strictly for registered accounts; guests always use default character
+  const hasCustomAppearance = !isGuestPlayer && hasAppearanceData;
   const effectiveAppearance = hasCustomAppearance ? candidateAppearance : null;
 
-  // Default guest / unregistered players to the humanoid character (char-man-1.svg / isSvgCharacter)
+  // For default character, color 'man' renders SVG, while palette colors render 16x16 pixel sprite
   const isSvgCharacter = (charColor) => {
     if (hasCustomAppearance) return false;
-    if (effectiveIsGuest || !charColor || charColor === 'man' || charColor === 'guest') return true;
-    return true;
+    return !charColor || charColor === 'man' || charColor === 'guest';
   };
 
   const isSvg = isSvgCharacter(color);
@@ -708,7 +702,7 @@ const Player = ({
 
       <div
         className="Character_name-container"
-        style={hasCustomAppearance ? { top: '-40px', left: '24px', transform: 'translateX(-50%)' } : undefined}
+        style={hasCustomAppearance ? { top: '-38px', left: '8px', transform: 'translateX(-50%)' } : undefined}
       >
         <span className="Character_name">{name}</span>
         <span className="Character_coins">{coins}</span>
@@ -717,7 +711,7 @@ const Player = ({
       {isCurrentPlayer && (
         <div
           className="Character_you-arrow"
-          style={hasCustomAppearance ? { top: '-28px', left: '24px', transform: 'translateX(-50%)' } : undefined}
+          style={hasCustomAppearance ? { top: '-50px', left: '8px', transform: 'translateX(-50%)' } : undefined}
         />
       )}
 

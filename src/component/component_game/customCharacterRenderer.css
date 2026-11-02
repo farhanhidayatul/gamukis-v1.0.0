@@ -30,3 +30,166 @@
 .sprite-character-preview.action-skill1 .sprite-character-hands {
   display: none !important;
 }
+
+/* In-Game Custom Character Avatar Wrapper & Proportional Scaling */
+.game-wrapper .Character.has-custom-appearance {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.game-wrapper .Character.has-custom-appearance .Character_shadow {
+  position: absolute !important;
+  top: 2px !important;
+  left: 8px !important;
+  transform: translateX(-50%) !important;
+  bottom: 0 !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: url('../../images/shadow.png') no-repeat center !important;
+  background-size: 16px 16px !important;
+  display: block !important;
+}
+
+.Character_custom-avatar-wrapper {
+  position: absolute;
+  top: -91px;
+  left: 8px;
+  transform: translateX(-50%) scale(0.30);
+  transform-origin: bottom center;
+  width: 62px;
+  height: 107px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.Character_custom-avatar-wrapper .sprite-character-preview {
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.Character_custom-avatar-wrapper .sprite-character-preview.action-walk .sprite-character-hands {
+  display: none !important;
+}
+
+.game-wrapper .Character.has-custom-appearance .Character_name-container {
+  top: -38px !important;
+  left: 8px !important;
+  transform: translateX(-50%) !important;
+}
+
+.game-wrapper .Character.has-custom-appearance .Character_you-arrow {
+  top: -50px !important;
+  left: 8px !important;
+  transform: translateX(-50%) !important;
+}
+
+/* ========================================================
+   Default Character Assets for Unregistered / Guest Players
+   Backed by original char-man-1.svg, characters.png & shadow.png
+   Calibrated for 16px tile cell: perfectly grounded, no floating
+   ======================================================== */
+
+.game-wrapper .Character:not(.has-custom-appearance) .Character_shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  background: url('../../images/shadow.png') no-repeat center;
+  background-size: 16px 16px;
+  display: block;
+}
+
+/* 1. Default SVG Character (char-man-1.svg) */
+.game-wrapper .Character:not(.has-custom-appearance) .Character_svg {
+  position: absolute;
+  top: -20px;
+  left: 0px;
+  width: 19px;
+  height: 36px;
+  background: url('../../images/char-man-1.svg') no-repeat;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="man"][data-direction="down"] .Character_svg,
+.game-wrapper .Character:not(.has-custom-appearance)[data-direction="down"] .Character_svg {
+  background-position-x: -20px;
+  background-position-y: 0px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="man"][data-direction="up"] .Character_svg,
+.game-wrapper .Character:not(.has-custom-appearance)[data-direction="up"] .Character_svg {
+  background-position-x: -20px;
+  background-position-y: -37px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="man"][data-direction="left"] .Character_svg,
+.game-wrapper .Character:not(.has-custom-appearance)[data-direction="left"] .Character_svg {
+  background-position-x: -20px;
+  background-position-y: -72px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="man"][data-direction="right"] .Character_svg,
+.game-wrapper .Character:not(.has-custom-appearance)[data-direction="right"] .Character_svg {
+  background-position-x: -20px;
+  background-position-y: -110px;
+}
+
+/* 2. Default Pixel Sprite Character (characters.png) */
+.game-wrapper .Character:not(.has-custom-appearance) .Character_sprite {
+  position: absolute;
+  overflow: hidden;
+  top: 0px;
+  left: 0px;
+  width: 16px;
+  height: 16px;
+  background: url('../../images/characters.png') no-repeat;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.game-wrapper .Character:not(.has-custom-appearance)[data-direction="down"] .Character_sprite {
+  background-position-x: 0px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-direction="up"] .Character_sprite {
+  background-position-x: 0px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-direction="left"] .Character_sprite {
+  background-position-x: 0px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-direction="right"] .Character_sprite {
+  background-position-x: -16px;
+}
+
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="blue"] .Character_sprite {
+  background-position-y: 0px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="red"] .Character_sprite {
+  background-position-y: -16px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="orange"] .Character_sprite {
+  background-position-y: -32px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="yellow"] .Character_sprite {
+  background-position-y: -48px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="green"] .Character_sprite {
+  background-position-y: -64px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="purple"] .Character_sprite {
+  background-position-y: -80px;
+}
+
+/* 3. Default Nameplate and Arrow Positioning */
+.game-wrapper .Character:not(.has-custom-appearance) .Character_name-container {
+  top: -28px;
+  left: 8px;
+  transform: translateX(-50%);
+}
+
+.game-wrapper .Character:not(.has-custom-appearance) .Character_you-arrow {
+  top: -16px;
+  left: 8px;
+  transform: translateX(-50%);
+}

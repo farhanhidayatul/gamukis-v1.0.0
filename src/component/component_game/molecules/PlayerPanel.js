@@ -3,16 +3,31 @@ import PlayerColorButton from '../atoms/PlayerColorButton';
 import PlayerHealth from '../atoms/PlayerHealth';
 import PlayerNameInput from '../atoms/PlayerNameInput';
 
-const PlayerPanel = ({ name, onNameChange, health, onChangeColor, isGuest }) => (
+const PlayerPanel = ({
+  name,
+  onNameChange,
+  health,
+  onChangeColor,
+  isGuest,
+  hasRenamed = false
+}) => (
   <div className="player-info">
     <div className="player-info__identity">
       <div className="player-info__main-row">
-        <PlayerNameInput value={name} onChange={onNameChange} editable={isGuest} />
+        <PlayerNameInput
+          value={name}
+          onNameChange={onNameChange}
+          isGuest={isGuest}
+          hasRenamed={hasRenamed}
+        />
       </div>
-      <PlayerHealth health={health} />
-    </div>
-    <div className="player-info__actions">
-      <PlayerColorButton onClick={onChangeColor} />
+      <div className="player-info__sub-row">
+        <PlayerHealth health={health} />
+        {/* Change color button positioned underneath rename, visible only on tablet/mobile */}
+        <div className="player-info__color-action">
+          <PlayerColorButton onClick={onChangeColor} />
+        </div>
+      </div>
     </div>
   </div>
 );

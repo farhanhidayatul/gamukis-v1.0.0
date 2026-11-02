@@ -1,10 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
+  createMembershipPlan,
   getAccessUsers,
   getMembershipPlans,
   grantMembership,
   updateMembershipPlan
 } from "../../database/adminApi";
+import { Toast, useToast } from "../component_admin_shared";
+import PlanModal from "./molecules/PlanModal";
 import "./AdminMemberships.css";
 
 const formatPrice = (price) => new Intl.NumberFormat("id-ID", {
@@ -21,7 +24,11 @@ const AdminMemberships = () => {
   const [selectedPlan, setSelectedPlan] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const { toasts, showToast, dismissToast } = useToast();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPlan, setEditingPlan] = useState(null);
+  const [isModalProcessing, setIsModalProcessing] = useState(false);
 
   const loadAdminData = async () => {
     setLoading(true);
@@ -51,15 +58,47 @@ const AdminMemberships = () => {
     }
   }, [matchingUsers, selectedUser]);
 
+  const handleOpenCreate = () => {
+    setEditingPlan(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (plan) => {
+    setEditingPlan(plan);
+    setIsModalOpen(true);
+  };
+
+  const handleSavePlan = async (payload) => {
+    setIsModalProcessing(true);
+    setError("");
+    try {
+      if (editingPlan) {
+        const response = await updateMembershipPlan(editingPlan.id, payload);
+        const updated = response.plan || { ...editingPlan, ...payload };
+        setPlans((current) => current.map((item) => (item.id === editingPlan.id ? updated : item)));
+        showToast({ message: `Paket ${updated.name} berhasil diperbarui.` });
+      } else {
+        const response = await createMembershipPlan(payload);
+        const created = response.plan || payload;
+        setPlans((current) => [...current, created]);
+        showToast({ message: `Paket ${created.name} berhasil dibuat.` });
+      }
+      setIsModalOpen(false);
+    } catch (err) {
+      setError(err.message || "Gagal menyimpan paket membership.");
+    } finally {
+      setIsModalProcessing(false);
+    }
+  };
+
   const handleToggle = async (plan) => {
     setBusyPlanId(plan.id);
     setError("");
-    setSuccess("");
     try {
       const response = await updateMembershipPlan(plan.id, { isActive: !plan.isActive });
       const updated = response.plan || { ...plan, isActive: !plan.isActive };
       setPlans((current) => current.map((item) => item.id === plan.id ? updated : item));
-      setSuccess(`${plan.name} sekarang ${updated.isActive ? "aktif" : "nonaktif"}.`);
+      showToast({ message: `${plan.name} sekarang ${updated.isActive ? "aktif" : "nonaktif"}.` });
     } catch (err) {
       setError(err.message || "Status paket gagal diperbarui.");
     } finally {
@@ -76,12 +115,11 @@ const AdminMemberships = () => {
     }
     setGranting(true);
     setError("");
-    setSuccess("");
     try {
       await grantMembership({ authType, userId, planCode: selectedPlan });
       const user = matchingUsers.find((item) => item.authType === authType && String(item.id) === userId);
       const plan = activePlans.find((item) => item.code === selectedPlan);
-      setSuccess(`Paket ${plan?.name || selectedPlan} berhasil diberikan kepada ${user?.username || user?.email || userId}.`);
+      showToast({ message: `Paket ${plan?.name || selectedPlan} berhasil diberikan kepada ${user?.username || user?.email || userId}.` });
     } catch (err) {
       setError(err.message || "Paket gagal diberikan.");
     } finally {
@@ -96,27 +134,73 @@ const AdminMemberships = () => {
         {!loading && <span className="admin-pill">{plans.length} Paket</span>}
       </div>
 
+      <Toast toasts={toasts} onDismiss={dismissToast} />
       {error && <p className="admin-alert admin-memberships__feedback" role="alert"><i>!</i><b>{error}</b></p>}
-      {success && <p className="admin-memberships__success" role="status">{success}</p>}
       {loading && <p className="admin-card" role="status">Memuat paket dan pengguna…</p>}
 
       {!loading && <>
         <div className="admin-card">
-          <h3>DAFTAR PAKET</h3>
+          <div className="admin-memberships__header-row">
+            <h3>DAFTAR PAKET</h3>
+            <button
+              type="button"
+              className="admin-btn admin-btn-y"
+              onClick={handleOpenCreate}
+            >
+              + Tambah Paket Baru
+            </button>
+          </div>
           {plans.length === 0 ? <p className="admin-memberships__muted">Belum ada paket membership.</p> : (
             <div className="admin-card admin-tw admin-memberships__table-wrap">
               <table>
-                <thead><tr><th>PAKET</th><th>ROLE</th><th>HARGA</th><th>DURASI</th><th>STATUS</th><th></th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>PAKET</th>
+                    <th>ROLE</th>
+                    <th>HARGA</th>
+                    <th>DURASI</th>
+                    <th>FITUR</th>
+                    <th>STATUS</th>
+                    <th>AKSI</th>
+                  </tr>
+                </thead>
                 <tbody>{plans.map((plan) => (
                   <tr key={plan.id}>
                     <td><b>{plan.name}</b><small>{plan.code}</small></td>
-                    <td>{plan.audience}</td>
+                    <td><span style={{ textTransform: "capitalize" }}>{plan.audience}</span></td>
                     <td>{formatPrice(plan.price)}</td>
                     <td>{plan.durationDays ? `${plan.durationDays} hari` : "Tanpa batas"}</td>
+                    <td>
+                      {plan.features && Object.keys(plan.features).length > 0 ? (
+                        <small style={{ color: "#a0a0b0", display: "block", maxWidth: "200px", lineHeight: "1.3" }}>
+                          {Object.entries(plan.features)
+                            .map(([k, v]) => `${k}: ${v}`)
+                            .slice(0, 2)
+                            .join(", ")}
+                          {Object.keys(plan.features).length > 2 && "…"}
+                        </small>
+                      ) : (
+                        <small style={{ color: "#777" }}>Standar</small>
+                      )}
+                    </td>
                     <td><span className="admin-tag">{plan.isActive ? "aktif" : "nonaktif"}</span></td>
-                    <td><button type="button" className="admin-btn admin-btn-b" onClick={() => handleToggle(plan)} disabled={busyPlanId === plan.id}>
-                      {busyPlanId === plan.id ? "Menyimpan…" : plan.isActive ? "Nonaktifkan" : "Aktifkan"}
-                    </button></td>
+                    <td className="admin-memberships__actions-cell">
+                      <button
+                        type="button"
+                        className="admin-btn admin-btn-b"
+                        onClick={() => handleOpenEdit(plan)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="admin-btn admin-btn-b"
+                        onClick={() => handleToggle(plan)}
+                        disabled={busyPlanId === plan.id}
+                      >
+                        {busyPlanId === plan.id ? "Menyimpan…" : plan.isActive ? "Nonaktifkan" : "Aktifkan"}
+                      </button>
+                    </td>
                   </tr>
                 ))}</tbody>
               </table>
@@ -153,6 +237,14 @@ const AdminMemberships = () => {
           </form>
         </div>
       </>}
+
+      <PlanModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSavePlan}
+        plan={editingPlan}
+        isProcessing={isModalProcessing}
+      />
     </section>
   );
 };

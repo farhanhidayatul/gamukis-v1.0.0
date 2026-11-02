@@ -1,0 +1,87 @@
+.saved-char-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.saved-char-item:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.saved-char-item.active {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.saved-char-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.saved-char-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+.active-badge {
+  background: #10b981;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.saved-char-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.saved-char-btn {
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.saved-char-btn:hover {
+  opacity: 0.85;
+}
+
+.edit-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.activate-btn {
+  background: #10b981;
+  color: white;
+}
+
+.delete-btn {
+  background: #fee2e2;
+  color: #ef4444;
+  padding: 3px 7px;
+}
+
+.delete-btn:hover {
+  background: #ef4444;
+  color: white;
+}

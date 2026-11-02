@@ -204,30 +204,12 @@ const CharacterPreview = ({
                   display: maleClothingSprites.shirt ? 'none' : undefined
                 }}
               />
-              {previewAction === 'skill1' ? (
-                <span
-                  className="sprite-character-part sprite-character-skill-head-part"
-                  aria-hidden="true"
-                  style={{
-                    backgroundImage: `url(${maleActionSkinSprites[`skill1-head-${skinColorIndex}`] || skinSprite(`Head_${viewDirection.id}`, maleHeadsByDirection[viewDirection.id] || maleHeadFront)})`
-                  }}
-                />
-              ) : previewAction === 'walk' && maleActionSkinSprites[`walk-head-${skinColorIndex}`] ? (
-                <span
-                  className="sprite-character-part sprite-character-walk-head-part"
-                  aria-hidden="true"
-                  style={{
-                    backgroundImage: `url(${maleActionSkinSprites[`walk-head-${skinColorIndex}`]})`
-                  }}
-                />
-              ) : (
-                <img
-                  className="sprite-character-head-image"
-                  src={skinSprite(`Head_${viewDirection.id}`, maleHeadsByDirection[viewDirection.id] || maleHeadFront)}
-                  alt=""
-                  aria-hidden="true"
-                />
-              )}
+              <img
+                className="sprite-character-head-image"
+                src={skinSprite(`Head_${viewDirection.id}`, maleHeadsByDirection[viewDirection.id] || maleHeadFront)}
+                alt=""
+                aria-hidden="true"
+              />
             </>
           ) : (
             <span
@@ -238,7 +220,7 @@ const CharacterPreview = ({
               }}
             />
           )}
-          {gender === 'Laki-laki' && previewAction === 'idle' && (
+          {gender === 'Laki-laki' && (previewAction === 'idle' || (previewAction === 'walk' && (viewDirection.id === 'front' || viewDirection.id === 'back'))) && (
             <>
               <span
                 className="sprite-character-hands sprite-character-hand-left"

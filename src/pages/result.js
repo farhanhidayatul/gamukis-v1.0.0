@@ -72,6 +72,8 @@ const Result = () => {
         window.localStorage.removeItem('gamukis_anonymous_game_session');
         window.localStorage.removeItem('gamukis_registered_game_session');
         window.sessionStorage.removeItem('gamukis_game_session_id');
+        window.sessionStorage.removeItem('gamukis_guest_has_renamed');
+        window.sessionStorage.removeItem('gamukis_guest_custom_name');
       } catch (e) {}
     };
 
@@ -295,6 +297,8 @@ const Result = () => {
     if (typeof window !== 'undefined') {
       window.sessionStorage.removeItem('gamukis_game_session_id');
       window.sessionStorage.removeItem('gamukis_last_game_result');
+      window.sessionStorage.removeItem('gamukis_guest_has_renamed');
+      window.sessionStorage.removeItem('gamukis_guest_custom_name');
       try {
         window.localStorage.removeItem('gamukis_anonymous_game_session');
         window.localStorage.removeItem('gamukis_registered_game_session');
@@ -314,6 +318,8 @@ const Result = () => {
     if (typeof window !== 'undefined') {
       window.sessionStorage.removeItem('gamukis_game_session_id');
       window.sessionStorage.removeItem('gamukis_last_game_result');
+      window.sessionStorage.removeItem('gamukis_guest_has_renamed');
+      window.sessionStorage.removeItem('gamukis_guest_custom_name');
       try {
         window.localStorage.removeItem('gamukis_anonymous_game_session');
         window.localStorage.removeItem('gamukis_registered_game_session');

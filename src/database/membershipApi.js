@@ -16,13 +16,9 @@ let cachedAuth = null;
  */
 const getFirebaseAuthInstance = async () => {
   if (cachedAuth) return cachedAuth;
-  try {
-    const fb = await import('./firebaseAuth');
-    cachedAuth = fb.auth || fb.default?.auth || fb;
-    return cachedAuth;
-  } catch (err) {
-    return null;
-  }
+  const fb = await import('./firebaseAuth');
+  cachedAuth = fb.auth || fb.default?.auth || fb;
+  return cachedAuth;
 };
 
 /**
@@ -54,33 +50,31 @@ const getStoredManualToken = () => {
  * @returns {Promise<string|null>}
  */
 const getFirebaseAuthToken = async () => {
-  try {
-    const auth = await getFirebaseAuthInstance();
-    if (auth && auth.currentUser && typeof auth.currentUser.getIdToken === 'function') {
-      const token = await auth.currentUser.getIdToken();
-      if (token) return token;
-    }
-  } catch (err) {
-    // Ignore token acquisition errors
+  const firebaseAuth = await getFirebaseAuthInstance();
+  const user = firebaseAuth?.currentUser;
+  if (!user) return null;
+  if (typeof user.getIdToken !== 'function') {
+    throw new Error('Firebase ID token is unavailable for the signed-in account.');
   }
-  return null;
+  const token = await user.getIdToken();
+  if (!token) throw new Error('Firebase ID token is unavailable for the signed-in account.');
+  return token;
 };
 
 /**
  * Dynamically resolves authentication token:
- * 1. Checks localStorage / sessionStorage for 'gamukis_manual_token'.
- * 2. Checks Firebase currentUser and calls getIdToken().
+ * 1. Uses Firebase currentUser and calls getIdToken() when a Firebase account is active.
+ * 2. Checks localStorage / sessionStorage for 'gamukis_manual_token'.
  * 3. Returns null if unauthenticated.
  * @returns {Promise<string|null>}
  */
 export const getAuthToken = async () => {
+  const firebaseToken = await getFirebaseAuthToken();
+  if (firebaseToken) return firebaseToken;
+
   const manualToken = getStoredManualToken();
   if (manualToken) {
     return manualToken;
-  }
-  const firebaseToken = await getFirebaseAuthToken();
-  if (firebaseToken) {
-    return firebaseToken;
   }
   return null;
 };

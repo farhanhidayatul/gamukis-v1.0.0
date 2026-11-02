@@ -29,6 +29,27 @@ import {
   setupMockStorage
 } from './helpers/testHarness';
 
+global.__mockFirebaseAuth = { currentUser: null };
+global.__mockFirebaseAuthListeners = new Set();
+const mockFirebaseAuth = global.__mockFirebaseAuth;
+const mockFirebaseAuthListeners = global.__mockFirebaseAuthListeners;
+
+jest.mock('../../database/firebaseAuth', () => ({
+  __esModule: true,
+  auth: global.__mockFirebaseAuth,
+  observeAuthState: jest.fn((callback) => {
+    global.__mockFirebaseAuthListeners.add(callback);
+    callback(global.__mockFirebaseAuth.currentUser);
+    return () => global.__mockFirebaseAuthListeners.delete(callback);
+  }),
+  onAuthStateChanged: jest.fn((_auth, callback) => {
+    global.__mockFirebaseAuthListeners.add(callback);
+    callback(global.__mockFirebaseAuth.currentUser);
+    return () => global.__mockFirebaseAuthListeners.delete(callback);
+  })
+}));
+
+const fbAuth = require('../../database/firebaseAuth');
 const MembershipPlans = loadComponent('../../../pages/membershipPlans');
 const MembershipDashboard = loadComponent('../../../pages/membershipDashboard');
 
@@ -37,6 +58,8 @@ describe('Tier 4: Real-World Scenarios (R1, R2, R3)', () => {
 
   afterEach(() => {
     if (mockFetch) mockFetch.restore();
+    mockFirebaseAuth.currentUser = null;
+    mockFirebaseAuthListeners.clear();
     jest.clearAllMocks();
   });
 
@@ -406,6 +429,105 @@ describe('Tier 4: Real-World Scenarios (R1, R2, R3)', () => {
     }
   );
 
+  itIf(Boolean(MembershipDashboard))(
+    'should clear pending membership state when the Firebase account changes',
+    async () => {
+      setupMockStorage({ gamukis_manual_token: 'stale_manual_token' });
+      const firstUser = { uid: 'firebase-alpha', getIdToken: jest.fn(async () => 'firebase-alpha-token') };
+      const secondUser = { uid: 'firebase-beta', getIdToken: jest.fn(async () => 'firebase-beta-token') };
+      mockFirebaseAuth.currentUser = firstUser;
+      mockFetch = setupMockFetch({
+        '/memberships/me': (url, options) => {
+          const data = options.headers.Authorization === 'Bearer firebase-alpha-token'
+            ? mockPendingMembership
+            : mockDefaultSiswaMembership;
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            json: async () => data
+          });
+        },
+        '/memberships/history': { status: 200, data: { history: [] } }
+      });
+
+      const screen = await renderIntoDom(
+        <MemoryRouter>
+          <MembershipDashboard />
+        </MemoryRouter>
+      );
+      expect(screen.queryByText('Lanjutkan pembayaran')).toBeTruthy();
+      expect(mockFetch.calls[0].options.headers.Authorization).toBe('Bearer firebase-alpha-token');
+      mockFirebaseAuth.currentUser = secondUser;
+      const accountChangeCallbacks = fbAuth.observeAuthState.mock.calls.map(([callback]) => callback);
+      expect(accountChangeCallbacks).toHaveLength(1);
+      await act(async () => {
+        for (const callback of accountChangeCallbacks) callback(secondUser);
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(secondUser.getIdToken).toHaveBeenCalled();
+      expect(mockFetch.calls.some((call) => call.options.headers.Authorization === 'Bearer firebase-beta-token')).toBe(true);
+      expect(screen.queryByText('Lanjutkan pembayaran')).toBeNull();
+      expect(screen.queryByText('Menunggu Konfirmasi Pembayaran')).toBeNull();
+      expect(mockFetch.calls.some((call) => call.options.headers.Authorization === 'Bearer firebase-beta-token')).toBe(true);
+      await screen.unmount();
+    }
+  );
+
+  itIf(Boolean(MembershipDashboard))(
+    'should not apply an in-flight membership response after the Firebase account changes',
+    async () => {
+      setupMockStorage({ gamukis_manual_token: 'stale_manual_token' });
+      const firstUser = { uid: 'firebase-alpha', getIdToken: jest.fn(async () => 'firebase-alpha-token') };
+      const secondUser = { uid: 'firebase-beta', getIdToken: jest.fn(async () => 'firebase-beta-token') };
+      mockFirebaseAuth.currentUser = firstUser;
+      let resolveFirstMembership;
+      mockFetch = setupMockFetch({
+        '/memberships/me': (url, options) => {
+          if (options.headers.Authorization === 'Bearer firebase-alpha-token') {
+            return new Promise((resolve) => {
+              resolveFirstMembership = () => resolve({
+                ok: true,
+                status: 200,
+                json: async () => mockPendingMembership
+              });
+            });
+          }
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            json: async () => mockActivePremiumMembership
+          });
+        },
+        '/memberships/history': { status: 200, data: { history: [] } }
+      });
+
+      const screen = await renderIntoDom(
+        <MemoryRouter>
+          <MembershipDashboard />
+        </MemoryRouter>
+      );
+      expect(resolveFirstMembership).toBeDefined();
+
+      mockFirebaseAuth.currentUser = secondUser;
+      const accountChangeCallbacks = fbAuth.observeAuthState.mock.calls.map(([callback]) => callback);
+      expect(accountChangeCallbacks).toHaveLength(1);
+      await act(async () => {
+        for (const callback of accountChangeCallbacks) callback(secondUser);
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(secondUser.getIdToken).toHaveBeenCalled();
+      expect(screen.queryByText('Lanjutkan pembayaran')).toBeNull();
+
+      await act(async () => {
+        resolveFirstMembership();
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(screen.queryByText('Lanjutkan pembayaran')).toBeNull();
+      await screen.unmount();
+    }
+  );
+
 
   // =========================================================================
   // Scenario 5: Expiration Urgency Indicator (<5 days remaining)
@@ -458,6 +580,85 @@ describe('Tier 4: Real-World Scenarios (R1, R2, R3)', () => {
     // Verification: cancel endpoint not invoked without confirmation
     expect(mockFetch.calls).toHaveLength(0);
   });
+
+  itIf(Boolean(MembershipDashboard))(
+    'should trap dialog focus, support Escape, restore opener focus, and block dismissal while cancelling',
+    async () => {
+      setupMockStorage({ gamukis_manual_token: 'test_token' });
+      let resolveCancellation;
+      mockFetch = setupMockFetch({
+        '/memberships/me': { status: 200, data: mockActivePremiumMembership },
+        '/memberships/history': { status: 200, data: { history: mockHistoryList } },
+        '/memberships/cancel': () => new Promise((resolve) => {
+          resolveCancellation = resolve;
+        })
+      });
+
+      const screen = await renderIntoDom(
+        <MemoryRouter>
+          <MembershipDashboard />
+        </MemoryRouter>
+      );
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      const opener = screen.container.querySelector('.membership-dashboard-button-danger');
+      expect(opener).toBeTruthy();
+
+      await fireClick(opener);
+      let dialog = screen.container.querySelector('[role="dialog"]');
+      expect(dialog).toBeTruthy();
+      const dialogButtons = [...dialog.querySelectorAll('button')];
+      const closeButton = dialogButtons[0];
+      const lastButton = dialogButtons[dialogButtons.length - 1];
+      expect(document.activeElement).toBe(closeButton);
+
+      lastButton.focus();
+      await act(async () => {
+        lastButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
+      });
+      expect(document.activeElement).toBe(closeButton);
+
+      closeButton.focus();
+      await act(async () => {
+        closeButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true }));
+      });
+      expect(document.activeElement).toBe(lastButton);
+
+      await act(async () => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+      });
+      expect(screen.container.querySelector('[role="dialog"]')).toBeNull();
+      expect(document.activeElement).toBe(opener);
+
+      await fireClick(opener);
+      dialog = screen.container.querySelector('[role="dialog"]');
+      const confirmButton = [...dialog.querySelectorAll('button')].find((button) => button.textContent.includes('Ya, Batalkan Langganan'));
+      expect(confirmButton).toBeTruthy();
+      await fireClick(confirmButton);
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(resolveCancellation).toBeDefined();
+      expect(confirmButton.disabled).toBe(true);
+
+      await act(async () => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+      });
+      expect(screen.container.querySelector('[role="dialog"]')).toBeTruthy();
+
+      await act(async () => {
+        resolveCancellation({
+          ok: true,
+          status: 200,
+          json: async () => mockCancelResponse
+        });
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(screen.container.querySelector('[role="dialog"]')).toBeNull();
+      await screen.unmount();
+    }
+  );
 
   // =========================================================================
   // Scenario 8: Network Failure & Recovery

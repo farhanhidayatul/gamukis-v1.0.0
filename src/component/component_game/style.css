@@ -79,6 +79,82 @@
   top: 1px;
 }
 
+/* Player Info: Name and Rename Controls */
+.game-wrapper .player-name-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.game-wrapper .player-name-action-row,
+.game-wrapper .player-name-locked-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.game-wrapper .player-name-button {
+  font-size: 14px;
+  height: 40px;
+  padding: 0 12px;
+  background: #ffcc00;
+  border-bottom: 2px solid #b38f00;
+  color: #1a1a1a;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.game-wrapper .player-name-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-wrapper .player-name-display {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+}
+
+.game-wrapper .player-name-input--locked {
+  background: rgba(34, 32, 52, 0.8) !important;
+  color: #a0aec0 !important;
+  border-color: #4a5568 !important;
+  cursor: default;
+}
+
+.game-wrapper .player-name-badge {
+  font-size: 11px;
+  font-weight: bold;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #4a5568;
+  color: #e2e8f0;
+  text-transform: uppercase;
+}
+
+.game-wrapper .player-info__sub-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* Change Color Button: HIDDEN on Desktop (>900px), VISIBLE on Tablet and Mobile (<=900px) */
+.game-wrapper .player-info__color-action {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .game-wrapper .player-info__color-action {
+    display: block;
+    margin-top: 4px;
+  }
+}
+
 /* Characters */
 .game-wrapper .grid-cell {
   position: absolute;

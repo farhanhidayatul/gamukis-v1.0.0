@@ -837,6 +837,18 @@
   initial-value: 0px;
 }
 
+@property --skill-legs-shift-x {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --skill-shirt-shift-x {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 .sprite-character-preview {
   position: relative;
   z-index: 4;
@@ -847,7 +859,18 @@
   transform-origin: center center;
   image-rendering: pixelated;
   --idle-frame-x: 0%;
+  animation: none;
+}
+
+.sprite-character-preview.action-idle {
   animation: character-idle-bob 1.4s steps(1, end) infinite;
+  --idle-head-y: 0px;
+  --idle-body-y: 0px;
+}
+
+.sprite-character-preview.action-idle .sprite-character-hair {
+  background-position: var(--hair-frame-x-0) var(--hair-source-y);
+  transform: translateX(calc(-50% + var(--hair-frame-shift-x-0, 0px))) translateY(calc(var(--idle-head-y, 0px) + var(--hair-frame-shift-y-0, 0px) + var(--hair-head-anchor-y, 0px)));
 }
 
 .sprite-character-preview.action-walk {
@@ -874,6 +897,7 @@
 .sprite-character-preview.action-skill1 { animation-duration: 0.95s; }
 
 .sprite-character-preview.action-walk .sprite-character-hair {
+  animation: character-hair-sprite-frames 0.8s steps(1, end) infinite;
   transform: translateY(var(--idle-head-y, 0px));
 }
 
@@ -883,10 +907,10 @@
   --walk-frame-x-1: 32.33%;
   --walk-frame-x-2: 67.64%;
   --walk-frame-x-3: 103.73%;
-  --skill-frame-x-0: -4.2%;
-  --skill-frame-x-1: 32.76%;
-  --skill-frame-x-2: 69.07%;
-  --skill-frame-x-3: 102.4%;
+  --skill-frame-x-0: -3.4%;
+  --skill-frame-x-1: 32.29%;
+  --skill-frame-x-2: 72.5%;
+  --skill-frame-x-3: 108%;
   transform: scale(1.24) translateY(-5px);
 }
 
@@ -896,10 +920,10 @@
   --walk-frame-x-1: 32.26%;
   --walk-frame-x-2: 67.86%;
   --walk-frame-x-3: 103.82%;
-  --skill-frame-x-0: -4.41%;
-  --skill-frame-x-1: 33.19%;
-  --skill-frame-x-2: 69.2%;
-  --skill-frame-x-3: 103.95%;
+  --skill-frame-x-0: -4.59%;
+  --skill-frame-x-1: 28.77%;
+  --skill-frame-x-2: 70.0%;
+  --skill-frame-x-3: 108%;
   transform: scale(1.24) translateY(-5px);
 }
 
@@ -910,9 +934,9 @@
   --walk-frame-x-2: 70.12%;
   --walk-frame-x-3: 103.8%;
   --skill-frame-x-0: -3.38%;
-  --skill-frame-x-1: 35.31%;
-  --skill-frame-x-2: 66.13%;
-  --skill-frame-x-3: 107.13%;
+  --skill-frame-x-1: 27.04%;
+  --skill-frame-x-2: 64.84%;
+  --skill-frame-x-3: 99.82%;
   transform: scale(1.24) translateY(-5px);
 }
 
@@ -923,9 +947,9 @@
   --walk-frame-x-2: 68.68%;
   --walk-frame-x-3: 103.14%;
   --skill-frame-x-0: -7.11%;
-  --skill-frame-x-1: 34.96%;
-  --skill-frame-x-2: 71.61%;
-  --skill-frame-x-3: 99.7%;
+  --skill-frame-x-1: 30.45%;
+  --skill-frame-x-2: 71.66%;
+  --skill-frame-x-3: 108%;
   transform: scale(1.24) translateY(-5px);
 }
 
@@ -986,11 +1010,13 @@
   image-rendering: crisp-edges;
   pointer-events: none;
   background-position: 0% var(--idle-frame-y, 0%);
-  transform: translateY(var(--idle-body-y, 0px));
+  transform: translateY(var(--idle-body-y, 0px)) scale(1.1);
+  transform-origin: center center;
 }
 
 .sprite-character-preview.direction-front .sprite-character-hands {
-  transform: translate(-6px, calc(var(--idle-body-y, 0px) + 9px));
+  transform: translate(-6px, calc(var(--idle-body-y, 0px) + 9px)) scale(1.1);
+  transform-origin: center center;
 }
 
 /* The left-facing shirt sprite already contains its visible sleeve; hide the
@@ -1077,12 +1103,33 @@
   display: none !important;
 }
 
+.sprite-character-preview.action-walk.direction-front .sprite-character-hands {
+  display: block !important;
+  transform-origin: center bottom !important;
+  transform: translate(-6px, calc(var(--idle-body-y, 0px) + 9px)) scale(1.1) !important;
+}
+
+.sprite-character-preview.action-walk.direction-back .sprite-character-hands {
+  display: block !important;
+  transform-origin: center bottom !important;
+  transform: translateY(var(--idle-body-y, 0px)) scale(1.1) !important;
+}
+
 .sprite-character-hand-left {
   clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
 }
 
 .sprite-character-hand-right {
   clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+}
+
+.sprite-character-preview.action-walk.direction-front .sprite-character-head-image {
+  transform: translateX(calc(-50% + var(--walk-shift-head, 0px))) translateY(calc(var(--idle-body-y, 0px) + 4px)) !important;
+}
+
+.sprite-character-preview.action-walk.direction-back .sprite-character-head-image {
+  z-index: 3;
+  transform: translateX(calc(-50% + var(--walk-shift-head, 0px))) translateY(var(--idle-body-y, 0px)) !important;
 }
 
 .sprite-character-preview.action-walk.direction-right .sprite-character-head-image {
@@ -1141,19 +1188,19 @@
   transform-origin: center bottom !important;
 }
 
-.sprite-character-preview.action-skill1 .sprite-character-body-part {
-  transform: translate3d(0px, var(--idle-body-y, 0px), 0) scale(1.1) !important;
+.sprite-character-preview.action-skill1 .sprite-character-body-part,
+.sprite-character-preview.action-skill1 .sprite-character-shirt-part {
+  transform: translate3d(var(--skill-shirt-shift-x, 0px), var(--idle-body-y, 0px), 0) scale(1.1) !important;
 }
 
-.sprite-character-preview.action-skill1 .sprite-character-shirt-part {
+.sprite-character-preview.action-skill1 .sprite-character-skill-head-part {
   transform: translate3d(0px, var(--idle-body-y, 0px), 0) scale(1.1) !important;
 }
 
 .sprite-character-preview.action-skill1 .sprite-character-legs,
 .sprite-character-preview.action-skill1 .sprite-character-pants-part,
-.sprite-character-preview.action-skill1 .sprite-character-shoes-part,
-.sprite-character-preview.action-skill1 .sprite-character-skill-head-part {
-  transform: translate3d(0px, var(--idle-body-y, 0px), 0) scale(1.1) !important;
+.sprite-character-preview.action-skill1 .sprite-character-shoes-part {
+  transform: translate3d(var(--skill-legs-shift-x, 0px), var(--idle-body-y, 0px), 0) scale(1.1) !important;
 }
 
 .sprite-character-preview.action-skill1 .sprite-character-skill-head-part {
@@ -1179,7 +1226,7 @@
 
 .sprite-character-preview.action-skill1.direction-back .sprite-character-head-image {
   z-index: 3;
-  transform: translateX(-50%) translateY(var(--idle-head-y, 0px)) !important;
+  transform: translateX(-50%) translateY(calc(var(--idle-head-y, 0px) + 4px)) !important;
 }
 
 .sprite-character-preview.action-skill1.direction-left .sprite-character-head-image {
@@ -1197,18 +1244,38 @@
 
 .sprite-character-preview.action-skill1.direction-front {
   --hair-head-anchor-y: 4px;
+  --idle-frame-y: 0%;
+  --skill-shirt-shift-x-0: 0px;
+  --skill-shirt-shift-x-1: 5.94px;
+  --skill-shirt-shift-x-2: 4.29px;
+  --skill-shirt-shift-x-3: 8.15px;
+  --skill-legs-shift-x-0: 2.41px;
+  --skill-legs-shift-x-1: 1.20px;
+  --skill-legs-shift-x-2: 8.01px;
+  --skill-legs-shift-x-3: 7.15px;
 }
 
 .sprite-character-preview.action-skill1.direction-back {
-  --hair-head-anchor-y: 0px;
+  --hair-head-anchor-y: 4px;
+  --idle-frame-y: 34.99%;
+  --skill-shirt-shift-x-0: 0px;
+  --skill-shirt-shift-x-1: 4.93px;
+  --skill-shirt-shift-x-2: 4.06px;
+  --skill-shirt-shift-x-3: 8.36px;
+  --skill-legs-shift-x-0: 0.50px;
+  --skill-legs-shift-x-1: -6.65px;
+  --skill-legs-shift-x-2: 2.45px;
+  --skill-legs-shift-x-3: 4.33px;
 }
 
 .sprite-character-preview.action-skill1.direction-left {
   --hair-head-anchor-y: 2px;
+  --idle-frame-y: 69.88%;
 }
 
 .sprite-character-preview.action-skill1.direction-right {
   --hair-head-anchor-y: 4px;
+  --idle-frame-y: 100%;
 }
 
 
@@ -1261,10 +1328,38 @@
 }
 
 @keyframes character-action-frames {
-  0%, 24.99% { --idle-frame-x: var(--skill-frame-x-0, 0%); --idle-head-y: 0px; --idle-body-y: 0px; }
-  25%, 49.99% { --idle-frame-x: var(--skill-frame-x-1, 33.333%); --idle-head-y: 0px; --idle-body-y: 0px; }
-  50%, 74.99% { --idle-frame-x: var(--skill-frame-x-2, 66.667%); --idle-head-y: 0px; --idle-body-y: 0px; }
-  75%, 100% { --idle-frame-x: var(--skill-frame-x-3, 100%); --idle-head-y: 0px; --idle-body-y: 0px; }
+  0%, 24.99% {
+    --idle-frame-x: var(--skill-frame-x-0, 0%);
+    --skill-shirt-shift-x: var(--skill-shirt-shift-x-0, 0px);
+    --skill-legs-shift-x: var(--skill-legs-shift-x-0, 0px);
+    --idle-head-y: 0px;
+    --idle-body-y: 0px;
+    clip-path: none;
+  }
+  25%, 49.99% {
+    --idle-frame-x: var(--skill-frame-x-1, 33.333%);
+    --skill-shirt-shift-x: var(--skill-shirt-shift-x-1, 0px);
+    --skill-legs-shift-x: var(--skill-legs-shift-x-1, 0px);
+    --idle-head-y: 0px;
+    --idle-body-y: 0px;
+    clip-path: none;
+  }
+  50%, 74.99% {
+    --idle-frame-x: var(--skill-frame-x-2, 66.667%);
+    --skill-shirt-shift-x: var(--skill-shirt-shift-x-2, 0px);
+    --skill-legs-shift-x: var(--skill-legs-shift-x-2, 0px);
+    --idle-head-y: 0px;
+    --idle-body-y: 0px;
+    clip-path: none;
+  }
+  75%, 100% {
+    --idle-frame-x: var(--skill-frame-x-3, 100%);
+    --skill-shirt-shift-x: var(--skill-shirt-shift-x-3, 0px);
+    --skill-legs-shift-x: var(--skill-legs-shift-x-3, 0px);
+    --idle-head-y: 0px;
+    --idle-body-y: 0px;
+    clip-path: none;
+  }
 }
 
 @keyframes character-walk-body-bob {
@@ -1427,24 +1522,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 5px;
+  padding: 0 10px;
   pointer-events: none;
 }
 
 .view-direction-button {
   display: grid;
-  width: 25px;
-  height: 25px;
-  flex: 0 0 25px;
-  border: 1px solid #dce3ed;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border: 1.5px solid #dce3ed;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.96);
   color: #39475c;
   font: inherit;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
   cursor: pointer;
   pointer-events: auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
 }
 
 .view-direction-button:hover {
@@ -1813,4 +1911,254 @@
   .character-action-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+
+/* --- Character Customization New Integration Elements --- */
+.character-name-input-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.character-name-input-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.char-name-input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.char-name-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.status-banner {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.status-popup-toast {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+  max-width: min(90vw, 520px);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22), 0 4px 12px rgba(15, 23, 42, 0.08);
+  animation: status-popup-enter-exit 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: auto;
+}
+
+@keyframes status-popup-enter-exit {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -24px) scale(0.92);
+  }
+  10%, 85% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -16px) scale(0.96);
+  }
+}
+
+.status-popup-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.07);
+  flex-shrink: 0;
+}
+
+.status-popup-text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.status-popup-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: opacity 0.15s;
+}
+
+.status-popup-close:hover {
+  opacity: 1;
+}
+
+.status-info {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.status-success {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.status-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+
+/* --- Robust Responsive & Character Visibility Optimizations --- */
+.customization-visual {
+  overflow: visible;
+  max-height: none;
+  padding-bottom: 24px;
+}
+
+.customization-panel {
+  height: auto !important;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+.customization-preview {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: radial-gradient(circle, #ffffff 40%, #fff8e7 100%) !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.customization-preview .character-stage {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.customization-preview .sprite-character-preview {
+  margin: auto !important;
+}
+
+@media (max-width: 900px) {
+  .customization-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 20px 16px !important;
+    min-height: auto !important;
+    gap: 20px !important;
+  }
+
+  .customization-visual {
+    max-height: none !important;
+    overflow-y: visible !important;
+    min-height: auto !important;
+  }
+
+  .customization-panel {
+    width: 100% !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    grid-template-columns: 140px minmax(0, 1fr) !important;
+    padding: 16px !important;
+  }
+
+  .customization-preview {
+    width: 140px !important;
+    height: 175px !important;
+  }
+}
+
+@media (max-width: 580px) {
+  .customization-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .character-preview-column {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  .customization-preview {
+    width: 180px !important;
+    height: 210px !important;
+  }
+
+  .character-action-controls {
+    width: 100% !important;
+    max-width: 260px !important;
+  }
+
+  .customization-controls {
+    width: 100% !important;
+  }
+
+  .confirm-button {
+    width: 100% !important;
+  }
+}
+
+.customization-nav-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.secondary-nav-button {
+  flex: 1;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  color: #334155;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.secondary-nav-button:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #94a3b8;
 }

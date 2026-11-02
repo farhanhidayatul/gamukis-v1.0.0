@@ -90,12 +90,12 @@ const persistManualUserResponse = (response) => {
   return response;
 };
 
-const saveManualProfile = (profile) => request("/auth/manual/profile", {
+const saveManualProfile = async (profile) => persistManualUserResponse(await request("/auth/manual/profile", {
   method: "POST",
   body: JSON.stringify(profile)
-});
+}));
 
-const getManualProfile = () => request("/auth/manual/profile");
+const getManualProfile = async () => persistManualUserResponse(await request("/auth/manual/profile"));
 
 const saveCompleteProfile = async (profile) => persistManualUserResponse(await request("/auth/manual/complete-profile", {
   method: "PUT",

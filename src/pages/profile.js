@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../component/Navbar";
 import { auth, onAuthStateChanged } from "../database/firebaseAuth";
@@ -8,7 +8,27 @@ import ProfileHero from "../component/component_profile/profileHero";
 import ProfileSummary from "../component/component_profile/profileSummary";
 import ProfileAchievements from "../component/component_profile/profileAchievements";
 import ProfileDetails from "../component/component_profile/profileDetails";
+import SavedCharacterList from "../component/component_customization_char/molecules/SavedCharacterList";
+import { fetchCharacters, setActiveCharacter, deleteCharacter } from "../database/characterApi";
+import { CustomCharacterRenderer } from "../component/component_game/playerInfo";
 import "./profile.css";
+
+const loadStoredAppearance = () => {
+  try {
+    const raw = window.localStorage.getItem('gamukis_character_appearance');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    const rawOutfit = window.localStorage.getItem('gamukis_character_outfit');
+    if (rawOutfit) {
+      try {
+        parsed.outfit = { ...(parsed.outfit || {}), ...JSON.parse(rawOutfit) };
+      } catch (e) {}
+    }
+    return parsed;
+  } catch (e) {
+    return null;
+  }
+};
 
 const emptyProfile = { gender: "", birthDate: "", school: "", address: "" };
 
@@ -53,6 +73,10 @@ const Profile = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isRoleSaving, setIsRoleSaving] = useState(false);
   const navigate = useNavigate();
+  const [savedCharacters, setSavedCharacters] = useState([]);
+  const [maxSlots, setMaxSlots] = useState(5);
+  const [isLoadingCharacters, setIsLoadingCharacters] = useState(false);
+  const [characterFeedback, setCharacterFeedback] = useState("");
 
   useEffect(() => onAuthStateChanged(auth, setFirebaseUser), []);
 
@@ -110,6 +134,13 @@ const Profile = () => {
       .then((response) => {
         if (!isCurrent) return;
         setProfile(normalizeProfile(response?.profile));
+        if (response?.user) {
+          if (isFirebaseAccount) {
+            setFirebaseAccount((prev) => ({ ...prev, ...response.user }));
+          } else {
+            setManualUser((prev) => ({ ...prev, ...response.user }));
+          }
+        }
         setLoadedProfileAccount(profileAccountKey);
       })
       .catch((error) => {
@@ -130,9 +161,91 @@ const Profile = () => {
     return () => window.removeEventListener("gamukis-manual-auth-change", refreshUser);
   }, []);
 
-  const activeUser = firebaseUser && !firebaseUser.isAnonymous
-    ? { ...firebaseUser, ...(firebaseAccount || {}), role: firebaseAccount?.role ?? null }
-    : manualUser;
+  const activeUser = useMemo(() => {
+    if (firebaseUser && !firebaseUser.isAnonymous) {
+      return { ...firebaseUser, ...(firebaseAccount || {}), role: firebaseAccount?.role ?? null };
+    }
+    return manualUser;
+  }, [firebaseUser, firebaseAccount, manualUser]);
+
+  const refreshUserCharacters = useCallback(async () => {
+    if (!activeUser) return;
+    setIsLoadingCharacters(true);
+    try {
+      const res = await fetchCharacters();
+      let list = Array.isArray(res?.characters) ? res.characters : [];
+      const localApp = loadStoredAppearance();
+      if (list.length === 0 && localApp) {
+        list = [{
+          id: 'local-1',
+          name: 'Karakter Saya',
+          data: localApp,
+          isActive: true
+        }];
+      }
+      setSavedCharacters(list);
+      if (res?.max) setMaxSlots(res.max);
+    } catch (e) {
+      console.warn("Failed to load user characters in profile:", e.message);
+      const localApp = loadStoredAppearance();
+      if (localApp) {
+        setSavedCharacters([{
+          id: 'local-1',
+          name: 'Karakter Saya',
+          data: localApp,
+          isActive: true
+        }]);
+      }
+    } finally {
+      setIsLoadingCharacters(false);
+    }
+  }, [activeUser]);
+
+  useEffect(() => {
+    refreshUserCharacters();
+  }, [refreshUserCharacters]);
+
+  const activeCharacter = useMemo(() => (
+    savedCharacters.find((c) => c.isActive) || savedCharacters[0] || null
+  ), [savedCharacters]);
+
+  const activeAppearance = useMemo(() => (
+    activeCharacter?.data || loadStoredAppearance()
+  ), [activeCharacter]);
+
+  const handleActivateCharacter = async (id) => {
+    try {
+      await setActiveCharacter(id);
+      const target = savedCharacters.find((c) => c.id === id);
+      if (target?.data) {
+        window.localStorage.setItem('gamukis_character_appearance', JSON.stringify(target.data));
+        if (target.data.outfit) {
+          window.localStorage.setItem('gamukis_character_outfit', JSON.stringify(target.data.outfit));
+        }
+      }
+      await refreshUserCharacters();
+      setCharacterFeedback("Karakter aktif berhasil diubah!");
+      setTimeout(() => setCharacterFeedback(""), 3500);
+    } catch (e) {
+      setCharacterFeedback(e.message || "Gagal mengaktifkan karakter.");
+    }
+  };
+
+  const handleDeleteCharacter = async (id) => {
+    if (!window.confirm("Yakin ingin menghapus karakter ini?")) return;
+    try {
+      await deleteCharacter(id);
+      await refreshUserCharacters();
+      setCharacterFeedback("Karakter berhasil dihapus.");
+      setTimeout(() => setCharacterFeedback(""), 3500);
+    } catch (e) {
+      setCharacterFeedback(e.message || "Gagal menghapus karakter.");
+    }
+  };
+
+  const handleLoadCharacter = (char) => {
+    navigate('/character-customization', { state: { character: char } });
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -203,6 +316,49 @@ const Profile = () => {
               onEdit={() => document.getElementById("profile-details")?.scrollIntoView({ behavior: "smooth" })}
               onCustomize={() => navigate('/character-customization')}
             />
+            <section className="profile-characters-card" aria-label="Daftar karakter tersimpan">
+              {characterFeedback && (
+                <div className="profile-character-feedback">
+                  {characterFeedback}
+                </div>
+              )}
+              <div className="profile-characters-layout">
+                {activeAppearance && (
+                  <div className="profile-character-preview-card">
+                    <div className="profile-character-visual-stage">
+                      <CustomCharacterRenderer
+                        appearance={activeAppearance}
+                        direction="down"
+                        style={{
+                          position: 'relative',
+                          top: '10px',
+                          left: '50%',
+                          transform: 'translateX(-50%) scale(1.15)',
+                          transformOrigin: 'top center'
+                        }}
+                      />
+                    </div>
+                    <div className="profile-character-preview-meta">
+                      <span className="profile-character-preview-name">
+                        {activeCharacter?.name || 'Karakter Saya'}
+                      </span>
+                      <span className="profile-character-preview-badge">Aktif</span>
+                    </div>
+                  </div>
+                )}
+                <div className="profile-character-list-wrapper">
+                  <SavedCharacterList
+                    characters={savedCharacters}
+                    maxSlots={maxSlots}
+                    activeCharacterId={activeCharacter?.id}
+                    onActivate={handleActivateCharacter}
+                    onLoad={handleLoadCharacter}
+                    onDelete={handleDeleteCharacter}
+                    isLoading={isLoadingCharacters}
+                  />
+                </div>
+              </div>
+            </section>
             <div className="profile-content">
               <ProfileSummary user={activeUser} />
               <ProfileAchievements user={activeUser} />

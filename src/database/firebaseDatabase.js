@@ -1,4 +1,4 @@
-import { auth } from "./firebaseAuth";
+import { auth, waitForAuth } from "./firebaseAuth";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 const MANUAL_TOKEN_KEY = "gamukis_manual_token";
@@ -23,12 +23,25 @@ export const getStoredManualToken = () => {
 /**
  * Resolves the effective authentication token:
  * 1. Manual JWT token for registered MySQL users.
- * 2. Firebase ID token for Google/anonymous users.
+ * 2. Firebase ID token for Google/anonymous users (awaits auth readiness).
  * 3. Returns null if unauthenticated.
  * @returns {Promise<string|null>}
  */
 export const getEffectiveToken = async () => {
-  const user = auth?.currentUser;
+  const manualToken = getStoredManualToken();
+  if (manualToken) {
+    return manualToken;
+  }
+
+  let user = auth?.currentUser;
+  if (!user && typeof waitForAuth === "function") {
+    try {
+      user = await waitForAuth();
+    } catch (e) {
+      // fallback
+    }
+  }
+
   if (user && !user.isAnonymous && typeof user.getIdToken === "function") {
     try {
       const idToken = await user.getIdToken();
@@ -36,11 +49,6 @@ export const getEffectiveToken = async () => {
     } catch (e) {
       // fallback
     }
-  }
-
-  const manualToken = getStoredManualToken();
-  if (manualToken) {
-    return manualToken;
   }
 
   if (user && typeof user.getIdToken === "function") {

@@ -55,6 +55,31 @@ const registerWithEmail = async ({ email, password, username }) => {
   return result.user;
 };
 
+/**
+ * Asynchronously waits for Firebase auth to initialize its persistence and resolve currentUser.
+ * Uses native auth.authStateReady() if available (Firebase 10+), or falls back to onAuthStateChanged.
+ * @returns {Promise<import("firebase/auth").User|null>}
+ */
+const waitForAuth = async () => {
+  if (typeof auth?.authStateReady === 'function') {
+    try {
+      await auth.authStateReady();
+    } catch (e) {
+      // fallback
+    }
+    return auth.currentUser;
+  }
+
+  if (auth.currentUser) return auth.currentUser;
+
+  return new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      resolve(user);
+    });
+  });
+};
+
 // Pastikan semua fungsi yang diperlukan diekspor
 export {
   auth,
@@ -63,6 +88,7 @@ export {
   signInAnon,
   signInWithEmail,
   registerWithEmail,
-  onAuthStateChanged
+  onAuthStateChanged,
+  waitForAuth
 };
 

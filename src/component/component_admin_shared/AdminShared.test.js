@@ -98,7 +98,8 @@ describe('Admin shared UI components', () => {
     render(<FormField label="Nama room" name="name" error="Nama wajib diisi."><input /></FormField>);
     const input = container.querySelector('input');
     expect(input.getAttribute('aria-invalid')).toBe('true');
-    expect(container.querySelector(`#${input.getAttribute('aria-describedby')}`)?.textContent).toBe('Nama wajib diisi.');
+    const describedBy = input.getAttribute('aria-describedby');
+    expect(container.querySelector(`[id="${describedBy}"]`)?.textContent).toBe('Nama wajib diisi.');
   });
 
   it('shows search feedback and translated status labels', () => {
