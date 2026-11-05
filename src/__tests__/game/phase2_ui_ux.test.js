@@ -202,7 +202,7 @@ describe('Phase 2 UI & UX Sensory Suite', () => {
       );
 
       expect(container.querySelector('[data-testid="gamukis-minimap"]')).not.toBeNull();
-      expect(container.textContent).toContain('RADAR');
+      expect(container.textContent).toMatch(/MAP|RADAR/);
       expect(container.textContent).toContain('🪙 2');
 
       // Check current player dot

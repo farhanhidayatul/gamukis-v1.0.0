@@ -10,8 +10,9 @@
 .progress-line {
     position: absolute;
     top: 15px;
-    left: 40px;
-    width: 88%;
+    left: 12%;
+    right: 12%;
+    width: auto;
     height: 1px;
     background-color: #d5d5d5;
     z-index: 1;
@@ -86,8 +87,9 @@
     .progress-line {
         position: absolute;
         top: 10px;
-        left: 40px;
-        width: 80%;
+        left: 12%;
+        right: 12%;
+        width: auto;
         height: 1px;
         background-color: #d5d5d5;
         z-index: 1;
@@ -153,5 +155,13 @@
 }
 
 @media (max-width: 480px) { /* Mobile */
+    .progress-container {
+        margin-bottom: 20px;
+    }
 
+    .progress-step {
+        gap: 8px;
+        font-size: 11px;
+        text-align: center;
+    }
 }

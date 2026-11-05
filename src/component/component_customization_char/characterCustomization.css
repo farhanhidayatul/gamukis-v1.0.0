@@ -1961,7 +1961,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 280px;
+  box-sizing: border-box;
+  min-width: min(92vw, 280px);
   max-width: min(90vw, 520px);
   padding: 12px 18px;
   border-radius: 12px;
@@ -2138,13 +2139,15 @@
 
 .customization-nav-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 12px;
   width: 100%;
 }
 
 .secondary-nav-button {
-  flex: 1;
+  flex: 1 1 120px;
+  min-width: 120px;
   padding: 10px 14px;
   background: #f8fafc;
   border: 1.5px solid #cbd5e1;

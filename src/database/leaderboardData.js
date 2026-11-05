@@ -34,6 +34,7 @@ export const fetchLeaderboard = async (period = 'alltime', limit = 10) => {
 
   const response = await fetch(url, {
     method: 'GET',
+    credentials: 'include',
     headers
   });
 
@@ -93,6 +94,7 @@ export const recordGameScore = async (scoreData = {}) => {
 
   const response = await fetch(`${API_URL}/leaderboard/record`, {
     method: 'POST',
+    credentials: 'include',
     headers,
     body: JSON.stringify(payload)
   });
@@ -110,10 +112,10 @@ export const recordGameScore = async (scoreData = {}) => {
       const stored = window.localStorage.getItem(expKey) || window.localStorage.getItem('gamukis_user_accumulated_exp');
       const prev = stored !== null ? Math.max(0, parseInt(stored, 10) || 0) : 0;
       const nextExp = scoreData.totalExp !== undefined && scoreData.totalExp !== null
-        ? Number(scoreData.totalExp)
-        : (scoreData.exp !== undefined ? prev + Number(scoreData.exp) : prev);
+        ? Math.max(0, Number(scoreData.totalExp) || 0)
+        : (scoreData.exp !== undefined ? Math.max(0, prev + (Number(scoreData.exp) || 0)) : prev);
 
-      if (nextExp > 0) {
+      if (nextExp >= 0) {
         window.localStorage.setItem(expKey, String(nextExp));
         window.localStorage.setItem('gamukis_user_accumulated_exp', String(nextExp));
       }

@@ -10,6 +10,9 @@ describe('Profile Character Slots & Customization Preview Animation', () => {
   const customizationCssPath = path.resolve(__dirname, '../../component/component_customization_char/characterCustomization.css');
   const profileJsPath = path.resolve(__dirname, '../../pages/profile.js');
   const profileCssPath = path.resolve(__dirname, '../../pages/profile.css');
+  const savedCharacterItemJsPath = path.resolve(__dirname, '../../component/component_customization_char/atoms/SavedCharacterItem.js');
+  const savedCharacterItemCssPath = path.resolve(__dirname, '../../component/component_customization_char/atoms/SavedCharacterItem.css');
+  const savedCharacterListCssPath = path.resolve(__dirname, '../../component/component_customization_char/molecules/SavedCharacterList.css');
 
   describe('1. Static Idle vs Animated Jurus in Customization CSS', () => {
     let cssContent;
@@ -56,12 +59,21 @@ describe('Profile Character Slots & Customization Preview Animation', () => {
   describe('3. Profile Page Character Slot Management Integration', () => {
     let profileJsContent;
     let profileCssContent;
+    let savedCharacterItemJsContent;
+    let savedCharacterItemCssContent;
+    let savedCharacterListCssContent;
 
     beforeAll(() => {
       expect(fs.existsSync(profileJsPath)).toBe(true);
       expect(fs.existsSync(profileCssPath)).toBe(true);
+      expect(fs.existsSync(savedCharacterItemJsPath)).toBe(true);
+      expect(fs.existsSync(savedCharacterItemCssPath)).toBe(true);
+      expect(fs.existsSync(savedCharacterListCssPath)).toBe(true);
       profileJsContent = fs.readFileSync(profileJsPath, 'utf8');
       profileCssContent = fs.readFileSync(profileCssPath, 'utf8');
+      savedCharacterItemJsContent = fs.readFileSync(savedCharacterItemJsPath, 'utf8');
+      savedCharacterItemCssContent = fs.readFileSync(savedCharacterItemCssPath, 'utf8');
+      savedCharacterListCssContent = fs.readFileSync(savedCharacterListCssPath, 'utf8');
     });
 
     it('imports and renders SavedCharacterList inside profile page', () => {
@@ -81,14 +93,23 @@ describe('Profile Character Slots & Customization Preview Animation', () => {
       expect(profileCssContent).toContain('.profile-characters-card');
       expect(profileCssContent).toContain('.profile-character-feedback');
       expect(profileCssContent).toContain('.profile-characters-layout');
-      expect(profileCssContent).toContain('.profile-character-preview-card');
+      expect(profileCssContent).not.toContain('.profile-character-preview-card');
     });
 
-    it('renders visual character sprite preview via CustomCharacterRenderer in profile', () => {
-      expect(profileJsContent).toContain('CustomCharacterRenderer');
-      expect(profileJsContent).toContain('profile-character-preview-card');
-      expect(profileJsContent).toContain('profile-character-visual-stage');
-      expect(profileJsContent).toContain('loadStoredAppearance');
+    it('renders one centered saved-character preview card per item', () => {
+      expect(savedCharacterItemJsContent).toContain('CustomCharacterRenderer');
+      expect(savedCharacterItemJsContent).toContain('saved-char-preview-stage');
+      expect(savedCharacterItemJsContent).toContain('character.data');
+      expect(savedCharacterItemJsContent).toContain("transform: 'scale(1.15)'");
+      expect(savedCharacterItemCssContent).toContain('.saved-char-preview-stage');
+      expect(savedCharacterListCssContent).toMatch(/\.saved-char-items\s*\{[^}]*display:\s*grid/s);
+      expect(profileJsContent).not.toContain('profile-character-preview-card');
+    });
+
+    it('keeps saved-character actions wired on each preview card', () => {
+      expect(savedCharacterItemJsContent).toContain('onLoad(character)');
+      expect(savedCharacterItemJsContent).toContain('onActivate(character.id)');
+      expect(savedCharacterItemJsContent).toContain('onDelete(character.id)');
     });
   });
 });

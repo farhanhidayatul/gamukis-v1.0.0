@@ -1,15 +1,102 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './gamePage.css';
 import Leaderboard from '../component/component_game/leaderboard';
 import Skills from '../component/component_game/skill';
 import Flashcards from '../component/component_game/flashCard';
 import CardMapel from '../component/component_game/cardSS';
+import {
+  fetchClassesByCategory,
+  fetchClassDetail,
+  sumLessonDurationMinutes
+} from '../database/studentClassData';
+
+const normalizeClassTitle = (title) => String(title || '').trim().toLocaleLowerCase();
+
+const normalizeGameDurationSeconds = (value) => {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue) || numericValue <= 0) return null;
+  return Math.round(numericValue);
+};
+
+const getRuntimeGameDurationSeconds = (card) => {
+  if (!card) return null;
+  const candidateValues = [
+    card.gameDurationSeconds,
+    card.durationSeconds,
+    card.gameDurationMinutes !== undefined ? Number(card.gameDurationMinutes) * 60 : undefined,
+    card.durationMinutes !== undefined ? Number(card.durationMinutes) * 60 : undefined
+  ];
+
+  for (const candidate of candidateValues) {
+    const normalizedValue = normalizeGameDurationSeconds(candidate);
+    if (normalizedValue !== null) return normalizedValue;
+  }
+
+  return null;
+};
+
+const getCurriculumGameDurationSeconds = (chapters, selectedChapter) => {
+  const selectedLessons = selectedChapter
+    ? selectedChapter.lessons
+    : chapters.flatMap((chapter) => chapter.lessons || []);
+  const durationMinutes = sumLessonDurationMinutes(selectedLessons);
+  return durationMinutes === null ? null : durationMinutes * 60;
+};
 
 const GamePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { selectedCard } = location.state || {};
+  const [curriculum, setCurriculum] = useState([]);
+  const [selectedChapter, setSelectedChapter] = useState(() => location.state?.selectedChapter || null);
+  const [isCurriculumLoading, setIsCurriculumLoading] = useState(false);
+
+  useEffect(() => {
+    let isCurrentRequest = true;
+    setCurriculum([]);
+    setSelectedChapter(location.state?.selectedChapter || null);
+
+    if (!selectedCard?.title) {
+      setIsCurriculumLoading(false);
+      return () => { isCurrentRequest = false; };
+    }
+
+    setIsCurriculumLoading(true);
+    const loadCurriculum = async () => {
+      try {
+        const classes = await fetchClassesByCategory();
+        const matchingClass = classes.find((classItem) => (
+          normalizeClassTitle(classItem.title) === normalizeClassTitle(selectedCard.title)
+        ));
+        if (!matchingClass) return;
+
+        const classDetail = await fetchClassDetail(matchingClass.slug || matchingClass.id);
+        const syllabus = Array.isArray(classDetail?.syllabus) ? classDetail.syllabus : [];
+        const chapters = syllabus.map((chapter, index) => {
+          const lessons = Array.isArray(chapter.lessons) ? chapter.lessons : [];
+          const topics = lessons.map((lesson) => lesson.title).filter(Boolean);
+          if (topics.length === 0 && chapter.summary) topics.push(chapter.summary);
+
+          return {
+            ...chapter,
+            id: String(chapter.id || chapter.chapterNumber || index + 1),
+            progress: Number.isFinite(Number(chapter.progress)) ? Number(chapter.progress) : 0,
+            topics
+          };
+        });
+
+        if (isCurrentRequest) setCurriculum(chapters);
+      } catch {
+        if (isCurrentRequest) setCurriculum([]);
+      } finally {
+        if (isCurrentRequest) setIsCurriculumLoading(false);
+      }
+    };
+
+    loadCurriculum();
+    return () => { isCurrentRequest = false; };
+  }, [location.state?.selectedChapter, selectedCard?.title]);
 
   const handleBack = () => {
     navigate(-1); // Navigate back to the previous page
@@ -26,11 +113,15 @@ const GamePage = () => {
 
   const handleStart = () => {
     if (!hasSelectedCard) return;
+    const runtimeGameDurationSeconds = getCurriculumGameDurationSeconds(curriculum, selectedChapter)
+      ?? getRuntimeGameDurationSeconds(selectedCard);
     navigate('/inGame', {
       state: {
         selectedCard,
         subject: selectedCard.title,
-        resetSession: location.state?.resetSession || false
+        selectedChapter,
+        resetSession: location.state?.resetSession !== undefined ? location.state.resetSession : true,
+        ...(runtimeGameDurationSeconds !== null ? { gameDurationSeconds: runtimeGameDurationSeconds } : {})
       }
     });
   };
@@ -66,15 +157,6 @@ const GamePage = () => {
 
   const cardData = selectedCard || defaultCardData;
 
-  const curriculum = [
-    { title: 'Pengantar Biologi dan Biokimia', progress: 10, topics: ['Definisi biologi, cabang-cabang biologi.', 'Struktur dan fungsi makromolekul.'] },
-    { title: 'Struktur dan Fungsi Sel', progress: 15, topics: ['Struktur sel prokariotik dan eukariotik.', 'Fungsi organel seluler dan proses sel.'] },
-    { title: 'Genetika Dasar', progress: 20, topics: ['Konsep dasar genetika: gen, alel, kromosom.', 'Hukum Mendel dan pewarisan sifat.'] },
-    { title: 'Reproduksi', progress: 15, topics: ['Reproduksi pada tumbuhan: penyerbukan dan pembuahan.', 'Reproduksi pada hewan dan manusia.'] },
-    { title: 'Biologi Molekuler dan Seluler', progress: 20, topics: ['Siklus sel: interfase, mitosis, meiosis.', 'Regulasi ekspresi gen dan teknologi DNA.'] },
-    { title: 'Imunitas dan Penyakit', progress: 20, topics: ['Sistem kekebalan tubuh dan respons imun.', 'Penyakit infeksi, vaksin, dan antibiotik.'] },
-  ];
-
   const skills = ['Kritis', 'Kreatif', 'Kolaborasi', 'Teknologi', 'Analitis', 'Inovatif'];
 
   return (
@@ -106,7 +188,13 @@ const GamePage = () => {
           <Skills skills={skills} />
         </div>
         <div className="details">
-          <Flashcards title={cardData.title} curriculum={curriculum} />
+          <Flashcards
+            title={cardData.title}
+            curriculum={curriculum}
+            selectedChapterId={selectedChapter?.id || null}
+            onSelectChapter={setSelectedChapter}
+            isLoading={isCurriculumLoading}
+          />
         </div>
       </div>
     </div>
@@ -114,5 +202,3 @@ const GamePage = () => {
 };
 
 export default GamePage;
-
-

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { signInWithGoogle } from '../../database/firebaseAuth';
-import { manualLogin } from '../../database/manualAuth';
+import { clearManualSession, getManualAccount, manualLogin } from '../../database/manualAuth';
 import { createBackendSession } from '../../database/firebaseDatabase';
 import ButtonLoginGoogle from './component_login_asset/buttonLoginGoogle';
 import '../component_login/backgroundKiri.css';
@@ -9,21 +9,46 @@ import InputPassword from './component_login_asset/inputPassword';
 import InputEmailUsername from './component_login_asset/inputEmailUsername';
 import ButtonLogin from './component_login_asset/buttonLogin';
 
+const resolveEffectiveRole = (user) => {
+    const directRole = String(user?.role || '').toLowerCase();
+    if (directRole) return directRole;
+    if (String(user?.teacherApplication?.status || '').toLowerCase() === 'approved') {
+        return 'guru';
+    }
+    return '';
+};
+
 const BackgroundKiri = ({ onLoginError }) => {
     const [emailOrUsername, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const navigate = useNavigate(); // Inisialisasi navigasi
+    const navigate = useNavigate();
 
     const completeLogin = async (loginAction, source) => {
         setIsSubmitting(true);
         try {
-                const loginResult = await loginAction();
-                const role = String(loginResult?.user?.role || '').toLowerCase();
-                if (['admin', 'administrator'].includes(role)) navigate('/admin/dashboard');
-                else navigate(['siswa', 'guru'].includes(role) ? '/home' : '/complete-profile');
+            const loginResult = await loginAction();
+            let userObj = loginResult?.user || null;
+            let role = resolveEffectiveRole(userObj);
+
+            if (!role && source === 'manual') {
+                try {
+                    const accountRes = await getManualAccount();
+                    if (accountRes?.user) {
+                        userObj = accountRes.user;
+                        role = resolveEffectiveRole(userObj);
+                    }
+                } catch (_) {
+                    // fallback to loginResult role
+                }
+            }
+
+            if (['admin', 'administrator'].includes(role)) navigate('/admin/dashboard');
+            else if (role === 'guru') navigate('/guru/dashboard');
+            else if (role === 'siswa') navigate('/siswa/dashboard');
+            else navigate('/complete-profile');
         } catch (loginError) {
             onLoginError({
                 source,
@@ -41,8 +66,17 @@ const BackgroundKiri = ({ onLoginError }) => {
 
     const handleGoogleLogin = () => {
         completeLogin(async () => {
+            if (typeof clearManualSession === 'function') {
+                clearManualSession();
+            }
             await signInWithGoogle();
-            return createBackendSession();
+            const session = await createBackendSession();
+            if (session?.user && typeof window !== 'undefined') {
+                const storage = rememberMe ? window.localStorage : window.sessionStorage;
+                storage?.setItem('gamukis_manual_user', JSON.stringify(session.user));
+                window.dispatchEvent(new Event('gamukis-manual-auth-change'));
+            }
+            return session;
         }, 'google');
     };
 
@@ -75,4 +109,3 @@ const BackgroundKiri = ({ onLoginError }) => {
 };
 
 export default BackgroundKiri;
-

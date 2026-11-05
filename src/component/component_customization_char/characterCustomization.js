@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import characterArtwork from '../../images/asset_background_anime.png';
+import characterArtwork from '../../images/man_and_woman.png';
 import CategoryTab from './atoms/CategoryTab';
 import HairStyleButton from './atoms/HairStyleButton';
 import SwatchButton from './atoms/SwatchButton';
@@ -745,7 +745,7 @@ const CharacterCustomization = () => {
               <button
                 type="button"
                 className="secondary-nav-button"
-                onClick={() => navigate('/inGame')}
+                onClick={() => navigate('/inGame', { state: { resetSession: true } })}
               >
                 Masuk ke Game &rarr;
               </button>

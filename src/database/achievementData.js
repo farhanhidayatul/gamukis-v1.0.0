@@ -53,6 +53,7 @@ export const fetchMyAchievements = async (userId = null) => {
 
   const response = await fetch(url, {
     method: 'GET',
+    credentials: 'include',
     headers
   });
 

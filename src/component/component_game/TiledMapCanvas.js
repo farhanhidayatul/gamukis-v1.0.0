@@ -175,7 +175,10 @@ const TiledMapCanvas = () => {
           className="game-map__foreground-row"
           width={mapWidth}
           height={mapTileSize}
-          style={{ top: `${row * mapTileSize}px`, zIndex: (row + 1) * 10 }}
+          style={{
+            top: `${row * mapTileSize}px`,
+            zIndex: row === 41 ? (41 + 3) * 10 + 6 : (row + 1) * 10
+          }}
           aria-hidden="true"
         />
       ))}

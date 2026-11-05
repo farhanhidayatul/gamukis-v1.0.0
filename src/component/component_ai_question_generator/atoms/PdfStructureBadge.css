@@ -1,0 +1,51 @@
+.pdf-structure-badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.pdf-structure-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  line-height: 1.2;
+}
+
+.pdf-structure-pill.count-pill {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.pill-dot.green-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.pdf-structure-pill.scheme-pill {
+  background: rgba(25, 118, 210, 0.12);
+  color: #1976d2;
+  border: 1px solid rgba(25, 118, 210, 0.28);
+}
+
+.pdf-structure-pill.verified-pill {
+  background: rgba(245, 185, 0, 0.12);
+  color: #f5b900;
+  border: 1px solid rgba(245, 185, 0, 0.28);
+}
+
+.pdf-structure-pill.sections-pill {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}

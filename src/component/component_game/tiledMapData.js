@@ -40,12 +40,13 @@ const grassLayer = namedLayer('grass');
 const darkGrassLayer = namedLayer('dark grass');
 const sandLayer = namedLayer('mud');
 const house3Layer = namedLayer('house 3');
-const bridgeLayers = findLayers(map1.layers, ({ type, name }) => type === 'tilelayer' && /jembatan/i.test(name));
+const bridgeLayers = findLayers(map1.layers, ({ type, name }) => type === 'tilelayer' && /tengah\s*jembatan/i.test(name));
+const bridgeRailingLayers = findLayers(map1.layers, ({ type, name }) => type === 'tilelayer' && /samping\s*jembatan/i.test(name));
 const obstacleLayers = tileLayers
   .filter(({ layer }) => /^wall/i.test(layer.name))
   .map(({ layer }) => layer);
 export const depthSortedLayers = tileLayers
-  .filter(({ layer }) => /^(house|tree)/i.test(layer.name));
+  .filter(({ layer }) => /^(house|tree)/i.test(layer.name) || /samping\s*jembatan/i.test(layer.name));
 const objectBorderLayers = findLayers(map1.layers, ({ type, name }) => (
   type === 'objectgroup' && name.toLowerCase() !== 'spawn'
 ));
@@ -78,6 +79,7 @@ const walkableSpaces = {};
 const blockedSpaces = {};
 const objectBorderSpaces = {};
 const decorativeObjectSpaces = {};
+const frontOfHouseSpaces = {};
 const staircaseSpaces = {};
 const house3PlatformSpaces = {};
 const sandSpaces = {};
@@ -100,7 +102,10 @@ for (let y = 0; y < map1.height; y += 1) {
     const isGrass = gidAt(grassLayer, index) > 0;
     const isDarkGrass = gidAt(darkGrassLayer, index) > 0;
     const isSand = gidAt(sandLayer, index) > 0;
-    const isBridge = bridgeLayers.some(({ layer }) => gidAt(layer, index) > 0);
+    const isUpperRailing = bridgeRailingLayers.some(({ layer }) => gidAt(layer, index) > 0) && y === 37;
+    const isBridgeDeck = bridgeLayers.some(({ layer }) => gidAt(layer, index) > 0);
+    const isLowerBridgeWalkway = y === 41 && x >= 11 && x <= 30;
+    const isBridge = (isBridgeDeck || isLowerBridgeWalkway) && !isUpperRailing;
     if (isSand) sandSpaces[key] = true;
     if (isBridge) bridgeSpaces[key] = true;
     if (isGrass || isDarkGrass || isSand || isBridge) walkableSpaces[key] = true;
@@ -144,10 +149,25 @@ objectBorderLayers.forEach(({ layer, parents }) => {
         objectBorderSpaces[getKeyString(x, y)] = true;
       }
     }
+
+    if (isHouseFoundationBorder) {
+      const frontRowY = maxTileY + 1;
+      for (let x = minTileX; x <= maxTileX; x += 1) {
+        frontOfHouseSpaces[getKeyString(x, frontRowY)] = true;
+      }
+    }
   });
 });
 
 Object.assign(blockedSpaces, objectBorderSpaces);
+
+// House 1 left house (x=13..17, y=15..20) shares the same art footprint as the right house
+// but lacks an explicit foundation object in Tiled. Block the lower foundation row (y=20)
+// so the wall/facade is solid and mark y=21 as the front of the house.
+for (let x = 13; x <= 17; x += 1) {
+  blockedSpaces[getKeyString(x, 20)] = true;
+  frontOfHouseSpaces[getKeyString(x, 21)] = true;
+}
 
 // House 3's upper roof is a passable, elevated background area: players can
 // walk behind its artwork and are depth-occluded by the foreground rows.
@@ -174,6 +194,24 @@ if (house3Layer) {
 Object.keys(bridgeSpaces).forEach((key) => {
   delete blockedSpaces[key];
 });
+
+// The upper bridge railing along y=37 (x=10..30) must remain solid/blocked
+// so players cannot step over the upper edge into the water.
+for (let x = 10; x <= 30; x += 1) {
+  blockedSpaces[getKeyString(x, 37)] = true;
+}
+
+// Ensure the water row immediately beneath the bridge walkway (y=42, x=10..31)
+// remains strictly solid so players cannot walk off the bridge into the river.
+for (let x = 10; x <= 31; x += 1) {
+  blockedSpaces[getKeyString(x, 42)] = true;
+}
+
+// The western bridge entrance walkway at x=10 connects the island shore to the bridge walkway (x=11..30, y=38..41).
+// Clear accidental overlap on the walkable corridor while keeping the upper corner solid.
+for (let y = 38; y <= 41; y += 1) {
+  delete blockedSpaces[getKeyString(10, y)];
+}
 
 // House 3's visible stairs climb from the lower-left foundation toward its
 // upper-left doorway. Only this route is open through the house.
@@ -240,6 +278,7 @@ export const mapData = {
   blockedSpaces,
   depthSortedColumnRanges,
   depthSortedSpaces: decorativeObjectSpaces,
+  frontOfHouseSpaces,
   staircaseSpaces,
   staircaseConnections,
   staircaseEntry: getKeyString(37, 22),

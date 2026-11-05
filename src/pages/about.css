@@ -1,6 +1,6 @@
 .about-page {
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   background: #fffaf0;
 }
 
@@ -330,6 +330,10 @@
   .about-page .buttonLogo.active {
     width: 64px;
     height: 64px;
+  }
+
+  .about-page .bitdsul-member-card {
+    flex-direction: column;
   }
 }
 

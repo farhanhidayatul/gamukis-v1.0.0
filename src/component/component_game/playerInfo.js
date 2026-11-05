@@ -527,14 +527,20 @@ const characterAnimationStyles = `
   100% { background-position-x: 0px; }
 }
 .game-wrapper .Character.moving[data-color="man"][data-direction="down"] .Character_svg,
+.game-wrapper .Character.moving[data-color="girl"][data-direction="down"] .Character_svg_girl,
+.game-wrapper .Character.moving[data-gender="female"][data-direction="down"] .Character_svg_girl,
 .game-wrapper .Character.moving.has-svg-character[data-direction="down"] .Character_svg,
-.game-wrapper .Character.moving[data-direction="down"] .Character_svg {
+.game-wrapper .Character.moving[data-direction="down"] .Character_svg,
+.game-wrapper .Character.moving[data-direction="down"] .Character_svg_girl {
   background-position-y: 0px;
   animation: walk-man-down 0.44s step-end infinite !important;
 }
 .game-wrapper .Character.moving[data-color="man"][data-direction="up"] .Character_svg,
+.game-wrapper .Character.moving[data-color="girl"][data-direction="up"] .Character_svg_girl,
+.game-wrapper .Character.moving[data-gender="female"][data-direction="up"] .Character_svg_girl,
 .game-wrapper .Character.moving.has-svg-character[data-direction="up"] .Character_svg,
-.game-wrapper .Character.moving[data-direction="up"] .Character_svg {
+.game-wrapper .Character.moving[data-direction="up"] .Character_svg,
+.game-wrapper .Character.moving[data-direction="up"] .Character_svg_girl {
   background-position-y: -37px;
   animation: walk-man-up 0.44s step-end infinite !important;
 }
@@ -544,10 +550,22 @@ const characterAnimationStyles = `
   background-position-y: -72px;
   animation: walk-man-left 0.44s step-end infinite !important;
 }
+.game-wrapper .Character.moving[data-color="girl"][data-direction="left"] .Character_svg_girl,
+.game-wrapper .Character.moving[data-gender="female"][data-direction="left"] .Character_svg_girl,
+.game-wrapper .Character.moving[data-direction="left"] .Character_svg_girl {
+  background-position-y: -110px;
+  animation: walk-man-left 0.44s step-end infinite !important;
+}
 .game-wrapper .Character.moving[data-color="man"][data-direction="right"] .Character_svg,
 .game-wrapper .Character.moving.has-svg-character[data-direction="right"] .Character_svg,
 .game-wrapper .Character.moving[data-direction="right"] .Character_svg {
   background-position-y: -110px;
+  animation: walk-man-right 0.44s step-end infinite !important;
+}
+.game-wrapper .Character.moving[data-color="girl"][data-direction="right"] .Character_svg_girl,
+.game-wrapper .Character.moving[data-gender="female"][data-direction="right"] .Character_svg_girl,
+.game-wrapper .Character.moving[data-direction="right"] .Character_svg_girl {
+  background-position-y: -73px;
   animation: walk-man-right 0.44s step-end infinite !important;
 }
 `;
@@ -559,7 +577,8 @@ const Player = ({
   skillActive,
   skillIndex,
   isGuest,
-  appearance
+  appearance,
+  isDead: isDeadProp = false
 }) => {
   const [isMoving, setIsMoving] = useState(false);
   const [isStepping, setIsStepping] = useState(false);
@@ -627,7 +646,8 @@ const Player = ({
   }, []);
 
   if (!player) return null;
-  const { name, coins, color, direction, x, y } = player;
+  const { name, coins, color, direction, x, y, health } = player;
+  const isDead = Boolean(isDeadProp || (typeof health === 'number' && health <= 0) || player?.isDead);
 
   // Coordinate validity guard: never render uninitialized, NaN, or ocean-void (0, 0) coordinates
   if (!Number.isFinite(x) || !Number.isFinite(y) || (x === 0 && y === 0) || x < mapData.minX || x > mapData.maxX || y < mapData.minY || y > mapData.maxY) {
@@ -652,14 +672,22 @@ const Player = ({
   const hasCustomAppearance = !isGuestPlayer && hasAppearanceData;
   const effectiveAppearance = hasCustomAppearance ? candidateAppearance : null;
 
-  // For default character, color 'man' renders SVG, while palette colors render 16x16 pixel sprite
+  // Determine if player is female (guest or default SVG character)
+  const isFemale = color === 'girl' || (color !== 'man' && (
+    candidateAppearance?.gender === 'female' ||
+    candidateAppearance?.gender === 'Perempuan' ||
+    player?.gender === 'female' ||
+    player?.gender === 'Perempuan'
+  ));
+
+  // For default character, color 'man' and 'girl' render SVG, while palette colors render 16x16 pixel sprite
   const isSvgCharacter = (charColor) => {
     if (hasCustomAppearance) return false;
-    return !charColor || charColor === 'man' || charColor === 'guest';
+    return !charColor || charColor === 'man' || charColor === 'guest' || charColor === 'girl' || isFemale;
   };
 
   const isSvg = isSvgCharacter(color);
-  const effectiveColor = hasCustomAppearance ? 'custom' : (isSvg ? 'man' : (color || 'man'));
+  const effectiveColor = hasCustomAppearance ? 'custom' : (isFemale ? 'girl' : (isSvg ? 'man' : (color || 'man')));
   const isCharacterMoving = Boolean(isStepping || isMoving || isButtonMoving);
 
   // Default positioning for characters
@@ -668,6 +696,7 @@ const Player = ({
   const playerSpace = getKeyString(x, y);
   const isBehindHouseOrTree = Boolean(
     mapData.depthSortedSpaces?.[playerSpace]
+    && !mapData.frontOfHouseSpaces?.[playerSpace]
     && !mapData.blockedSpaces?.[playerSpace]
     && !mapData.staircaseSpaces?.[playerSpace]
     && !mapData.house3PlatformSpaces?.[playerSpace]
@@ -675,12 +704,13 @@ const Player = ({
 
   return (
     <div
-      className={`Character grid-cell ${isCurrentPlayer ? 'you' : ''} ${isCharacterMoving ? 'moving' : ''} ${hasCustomAppearance ? 'has-custom-appearance' : (isSvg ? 'has-svg-character' : '')}`}
+      className={`Character grid-cell ${isCurrentPlayer ? 'you' : ''} ${isDead ? 'dead' : (isCharacterMoving ? 'moving' : '')} ${hasCustomAppearance ? 'has-custom-appearance' : (isSvg ? 'has-svg-character' : '')}`}
       style={{
         transform: `translate3d(${left}, ${top}, 0)`,
         zIndex: isBehindHouseOrTree ? 1 : (y + 3) * 10 + 5
       }}
       data-color={effectiveColor}
+      data-gender={isFemale ? 'female' : 'male'}
       data-direction={direction || 'down'}
     >
       <style>{characterAnimationStyles}</style>
@@ -695,14 +725,14 @@ const Player = ({
           skillIndex={skillIndex}
         />
       ) : isSvg ? (
-        <div className="Character_svg grid-cell"></div>
+        <div className={effectiveColor === 'girl' ? 'Character_svg_girl grid-cell' : 'Character_svg grid-cell'}></div>
       ) : (
         <div className="Character_sprite grid-cell"></div>
       )}
 
       <div
         className="Character_name-container"
-        style={hasCustomAppearance ? { top: '-38px', left: '8px', transform: 'translateX(-50%)' } : undefined}
+        style={hasCustomAppearance ? { top: '-32px', left: '8px', transform: 'translateX(-50%)' } : undefined}
       >
         <span className="Character_name">{name}</span>
         <span className="Character_coins">{coins}</span>
@@ -711,7 +741,7 @@ const Player = ({
       {isCurrentPlayer && (
         <div
           className="Character_you-arrow"
-          style={hasCustomAppearance ? { top: '-50px', left: '8px', transform: 'translateX(-50%)' } : undefined}
+          style={hasCustomAppearance ? { top: '-21px', left: '8px', transform: 'translateX(-50%)' } : undefined}
         />
       )}
 

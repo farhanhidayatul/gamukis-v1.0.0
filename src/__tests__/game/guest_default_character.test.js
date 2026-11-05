@@ -22,7 +22,7 @@ describe('Guest Default Character Enforcement Suite', () => {
 
     // 4. Fallback rendering branches
     expect(content).toMatch(/hasCustomAppearance\s*\?\s*\(\s*<CustomCharacterRenderer/);
-    expect(content).toMatch(/isSvg\s*\?\s*\(\s*<div\s+className="Character_svg grid-cell"/);
+    expect(content).toMatch(/isSvg\s*\?\s*\(\s*<div\s+className=\{effectiveColor === ['"]girl['"] \? ['"]Character_svg_girl grid-cell['"] : ['"]Character_svg grid-cell['"]\}>/);
     expect(content).toMatch(/<div\s+className="Character_sprite grid-cell"/);
   });
 
@@ -64,5 +64,21 @@ describe('Guest Default Character Enforcement Suite', () => {
 
     // Player rendering passes null appearance for guests
     expect(inGameContent).toMatch(/appearance=\{key\s*===\s*playerId\s*\?\s*\(isGuest\s*\?\s*null\s*:\s*currentAppearance\)/);
+  });
+
+  test('change character on key C toggles between man and girl with optimistic player update', () => {
+    const inGameContent = fs.readFileSync(inGamePath, 'utf8');
+    const playerInfoContent = fs.readFileSync(playerInfoPath, 'utf8');
+
+    // Key C mappings exist in useKeyPress
+    expect(inGameContent).toContain("'KeyC': changeColor");
+    expect(inGameContent).toContain("'c': changeColor");
+    expect(inGameContent).toContain("'C': changeColor");
+
+    // changeColor optimistically updates setPlayers locally
+    expect(inGameContent).toMatch(/setPlayers\(\(prev\)\s*=>\s*\{[\s\S]*?color:\s*newColor[\s\S]*?gender:\s*newGender/);
+
+    // playerInfo prioritizes color so man vs girl explicitly overrides residual gender
+    expect(playerInfoContent).toContain("color === 'girl' || (color !== 'man'");
   });
 });

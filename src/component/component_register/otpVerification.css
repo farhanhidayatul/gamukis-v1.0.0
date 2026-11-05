@@ -1,35 +1,40 @@
 .otpVerification-container {
+    box-sizing: border-box;
     background: white;
     border-radius: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 80px 80px 160px 80px;
-    max-width: 550px;
-    width: 100%;
-    margin: 0 120px 0 0;
+    padding: clamp(24px, 4vw, 40px);
+    max-width: 480px;
+    width: min(100%, 480px);
+    margin: 0 auto;
 }
 
 .text-desc {
     text-align: center;
     justify-content: center;
-    width: 460px;
-    margin:80px 0 0 40px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 16px;
     color: #5A5A5A;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .otp-box {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: clamp(6px, 2vw, 10px);
     margin: 15px 0;
 }
 
 .otp-input {
-    width: 50px;
-    margin: 40px 5px 40px 5px;
-    height: 50px;
-    padding: 10px;
+    box-sizing: border-box;
+    width: clamp(36px, 11vw, 48px);
+    margin: 16px 0;
+    height: clamp(42px, 12vw, 52px);
+    padding: 0;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     border: 2px solid gray;
     border-radius: 15px;
     transition: border-color 0.3s ease;
@@ -38,6 +43,15 @@
 .otp-input:focus {
     border-color: #4E8AFF;
     outline: none;
+}
+
+.otpVerification-container .register-error {
+    color: #d94841;
+    font-size: 13px;
+    text-align: center;
+    margin: 0 0 12px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 /* Timer hitung mundur */
@@ -82,13 +96,14 @@
 /* Responsive Design */
 @media (max-width: 1920px) { /* Laptop */
     .otpVerification-container {
+        box-sizing: border-box;
         background: white;
         border-radius: 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 40px 50px 80px 50px;
-        max-width: 400px;
-        width: 100%;
-        margin: 0 50px 0 0;
+        padding: clamp(24px, 4vw, 40px);
+        max-width: 480px;
+        width: min(100%, 480px);
+        margin: 0 auto;
     }
     
     .text-desc {
@@ -97,26 +112,29 @@
         justify-content: center;
         display: block;
         font-size: 14px;
-        width: 400px;
-        margin: 0 0 0 0px;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 16px;
         color: #5A5A5A;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
     
     .otp-box {
         display: flex;
         justify-content: center;
-        gap: 5px;
+        gap: clamp(6px, 2vw, 10px);
         margin: 15px 0;
     }
     
     .otp-input {
-        width: 30px;
-        margin: 40px 5px 40px 5px;
-        height: 30px;
-        padding: 10px;
-        font-size: 12px;
+        box-sizing: border-box;
+        width: clamp(36px, 11vw, 48px);
+        margin: 16px 0;
+        height: clamp(42px, 12vw, 52px);
+        padding: 0;
         text-align: center;
-        font-size: 16px;
+        font-size: 18px;
         border: 2px solid gray;
         border-radius: 15px;
         transition: border-color 0.3s ease;
@@ -147,7 +165,7 @@
         display: block;
         width: 100%;
         padding: 10px;
-        margin: 0 0 40px 0;
+        margin: 0 0 24px 0;
         border-radius: 5px;
         border: none;
         background-color: transparent;
@@ -159,25 +177,25 @@
 }
 
 @media (max-width: 1024px) { /* Laptop */
-    .register-form {
-        max-width: 500px;
-        padding: 60px;
+    .otpVerification-container {
+        max-width: 480px;
+        padding: 32px 28px;
         margin: 0 auto;
     }
 }
 
 @media (max-width: 768px) { /* Tablet */
-    .register-form {
-        max-width: 90%;
-        padding: 50px;
+    .otpVerification-container {
+        max-width: 100%;
+        padding: 28px 22px;
         margin: 0 auto;
     }
 }
 
 @media (max-width: 480px) { /* Mobile */
-    .register-form {
-        max-width: 95%;
-        padding: 30px;
+    .otpVerification-container {
+        max-width: 100%;
+        padding: 24px 18px;
         margin: 0 auto;
     }
 }

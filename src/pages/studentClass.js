@@ -6,6 +6,7 @@ import {
   fetchClassCategories,
   fetchClassesByCategory,
   fetchClassDetail,
+  fetchClassOfferingDetail,
   fetchDailyRecommendations,
   fetchStudentClassProgress,
   saveStudentClassProgress,
@@ -13,6 +14,40 @@ import {
   FALLBACK_CLASS_CATEGORIES,
   FALLBACK_DAILY_RECOMMENDATIONS
 } from '../database/studentClassData';
+
+const getCurriculumQuestionType = (question) => question?.questionType || 'multiple_choice';
+
+const getQuizOptionValue = (option) => {
+  if (typeof option === 'string') return option;
+  return option?.key || option?.text || '';
+};
+
+const getQuizOptionLabel = (option) => typeof option === 'string' ? option : option?.text || option?.key || '';
+
+const getStudentOfferings = (classDetail) => classDetail?.offerings || [];
+
+const normalizeTextAnswer = (value) => String(value || '').trim().toLocaleLowerCase('id-ID');
+
+const isCurriculumQuestionCorrect = (question, answer) => {
+  const questionType = getCurriculumQuestionType(question);
+  if (questionType === 'drag_drop') {
+    const pairs = Array.isArray(question.dragDropItems) ? question.dragDropItems : [];
+    return pairs.length > 0 && pairs.every((pair, index) => answer?.[String(index)] === pair.answerText);
+  }
+  if (questionType === 'short_text') {
+    const acceptedAnswers = Array.isArray(question.acceptedAnswers) ? question.acceptedAnswers : [question.correct];
+    return acceptedAnswers.some((acceptedAnswer) => normalizeTextAnswer(acceptedAnswer) === normalizeTextAnswer(answer));
+  }
+  return answer === question.correct;
+};
+
+const isCurriculumQuestionAnswered = (question, answer) => {
+  if (getCurriculumQuestionType(question) === 'drag_drop') {
+    const pairs = Array.isArray(question.dragDropItems) ? question.dragDropItems : [];
+    return pairs.length > 0 && pairs.every((_, index) => Boolean(answer?.[String(index)]));
+  }
+  return String(answer || '').trim().length > 0;
+};
 
 const StudentClass = () => {
   const navigate = useNavigate();
@@ -29,6 +64,8 @@ const StudentClass = () => {
   const [activeClassDetail, setActiveClassDetail] = useState(() =>
     FALLBACK_CLASSES.find((c) => c.category === 'BAHASA') || FALLBACK_CLASSES[0]
   );
+  const [isChoosingOffering, setIsChoosingOffering] = useState(false);
+  const [selectedOfferingStage, setSelectedOfferingStage] = useState('');
   const [activeDetailTab, setActiveDetailTab] = useState('overview'); // 'overview' | 'syllabus' | 'modules' | 'quiz'
   const [dailyRecommendations, setDailyRecommendations] = useState(FALLBACK_DAILY_RECOMMENDATIONS);
   const [studentProgress, setStudentProgress] = useState({
@@ -115,8 +152,26 @@ const StudentClass = () => {
 
   // Open class detail modal / viewer
   const handleOpenClassDetail = async (cls) => {
-    const fullDetail = await fetchClassDetail(cls.slug);
-    setActiveClassDetail(fullDetail || cls);
+    const offerings = getStudentOfferings(cls);
+    if (offerings.length > 0) {
+      setActiveClassDetail(cls);
+      setSelectedOfferingStage('');
+      setIsChoosingOffering(true);
+    } else {
+      const fullDetail = await fetchClassDetail(cls.slug);
+      setActiveClassDetail(fullDetail || cls);
+      setIsChoosingOffering(false);
+    }
+    setActiveDetailTab('overview');
+    setQuizAnswers({});
+    setQuizSubmitted(false);
+  };
+
+  const handleSelectOffering = async (offering) => {
+    const detail = await fetchClassOfferingDetail(activeClassDetail.slug, offering.id);
+    if (!detail) return;
+    setActiveClassDetail({ ...detail, offerings: activeClassDetail.offerings || [], offering });
+    setIsChoosingOffering(false);
     setActiveDetailTab('overview');
     setQuizAnswers({});
     setQuizSubmitted(false);
@@ -163,6 +218,17 @@ const StudentClass = () => {
     }));
   };
 
+  const handleDragDropAnswer = (questionId, pairIndex, answerText) => {
+    if (quizSubmitted) return;
+    setQuizAnswers((previous) => ({
+      ...previous,
+      [questionId]: {
+        ...(previous[questionId] || {}),
+        [String(pairIndex)]: answerText
+      }
+    }));
+  };
+
   const handleGradeQuiz = () => {
     setQuizSubmitted(true);
   };
@@ -174,12 +240,35 @@ const StudentClass = () => {
 
   // Launch into game for practice
   const handleLaunchGame = (cls) => {
+    const normalizeGameDurationSeconds = (value) => {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return null;
+      return Math.round(numericValue);
+    };
+
+    const runtimeGameDurationSeconds = (() => {
+      const candidateValues = [
+        cls?.gameDurationSeconds,
+        cls?.durationSeconds,
+        cls?.gameDurationMinutes !== undefined ? Number(cls.gameDurationMinutes) * 60 : undefined,
+        cls?.durationMinutes !== undefined ? Number(cls.durationMinutes) * 60 : undefined
+      ];
+
+      for (const candidate of candidateValues) {
+        const normalizedValue = normalizeGameDurationSeconds(candidate);
+        if (normalizedValue !== null) return normalizedValue;
+      }
+
+      return null;
+    })();
+
     const cardData = {
       title: cls.title,
       logo: cls.category === 'SAINTEK' ? 'logo_saintek' : 'logo_soshum',
       subtitle: cls.categoryLabel || cls.category,
       description: cls.description,
-      features: cls.skillsAcquired || []
+      features: cls.skillsAcquired || [],
+      ...(runtimeGameDurationSeconds !== null ? { gameDurationSeconds: runtimeGameDurationSeconds } : {})
     };
     navigate('/gamePage', { state: { selectedCard: cardData } });
   };
@@ -212,66 +301,16 @@ const StudentClass = () => {
               Pelajari silabus, target capaian belajar, modul interaktif, latihan kilat, dan pantau kemajuan belajarmu.
             </p>
 
-            {/* Quick Metrics Bar */}
-            <div className="hero-metrics">
-              <div className="metric-item">
-                <span className="metric-number">17+</span>
-                <span className="metric-label">Mata Pelajaran</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-number">8</span>
-                <span className="metric-label">Bahasa Dunia</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-number">250+</span>
-                <span className="metric-label">Modul & Silabus</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-number">🔥 {studentProgress.streakDays} Hari</span>
-                <span className="metric-label">Streak Belajar</span>
-              </div>
-            </div>
           </div>
         </header>
 
-        {/* DAILY RECOMMENDATIONS WIDGET */}
-        <section className="daily-recommendations-widget" aria-label="Rekomendasi Harian">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">💡 Rekomendasi Materi Harian</h2>
-              <p className="section-subtitle">Topik unggulan yang dirancang untuk mempercepat penguasaan konsepmu hari ini</p>
-            </div>
-          </div>
-          <div className="recommendations-grid">
-            {dailyRecommendations.map((rec) => (
-              <div key={rec.id} className="rec-card" onClick={() => {
-                const target = FALLBACK_CLASSES.find(c => c.slug === rec.classSlug);
-                if (target) {
-                  setSelectedCategory(target.category);
-                  handleOpenClassDetail(target);
-                }
-              }}>
-                <div className="rec-header">
-                  <span className="rec-tag">{rec.tag}</span>
-                  <span className="rec-duration">⏱️ {rec.duration}</span>
-                </div>
-                <h3 className="rec-title">{rec.title}</h3>
-                <p className="rec-reason">{rec.reason}</p>
-                <div className="rec-footer">
-                  <span className="rec-subject">{rec.subject}</span>
-                  <button className="rec-button" type="button">Pelajari Sekarang →</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* CATEGORY SELECTOR & FILTER BAR */}
         <section className="class-navigation-section">
-          <div className="category-tabs-container" role="tablist">
-            {['SAINTEK', 'SOSHUM', 'BAHASA'].map((cat) => {
+          <div className="category-tabs-container" role="tablist" aria-label="Kategori kelas">
+            {categories.map((catObj) => {
+              const cat = typeof catObj === 'string' ? catObj : catObj.category;
               const isActive = selectedCategory === cat;
-              const count = cat === 'BAHASA' ? 8 : (cat === 'SAINTEK' ? 5 : 4);
+              const count = catObj.subjectCount || (cat === 'BAHASA' ? 8 : (cat === 'SAINTEK' ? 5 : 4));
               return (
                 <button
                   key={cat}
@@ -303,6 +342,7 @@ const StudentClass = () => {
                     key={lang.key}
                     type="button"
                     className={`lang-pill-btn ${selectedLanguageFilter === lang.key ? 'active' : ''}`}
+                    aria-pressed={selectedLanguageFilter === lang.key}
                     onClick={() => setSelectedLanguageFilter(lang.key)}
                   >
                     {lang.label}
@@ -318,12 +358,13 @@ const StudentClass = () => {
             <input
               type="text"
               placeholder={`Cari mata pelajaran, topik, atau kata kunci ${selectedCategory}...`}
+              aria-label={`Cari mata pelajaran, topik, atau kata kunci ${selectedCategory}`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="class-search-input"
             />
             {searchQuery && (
-              <button className="clear-search-btn" onClick={() => setSearchQuery('')}>✕</button>
+              <button type="button" className="clear-search-btn" aria-label="Hapus pencarian" onClick={() => setSearchQuery('')}>✕</button>
             )}
           </div>
         </section>
@@ -389,10 +430,11 @@ const StudentClass = () => {
                           className="btn-card-play"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleLaunchGame(cls);
+                            if (getStudentOfferings(cls).length > 0) handleOpenClassDetail(cls);
+                            else handleLaunchGame(cls);
                           }}
                         >
-                          ▶ Mainkan
+                          {getStudentOfferings(cls).length > 0 ? 'Pilih Tingkat' : '▶ Mainkan'}
                         </button>
                       </div>
                     </article>
@@ -404,7 +446,7 @@ const StudentClass = () => {
 
           {/* RIGHT: COMPREHENSIVE DETAIL PANEL */}
           <div className="class-detail-column">
-            {activeClassDetail ? (
+            {activeClassDetail && !isChoosingOffering ? (
               <div className="class-detail-panel">
                 {/* DETAIL HERO HEADER */}
                 <div className="detail-panel-hero">
@@ -417,6 +459,7 @@ const StudentClass = () => {
                   </div>
                   <h2 className="detail-panel-title">{activeClassDetail.title}</h2>
                   <p className="detail-panel-desc">{activeClassDetail.description}</p>
+                  {activeClassDetail.offering?.isTemplate && <p className="detail-panel-desc" role="status">Kurikulum draf · materi ini belum ditinjau dan dapat berubah.</p>}
 
                   {/* Instructor badge */}
                   {activeClassDetail.instructor && (
@@ -431,37 +474,61 @@ const StudentClass = () => {
 
                   {/* Quick Action Button */}
                   <div className="detail-hero-actions">
-                    <button
+                    {(activeClassDetail.offering || getStudentOfferings(activeClassDetail).length > 0) && (
+                      <button
+                        type="button"
+                        className="btn-card-detail"
+                        onClick={() => {
+                          setSelectedOfferingStage(activeClassDetail.offering?.educationStage || '');
+                          setIsChoosingOffering(true);
+                        }}
+                      >
+                        ← Ganti Jenjang atau Kelas
+                      </button>
+                    )}
+                    {(!activeClassDetail.offering || Number(activeClassDetail.offering.questionCount || 0) > 0) && <button
                       type="button"
                       className="btn-hero-launch-game"
                       onClick={() => handleLaunchGame(activeClassDetail)}
                     >
                       🎮 Mulai Mode Game Latihan ({activeClassDetail.title})
-                    </button>
+                    </button>}
                   </div>
                 </div>
 
                 {/* DETAIL TABS NAVIGATION */}
-                <div className="detail-tabs-bar" role="tablist">
+                <div className="detail-tabs-bar" role="tablist" aria-label="Detail kelas">
                   <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeDetailTab === 'overview'}
                     className={`detail-tab-btn ${activeDetailTab === 'overview' ? 'active' : ''}`}
                     onClick={() => setActiveDetailTab('overview')}
                   >
                     🎯 Capaian Belajar
                   </button>
                   <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeDetailTab === 'syllabus'}
                     className={`detail-tab-btn ${activeDetailTab === 'syllabus' ? 'active' : ''}`}
                     onClick={() => setActiveDetailTab('syllabus')}
                   >
                     📑 Silabus & Bab ({activeClassDetail.syllabus?.length || 0})
                   </button>
                   <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeDetailTab === 'modules'}
                     className={`detail-tab-btn ${activeDetailTab === 'modules' ? 'active' : ''}`}
                     onClick={() => setActiveDetailTab('modules')}
                   >
                     💡 Ringkasan Interaktif
                   </button>
                   <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeDetailTab === 'quiz'}
                     className={`detail-tab-btn ${activeDetailTab === 'quiz' ? 'active' : ''}`}
                     onClick={() => setActiveDetailTab('quiz')}
                   >
@@ -589,23 +656,27 @@ const StudentClass = () => {
                     </div>
 
                     <div className="quiz-questions-list">
+                      {activeClassDetail.offering?.isTemplate && Number(activeClassDetail.offering.questionCount || 0) === 0 && <p role="status">Kuis belum tersedia pada template draf ini.</p>}
                       {activeClassDetail.miniQuiz?.map((q, qIndex) => {
                         const selectedAnswer = quizAnswers[q.id];
-                        const isCorrect = selectedAnswer === q.correct;
+                        const questionType = getCurriculumQuestionType(q);
+                        const isCorrect = isCurriculumQuestionCorrect(q, selectedAnswer);
 
                         return (
                           <div key={q.id} className="quiz-card">
                             <span className="question-number">Pertanyaan {qIndex + 1}</span>
                             <h4 className="question-text">{q.question}</h4>
 
+                            {questionType === 'multiple_choice' && (
                             <div className="quiz-options-list">
                               {q.options.map((opt, optIndex) => {
-                                const isOptSelected = selectedAnswer === opt;
+                                const optionValue = getQuizOptionValue(opt);
+                                const isOptSelected = selectedAnswer === optionValue;
                                 let optionClass = 'quiz-opt-btn';
 
                                 if (isOptSelected) optionClass += ' selected';
                                 if (quizSubmitted) {
-                                  if (opt === q.correct) optionClass += ' correct';
+                                  if (isCurriculumQuestionCorrect(q, optionValue)) optionClass += ' correct';
                                   else if (isOptSelected) optionClass += ' incorrect';
                                 }
 
@@ -614,15 +685,54 @@ const StudentClass = () => {
                                     key={optIndex}
                                     type="button"
                                     className={optionClass}
-                                    onClick={() => handleSelectQuizAnswer(q.id, opt)}
+                                    onClick={() => handleSelectQuizAnswer(q.id, optionValue)}
                                     disabled={quizSubmitted}
                                   >
                                     <span className="opt-marker">{String.fromCharCode(65 + optIndex)}.</span>
-                                    <span>{opt}</span>
+                                    <span>{getQuizOptionLabel(opt)}</span>
                                   </button>
                                 );
                               })}
                             </div>
+                            )}
+
+                            {questionType === 'drag_drop' && (
+                              <div className="curriculum-dragdrop-area" role="group" aria-label={`Jawaban drag and drop pertanyaan ${qIndex + 1}`}>
+                                <p className="curriculum-dragdrop-hint">Pilih jawaban untuk setiap pernyataan.</p>
+                                {(q.dragDropItems || []).map((pair, pairIndex) => {
+                                  const selectedPairAnswer = selectedAnswer?.[String(pairIndex)] || '';
+                                  return (
+                                    <label key={`${q.id}-pair-${pairIndex}`} className="curriculum-dragdrop-row">
+                                      <span>{pair.slotLabel}</span>
+                                      <select
+                                        value={selectedPairAnswer}
+                                        disabled={quizSubmitted}
+                                        onChange={(event) => handleDragDropAnswer(q.id, pairIndex, event.target.value)}
+                                      >
+                                        <option value="">Pilih jawaban</option>
+                                        {(q.dragDropItems || []).map((choice, choiceIndex) => (
+                                          <option key={`${q.id}-choice-${choiceIndex}`} value={choice.answerText}>{choice.answerText}</option>
+                                        ))}
+                                      </select>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            )}
+
+                            {questionType === 'short_text' && (
+                              <label className="curriculum-shorttext-field" htmlFor={`curriculum-short-answer-${q.id}`}>
+                                Jawaban Anda
+                                <input
+                                  id={`curriculum-short-answer-${q.id}`}
+                                  type="text"
+                                  value={selectedAnswer || ''}
+                                  disabled={quizSubmitted}
+                                  onChange={(event) => handleSelectQuizAnswer(q.id, event.target.value)}
+                                  placeholder="Ketik jawaban singkat..."
+                                />
+                              </label>
+                            )}
 
                             {quizSubmitted && (
                               <div className={`quiz-feedback-box ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`}>
@@ -641,7 +751,7 @@ const StudentClass = () => {
                           type="button"
                           className="btn-quiz-submit"
                           onClick={handleGradeQuiz}
-                          disabled={Object.keys(quizAnswers).length === 0}
+                          disabled={!activeClassDetail.miniQuiz?.every((question) => isCurriculumQuestionAnswered(question, quizAnswers[question.id]))}
                         >
                           Periksa Jawaban Kuis
                         </button>
@@ -650,6 +760,45 @@ const StudentClass = () => {
                   </div>
                 )}
               </div>
+            ) : activeClassDetail ? (
+              <div className="class-detail-panel">
+                <div className="detail-panel-hero">
+                  <div className="detail-hero-top">
+                    <span className="badge-category-glow">{activeClassDetail.category}</span>
+                    <span className="badge-level-pill">Pilih kelas</span>
+                  </div>
+                  <h2 className="detail-panel-title">{activeClassDetail.title}</h2>
+                  {!selectedOfferingStage ? (
+                    <>
+                      <p className="detail-panel-desc">Pilih jenjang pendidikan terlebih dahulu untuk melihat materi dan latihan yang sesuai.</p>
+                      <div className="detail-tabs-bar stage-options" role="group" aria-label="Pilihan jenjang pendidikan">
+                        {[...new Set(getStudentOfferings(activeClassDetail).map((offering) => offering.educationStage))].map((stage) => (
+                          <button key={stage} type="button" className={`detail-tab-btn stage-option-btn ${selectedOfferingStage === stage ? 'selected' : ''}`} aria-pressed={selectedOfferingStage === stage} onClick={() => setSelectedOfferingStage(stage)}>{stage}</button>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="detail-panel-desc">Pilih kelas untuk jenjang {selectedOfferingStage}.</p>
+                      <div className="classes-cards-list class-offering-options" aria-label={`Pilihan kelas ${selectedOfferingStage}`}>
+                        {getStudentOfferings(activeClassDetail).filter((offering) => offering.educationStage === selectedOfferingStage).map((offering) => (
+                          <button key={offering.id} type="button" className="btn-card-detail offering-choice-btn" onClick={() => handleSelectOffering(offering)}>
+                            <span className="offering-choice-copy">
+                              <span className="offering-choice-title">{selectedOfferingStage === 'KULIAH' ? offering.schoolGrade : `Kelas ${offering.schoolGrade}`}</span>
+                              <span className="offering-choice-meta">{offering.questionCount} soal</span>
+                            </span>
+                            <span className={`offering-status ${offering.isTemplate ? 'draft' : 'approved'}`}>{offering.isTemplate ? 'Draf' : 'Disetujui'}</span>
+                            <span className="offering-choice-arrow" aria-hidden="true">→</span>
+                          </button>
+                        ))}
+                      </div>
+                      <div className="detail-hero-actions">
+                        <button type="button" className="btn-card-detail" onClick={() => setSelectedOfferingStage('')}>← Kembali ke Pilihan Jenjang</button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
             ) : (
               <div className="detail-placeholder">
                 <p>Pilih mata pelajaran di sebelah kiri untuk melihat deskripsi kurikulum lengkap.</p>
@@ -657,6 +806,43 @@ const StudentClass = () => {
             )}
           </div>
         </div>
+
+        <section className="daily-recommendations-widget" aria-label="Rekomendasi Harian">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title">💡 Rekomendasi Materi Harian</h2>
+              <p className="section-subtitle">Topik unggulan untuk mendukung kegiatan belajarmu hari ini</p>
+            </div>
+          </div>
+          <div className="recommendations-grid">
+            {dailyRecommendations.map((rec) => (
+              <article key={rec.id} className="rec-card">
+                <div className="rec-header">
+                  <span className="rec-tag">{rec.tag}</span>
+                  <span className="rec-duration">⏱️ {rec.duration}</span>
+                </div>
+                <h3 className="rec-title">{rec.title}</h3>
+                <p className="rec-reason">{rec.reason}</p>
+                <div className="rec-footer">
+                  <span className="rec-subject">{rec.subject}</span>
+                  <button
+                    type="button"
+                    className="rec-button"
+                    onClick={() => {
+                      const target = FALLBACK_CLASSES.find((cls) => cls.slug === rec.classSlug);
+                      if (target) {
+                        setSelectedCategory(target.category);
+                        handleOpenClassDetail(target);
+                      }
+                    }}
+                  >
+                    Pelajari Sekarang →
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );

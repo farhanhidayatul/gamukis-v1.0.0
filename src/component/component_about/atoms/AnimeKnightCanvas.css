@@ -1,0 +1,20 @@
+.anime-knight-canvas-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 8px 24px rgba(56, 189, 248, 0.45));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+}
+
+.anime-knight-canvas-wrapper:hover {
+  transform: scale(1.03) translateY(-2px);
+  filter: drop-shadow(0 12px 32px rgba(56, 189, 248, 0.7));
+}
+
+.anime-knight-canvas {
+  display: block;
+  cursor: pointer;
+  user-select: none;
+}
+

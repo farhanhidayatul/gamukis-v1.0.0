@@ -1,5 +1,6 @@
+import { generateSecureGuestId } from '../component/component_game/utils';
 import { io } from 'socket.io-client';
-import { auth } from './firebaseAuth';
+import { auth, waitForAuth } from './firebaseAuth';
 import { getEffectiveToken } from './firebaseDatabase';
 
 const SOCKET_URL = process.env.REACT_APP_API_URL
@@ -10,6 +11,16 @@ let socket;
 
 const getSocket = async () => {
   let token = await getEffectiveToken();
+  if (!token && typeof window !== 'undefined') {
+    try {
+      const rawUser = window.localStorage?.getItem('gamukis_manual_user') || window.sessionStorage?.getItem('gamukis_manual_user');
+      const parsed = rawUser ? JSON.parse(rawUser) : null;
+      if (parsed?.authType === 'google' && !auth?.currentUser && typeof waitForAuth === 'function') {
+        await waitForAuth();
+        token = await getEffectiveToken();
+      }
+    } catch (e) {}
+  }
 
   if (!token && auth?.currentUser) {
     try {
@@ -21,36 +32,30 @@ const getSocket = async () => {
 
   if (!token) {
     const guestId = typeof window !== 'undefined'
-      ? (window.sessionStorage?.getItem('gamukis_guest_id') || `guest_${Date.now()}`)
-      : `guest_${Date.now()}`;
+      ? (window.sessionStorage?.getItem('gamukis_guest_id') || generateSecureGuestId())
+      : generateSecureGuestId();
     if (typeof window !== 'undefined') {
       window.sessionStorage?.setItem('gamukis_guest_id', guestId);
     }
     token = guestId;
   }
 
+  if (socket && socket.auth?.token !== token) {
+    socket.disconnect();
+    socket = null;
+  }
+
   if (!socket) {
     socket = io(SOCKET_URL, {
       auth: { token },
-      autoConnect: false,
+      autoConnect: true,
       transports: ['websocket', 'polling']
     });
-  } else if (socket.auth?.token !== token) {
-    socket.auth = { token };
-    if (socket.connected) {
-      socket.disconnect();
-    }
   }
 
   if (!socket.connected) {
-    socket.connect();
     await new Promise((resolve) => {
       if (socket.connected) return resolve();
-      const cleanup = () => {
-        clearTimeout(timeoutId);
-        socket.off('connect', onConnect);
-        socket.off('connect_error', onError);
-      };
       const onConnect = () => {
         cleanup();
         resolve();
@@ -59,12 +64,20 @@ const getSocket = async () => {
         cleanup();
         resolve();
       };
+      const cleanup = () => {
+        clearTimeout(timeoutId);
+        socket.off('connect', onConnect);
+        socket.off('connect_error', onError);
+      };
       const timeoutId = setTimeout(() => {
         cleanup();
         resolve();
       }, 4000);
       socket.once('connect', onConnect);
       socket.once('connect_error', onError);
+      if (!socket.connected && !socket.active) {
+        socket.connect();
+      }
     });
   }
 
@@ -85,15 +98,40 @@ const subscribeToGame = async ({
   onBotAttackWarning,
   onBotRemoved,
   onSkillEffect,
+  onIdentityResolved,
   onError
 }) => {
   const gameSocket = await getSocket();
-  const handleSnapshot = (snapshot) => onSnapshot(snapshot);
+  const resolveIdentity = (responseOrSnapshot) => {
+    const serverPlayerId = responseOrSnapshot?.player?.id || responseOrSnapshot?.selfPlayerId;
+    if (serverPlayerId && serverPlayerId !== player?.id) {
+      onIdentityResolved?.(serverPlayerId);
+    }
+  };
+  const handleSnapshot = (snapshot) => {
+    resolveIdentity(snapshot);
+    onSnapshot(snapshot);
+  };
   const handlePlayerUpdated = (updatedPlayer) => onPlayerUpdated(updatedPlayer);
   const handlePlayerLeft = ({ playerId }) => onPlayerLeft(playerId);
   const handleCoinAdded = ({ coinId, coin }) => onCoinAdded(coinId, coin);
   const handleCoinClaimed = ({ coinId, player: updatedPlayer }) => onCoinClaimed(coinId, updatedPlayer);
-  const handleLeaderboardUpdated = (updatedPlayer) => onLeaderboardUpdated?.(updatedPlayer);
+  let leaderboardBatch = {};
+  let leaderboardDebounceTimer = null;
+  const handleLeaderboardUpdated = (updatedPlayer) => {
+    if (!onLeaderboardUpdated || !updatedPlayer?.id) return;
+    leaderboardBatch[updatedPlayer.id] = updatedPlayer;
+    if (!leaderboardDebounceTimer) {
+      leaderboardDebounceTimer = setTimeout(() => {
+        leaderboardDebounceTimer = null;
+        const currentBatch = leaderboardBatch;
+        leaderboardBatch = {};
+        Object.values(currentBatch).forEach((p) => {
+          onLeaderboardUpdated(p);
+        });
+      }, 500);
+    }
+  };
   const handleBotSpawned = (data) => onBotSpawned?.(data?.bot || data);
   const handleBotMoved = (data) => onBotMoved?.(data);
   const handleBotAttack = (data) => onBotAttack?.(data);
@@ -116,37 +154,78 @@ const subscribeToGame = async ({
   gameSocket.on('skill:effect', handleSkillEffect);
   gameSocket.on('connect_error', handleError);
 
-  const joinResponse = await new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      resolve({ ok: true, player });
-    }, 4000);
-
-    gameSocket.emit('game:join', player, (response) => {
-      clearTimeout(timeoutId);
-      if (!response?.ok) {
-        reject(new Error(response?.message || 'Gagal bergabung ke game.'));
-        return;
-      }
-      resolve(response);
-    });
+  let initialJoinSettled = false;
+  let resolveInitialJoin;
+  let rejectInitialJoin;
+  const initialJoinPromise = new Promise((resolve, reject) => {
+    resolveInitialJoin = resolve;
+    rejectInitialJoin = reject;
   });
 
-  if (joinResponse?.player) {
-    handlePlayerUpdated(joinResponse.player);
-  }
-
-  const handleReconnect = () => {
-    gameSocket.emit('game:join', player, (response) => {
-      if (response?.player) {
+  const emitJoin = () => {
+    // Only the very first join may carry the reset flag. Reconnects must resume the running session
+    // instead of wiping coins, health, position and the timer.
+    const payload = initialJoinSettled
+      ? { ...player, isReset: false, isRestart: false }
+      : player;
+    gameSocket.emit('game:join', payload, (response) => {
+      if (response?.ok && response?.player) {
+        resolveIdentity(response);
+      }
+      if (!initialJoinSettled) {
+        initialJoinSettled = true;
+        if (!response?.ok) {
+          rejectInitialJoin(new Error(response?.message || 'Gagal bergabung ke game.'));
+          return;
+        }
+        resolveInitialJoin(response);
+        return;
+      }
+      if (response?.ok && response?.player) {
         handlePlayerUpdated(response.player);
       }
     });
   };
 
-  gameSocket.on('connect', handleReconnect);
+  let joinInFlight = false;
+  const performJoin = () => {
+    // Skip the reconnect join while the initial join is still pending on the same connection.
+    if (!initialJoinSettled && joinInFlight) return;
+    joinInFlight = true;
+    emitJoin();
+  };
+
+  gameSocket.on('connect', performJoin);
+
+  if (gameSocket.connected) {
+    joinInFlight = true;
+    emitJoin();
+  }
+
+  const joinResponse = await Promise.race([
+    initialJoinPromise,
+    new Promise((resolve) => {
+      setTimeout(() => {
+        if (!initialJoinSettled) {
+          initialJoinSettled = true;
+          resolve({ ok: true, player, timedOut: true });
+        }
+      }, 4000);
+    })
+  ]);
+
+  if (joinResponse?.player && !joinResponse.timedOut) {
+    resolveIdentity(joinResponse);
+    handlePlayerUpdated(joinResponse.player);
+  }
 
   return () => {
-    gameSocket.off('connect', handleReconnect);
+    if (leaderboardDebounceTimer) {
+      clearTimeout(leaderboardDebounceTimer);
+      leaderboardDebounceTimer = null;
+    }
+    leaderboardBatch = {};
+    gameSocket.off('connect', performJoin);
     gameSocket.off('game:snapshot', handleSnapshot);
     gameSocket.off('player:updated', handlePlayerUpdated);
     gameSocket.off('player:left', handlePlayerLeft);
@@ -161,7 +240,10 @@ const subscribeToGame = async ({
     gameSocket.off('skill:effect', handleSkillEffect);
     gameSocket.off('connect_error', handleError);
     gameSocket.disconnect();
-    socket = null;
+    // Never drop a newer socket that replaced this one (e.g. guest -> registered promotion).
+    if (socket === gameSocket) {
+      socket = null;
+    }
   };
 };
 
@@ -170,6 +252,10 @@ const movePlayer = async (position) => {
   return new Promise((resolve, reject) => {
     gameSocket.emit('player:move', position, (response) => {
       if (!response?.ok) {
+        if (response?.reconcile && response?.authoritativePosition) {
+          resolve({ reconcile: true, authoritativePosition: response.authoritativePosition });
+          return;
+        }
         reject(new Error(response?.message || 'Gerakan tidak valid.'));
         return;
       }
@@ -243,6 +329,28 @@ const claimCoinAction = async ({ coinId, x, y } = {}) => {
   });
 };
 
+const finishPlayerAction = async () => {
+  const gameSocket = await getSocket();
+  return new Promise((resolve) => {
+    gameSocket.emit('player:finish', {}, (response) => {
+      resolve(response || { ok: true });
+    });
+  });
+};
+
+const respawnPlayerAction = async ({ x, y } = {}) => {
+  const gameSocket = await getSocket();
+  return new Promise((resolve, reject) => {
+    gameSocket.emit('player:respawn', { x, y }, (response) => {
+      if (!response?.ok) {
+        reject(new Error(response?.message || 'Gagal respawn pemain.'));
+        return;
+      }
+      resolve(response.player);
+    });
+  });
+};
+
 const disconnectRealtimeSocket = () => {
   if (socket) {
     socket.disconnect();
@@ -255,6 +363,8 @@ export {
   claimCoinAction,
   damagePlayer,
   disconnectRealtimeSocket,
+  finishPlayerAction,
+  respawnPlayerAction,
   movePlayer,
   resetPlayer,
   subscribeToGame,

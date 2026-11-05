@@ -1,5 +1,8 @@
 .login-button {
-    padding: 15px 245px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 529px;
+    padding: 15px 24px;
     font-size: 16px;
     border-radius: 10px;
     cursor: pointer;

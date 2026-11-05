@@ -1,7 +1,7 @@
 .gamukis-minimap-container {
-  position: absolute;
-  top: 16px;
-  right: 16px;
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -12,60 +12,39 @@
 }
 
 .gamukis-minimap-glass {
-  width: 170px;
-  height: 102px;
-  background: rgba(11, 38, 48, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  width: 176px;
+  height: 104px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.28);
+  border: 1.5px solid #CBD5E1;
   box-shadow:
-    0 8px 32px 0 rgba(0, 0, 0, 0.45),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.3);
+    0 8px 24px 0 rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
   position: relative;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.25s ease, height 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
+}
+
+.gamukis-minimap-glass.is-collapsed {
+  height: 28px !important;
 }
 
 .gamukis-minimap-glass:hover {
-  border-color: rgba(56, 189, 248, 0.55);
+  border-color: #94A3B8;
   box-shadow:
-    0 12px 36px 0 rgba(0, 0, 0, 0.55),
-    0 0 16px rgba(56, 189, 248, 0.25),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
+    0 10px 28px 0 rgba(0, 0, 0, 0.16);
 }
 
-/* Radar Scan Line Animation */
-.gamukis-minimap-sweep {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  background: linear-gradient(
-    180deg,
-    rgba(56, 189, 248, 0) 0%,
-    rgba(56, 189, 248, 0.12) 50%,
-    rgba(56, 189, 248, 0) 100%
-  );
-  pointer-events: none;
-  animation: radarScan 3s linear infinite;
-  opacity: 0.7;
-}
-
-@keyframes radarScan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
-}
-
-/* Radar Grid Background Lines */
+/* Subtle Map Grid Background Lines */
 .gamukis-minimap-grid {
   position: absolute;
   inset: 0;
+  background-color: #F8FAFC;
   background-image:
-    linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(148, 163, 184, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.18) 1px, transparent 1px);
   background-size: 28px 25px;
   pointer-events: none;
 }
@@ -75,14 +54,15 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  height: 28px;
   padding: 4px 8px;
   box-sizing: border-box;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #38bdf8;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.15);
-  background: rgba(7, 24, 31, 0.4);
+  color: #1E293B;
+  border-bottom: 1px solid #E2E8F0;
+  background: #F1F5F9;
   position: relative;
   z-index: 2;
 }
@@ -110,7 +90,7 @@
 .gamukis-minimap-stats {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: #fbbf24;
   font-size: 11px;
 }
@@ -119,7 +99,7 @@
 .gamukis-minimap-arena {
   position: relative;
   width: 100%;
-  height: calc(100% - 24px);
+  height: calc(100% - 28px);
   box-sizing: border-box;
 }
 
@@ -197,31 +177,37 @@
 .gamukis-hud-toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: flex-end;
+  gap: 6px;
   margin-top: 6px;
+  width: 100%;
 }
 
 .gamukis-hud-btn {
-  background: rgba(11, 38, 48, 0.75);
+  background: rgba(11, 38, 48, 0.82);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.32);
+  border-radius: 9px;
   color: #e0f2fe;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   padding: 5px 10px;
+  height: auto !important;
+  min-height: 30px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.32);
+  white-space: nowrap;
 }
 
 .gamukis-hud-btn:hover {
-  background: rgba(14, 116, 144, 0.6);
-  border-color: rgba(56, 189, 248, 0.6);
+  background: rgba(14, 116, 144, 0.65);
+  border-color: rgba(56, 189, 248, 0.65);
   transform: translateY(-1px);
 }
 
@@ -232,6 +218,119 @@
 .gamukis-hud-btn.active-muted {
   border-color: #ef4444;
   color: #fca5a5;
-  background: rgba(69, 10, 10, 0.65);
+  background: rgba(69, 10, 10, 0.72);
 }
 
+/* Laptop (1025px - 1280px) */
+@media (max-width: 1280px) {
+  .gamukis-minimap-glass {
+    width: 164px;
+    height: 98px;
+  }
+}
+
+/* Tablet Landscape & Tablet Portrait (601px - 1024px) */
+@media (max-width: 1024px) {
+  .gamukis-minimap-container {
+    top: max(10px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+  }
+
+  .gamukis-minimap-glass {
+    width: 150px;
+    height: 90px;
+  }
+
+  .gamukis-hud-btn {
+    font-size: 11px;
+    padding: 4px 9px;
+    min-height: 28px;
+  }
+}
+
+/* HP Portrait (<= 600px) */
+@media (max-width: 600px) and (orientation: portrait) {
+  .gamukis-minimap-container {
+    top: max(8px, env(safe-area-inset-top));
+    right: max(8px, env(safe-area-inset-right));
+  }
+
+  .gamukis-minimap-glass {
+    width: 124px;
+    height: 76px;
+    border-radius: 10px;
+  }
+
+  .gamukis-minimap-glass.is-collapsed {
+    height: 24px !important;
+  }
+
+  .gamukis-minimap-header {
+    height: 24px;
+    padding: 2px 6px;
+    font-size: 9.5px;
+  }
+
+  .gamukis-minimap-stats {
+    font-size: 9.5px;
+    gap: 4px;
+  }
+
+  .gamukis-minimap-arena {
+    height: calc(100% - 24px);
+  }
+
+  .gamukis-hud-toolbar {
+    margin-top: 4px;
+  }
+
+  .gamukis-hud-btn {
+    font-size: 10.5px;
+    padding: 3px 8px;
+    min-height: 24px;
+    border-radius: 7px;
+  }
+}
+
+/* HP Landscape (short height viewport) */
+@media (max-height: 540px) and (orientation: landscape) {
+  .gamukis-minimap-container {
+    top: max(6px, env(safe-area-inset-top));
+    right: max(8px, env(safe-area-inset-right));
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .gamukis-minimap-glass {
+    width: 122px;
+    height: 70px;
+    border-radius: 10px;
+  }
+
+  .gamukis-minimap-glass.is-collapsed {
+    height: 24px !important;
+  }
+
+  .gamukis-minimap-header {
+    height: 24px;
+    padding: 2px 6px;
+    font-size: 9.5px;
+  }
+
+  .gamukis-minimap-arena {
+    height: calc(100% - 24px);
+  }
+
+  .gamukis-hud-toolbar {
+    margin-top: 0;
+    width: auto;
+  }
+
+  .gamukis-hud-btn {
+    font-size: 10.5px;
+    padding: 4px 8px;
+    min-height: 24px;
+    border-radius: 7px;
+  }
+}

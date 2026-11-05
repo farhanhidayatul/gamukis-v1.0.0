@@ -74,15 +74,21 @@
 }
 
 .game-wrapper .Character.has-custom-appearance .Character_name-container {
-  top: -38px !important;
+  top: -32px !important;
   left: 8px !important;
   transform: translateX(-50%) !important;
 }
 
 .game-wrapper .Character.has-custom-appearance .Character_you-arrow {
-  top: -50px !important;
+  top: -21px !important;
   left: 8px !important;
+  width: 7px !important;
+  height: 5px !important;
+  background-size: 7px 5px !important;
+  background-position: center !important;
   transform: translateX(-50%) !important;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 /* ========================================================
@@ -136,6 +142,178 @@
   background-position-y: -110px;
 }
 
+/* 1b. Default SVG Girl Character (char_girl_1.svg) */
+.game-wrapper .Character:not(.has-custom-appearance) .Character_svg_girl {
+  position: absolute;
+  top: -20px;
+  left: 0px;
+  width: 18px;
+  height: 36px;
+  background: url("../../images/char_girl_1.svg") no-repeat;
+  background-size: 58px 146px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="girl"][data-direction="down"] .Character_svg_girl,
+.game-wrapper .Character:not(.has-custom-appearance)[data-gender="female"][data-direction="down"] .Character_svg,
+.game-wrapper .Character:not(.has-custom-appearance)[data-gender="female"][data-direction="down"] .Character_svg_girl {
+  background-position-x: -20px;
+  background-position-y: 0px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="girl"][data-direction="up"] .Character_svg_girl,
+.game-wrapper .Character:not(.has-custom-appearance)[data-gender="female"][data-direction="up"] .Character_svg,
+.game-wrapper .Character:not(.has-custom-appearance)[data-gender="female"][data-direction="up"] .Character_svg_girl {
+  background-position-x: -20px;
+  background-position-y: -37px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="girl"][data-direction="left"] .Character_svg_girl,
+.game-wrapper .Character:not(.has-custom-appearance)[data-gender="female"][data-direction="left"] .Character_svg,
+.game-wrapper .Character:not(.has-custom-appearance)[data-gender="female"][data-direction="left"] .Character_svg_girl {
+  background-position-x: -20px;
+  background-position-y: -110px;
+}
+.game-wrapper .Character:not(.has-custom-appearance)[data-color="girl"][data-direction="right"] .Character_svg_girl,
+.game-wrapper .Character:not(.has-custom-appearance)[data-gender="female"][data-direction="right"] .Character_svg,
+.game-wrapper .Character:not(.has-custom-appearance)[data-gender="female"][data-direction="right"] .Character_svg_girl {
+  background-position-x: -20px;
+  background-position-y: -73px;
+}
+
+
+/* 1c. Death Animation for SVG Girl Character (char_girl_1_death.svg) - 1:1 Scale Parity with char_man_1_death */
+@keyframes death-girl-down {
+  0% { background-position-x: 0px; }
+  33% { background-position-x: -41px; }
+  66% { background-position-x: -82px; }
+  100% { background-position-x: -123px; }
+}
+@keyframes death-girl-up {
+  0% { background-position-x: 0px; }
+  33% { background-position-x: -41px; }
+  66% { background-position-x: -82px; }
+  100% { background-position-x: -123px; }
+}
+@keyframes death-girl-left {
+  0% { background-position-x: 0px; }
+  33% { background-position-x: -41px; }
+  66% { background-position-x: -82px; }
+  100% { background-position-x: -123px; }
+}
+@keyframes death-girl-right {
+  0% { background-position-x: 0px; }
+  33% { background-position-x: -41px; }
+  66% { background-position-x: -82px; }
+  100% { background-position-x: -123px; }
+}
+
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"] .Character_svg {
+  background-image: url("../../images/char_girl_1_death.svg") !important;
+  background-size: 164px 146px !important;
+  width: 41px !important;
+  height: 38px !important;
+  top: -20px !important;
+  left: -12px !important;
+  animation-duration: 0.9s !important;
+  animation-timing-function: steps(1) !important;
+  animation-fill-mode: forwards !important;
+  animation-iteration-count: 1 !important;
+}
+
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"][data-direction="down"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"][data-direction="down"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"][data-direction="down"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"][data-direction="down"] .Character_svg {
+  background-position-y: 0px !important;
+  animation-name: death-girl-down !important;
+}
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"][data-direction="up"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"][data-direction="up"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"][data-direction="up"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"][data-direction="up"] .Character_svg {
+  background-position-y: -37px !important;
+  animation-name: death-girl-up !important;
+}
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"][data-direction="left"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"][data-direction="left"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"][data-direction="left"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"][data-direction="left"] .Character_svg {
+  background-position-y: -110px !important;
+  animation-name: death-girl-left !important;
+}
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"][data-direction="right"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"][data-direction="right"] .Character_svg_girl,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="girl"][data-direction="right"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-gender="female"][data-direction="right"] .Character_svg {
+  background-position-y: -73px !important;
+  animation-name: death-girl-right !important;
+}
+
+
+/* 1d. Death Animation for SVG Man Character (char_man_1_death.svg) */
+@keyframes death-man-down {
+  0% { background-position-x: 0px; }
+  33% { background-position-x: -42px; }
+  66% { background-position-x: -84px; }
+  100% { background-position-x: -127px; }
+}
+@keyframes death-man-up {
+  0% { background-position-x: 0px; }
+  33% { background-position-x: -42px; }
+  66% { background-position-x: -84px; }
+  100% { background-position-x: -127px; }
+}
+@keyframes death-man-left {
+  0% { background-position-x: 0px; }
+  33% { background-position-x: -42px; }
+  66% { background-position-x: -84px; }
+  100% { background-position-x: -127px; }
+}
+@keyframes death-man-right {
+  0% { background-position-x: 0px; }
+  33% { background-position-x: -42px; }
+  66% { background-position-x: -84px; }
+  100% { background-position-x: -127px; }
+}
+
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="man"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance):not([data-color="girl"]):not([data-gender="female"]) .Character_svg {
+  background-image: url("../../images/char_man_1_death.svg") !important;
+  background-size: 169px 166px !important;
+  width: 42px !important;
+  height: 42px !important;
+  top: -21px !important;
+  left: -17px !important;
+  animation-duration: 0.9s !important;
+  animation-timing-function: steps(1) !important;
+  animation-fill-mode: forwards !important;
+  animation-iteration-count: 1 !important;
+}
+
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="man"][data-direction="down"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance):not([data-color="girl"]):not([data-gender="female"])[data-direction="down"] .Character_svg {
+  background-position-y: 0px !important;
+  animation-name: death-man-down !important;
+}
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="man"][data-direction="up"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance):not([data-color="girl"]):not([data-gender="female"])[data-direction="up"] .Character_svg {
+  background-position-y: -42px !important;
+  animation-name: death-man-up !important;
+}
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="man"][data-direction="left"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance):not([data-color="girl"]):not([data-gender="female"])[data-direction="left"] .Character_svg {
+  background-position-y: -83px !important;
+  animation-name: death-man-left !important;
+}
+.game-wrapper .Character.dead:not(.has-custom-appearance)[data-color="man"][data-direction="right"] .Character_svg,
+.game-wrapper .Character.dead:not(.has-custom-appearance):not([data-color="girl"]):not([data-gender="female"])[data-direction="right"] .Character_svg {
+  background-position-y: -125px !important;
+  animation-name: death-man-right !important;
+}
+
 /* 2. Default Pixel Sprite Character (characters.png) */
 .game-wrapper .Character:not(.has-custom-appearance) .Character_sprite {
   position: absolute;
@@ -183,13 +361,19 @@
 
 /* 3. Default Nameplate and Arrow Positioning */
 .game-wrapper .Character:not(.has-custom-appearance) .Character_name-container {
-  top: -28px;
+  top: -32px;
   left: 8px;
   transform: translateX(-50%);
 }
 
 .game-wrapper .Character:not(.has-custom-appearance) .Character_you-arrow {
-  top: -16px;
+  top: -21px;
   left: 8px;
+  width: 7px;
+  height: 5px;
+  background-size: 7px 5px;
+  background-position: center;
   transform: translateX(-50%);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }

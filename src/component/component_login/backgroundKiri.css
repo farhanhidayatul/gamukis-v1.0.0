@@ -1,10 +1,13 @@
 .login-right {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center; /* Pusatkan vertikal */
   align-items: center; /* Pusatkan horizontal */
   height: auto; /* Agar tinggi penuh sesuai layar */
+  padding: 24px 16px;
+  box-sizing: border-box;
 }
 
 /* Header */
@@ -16,15 +19,17 @@
 .font-welcome {
   color: black; /* Warna sesuai dengan gambar */
   text-align: center; /* Pusatkan teks */
-  margin: 0 0 80px 40px;
+  margin: 0 0 80px 0;
   font-size: 40px;
   justify-content: center;
 }
-  form {
-    display: flex;
-    flex-direction: column;
-    
-  }
+
+.login-right form {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 529px);
+  box-sizing: border-box;
+}
   
   .remember-me {
     display: flex;
@@ -74,8 +79,11 @@
   .flex-row-container{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
-    width: 90%;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
   }
 
   .font-lupapassword{
@@ -85,7 +93,7 @@
     text-align: left;
   }
 
-  a {
+  .login-right a {
     color: #FFC107; /* Warna sesuai dengan gambar */
     text-decoration: none;
   }
@@ -106,9 +114,8 @@
   }
 
   @media (min-width: 1024px) {
-    form {
+    .login-right form {
       transform: scale(0.75);
-      
     }
   }
 
@@ -121,30 +128,38 @@
       align-items: center; /* Pusatkan horizontal */
       height: auto; /* Agar tinggi penuh sesuai layar */
     }
-    form {
-      transform: scale(0.65);
+    .login-right form {
+      width: min(100%, 420px);
+      transform: none;
+    }
+    .font-welcome {
+      margin: 0 0 36px;
+      font-size: clamp(28px, 4vw, 36px);
     }
   }
 
   @media (max-width: 767px) {
     .login-right {
+      min-height: 100dvh;
       background-color: #FFC107;
       align-items: center;
+      padding: 20px 12px;
     }
-    form {
-      width: min(100% - 24px, 420px);
+    .login-right form {
+      width: min(100%, 420px);
       transform: none;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       position: relative;
       background-color: white;
-      padding: 40px 24px;
+      padding: clamp(24px, 6vw, 40px) clamp(16px, 5vw, 24px);
       border-radius: 25px;
+      box-sizing: border-box;
     }
 
     .font-welcome {
-      margin: 0 0 36px;
-      font-size: clamp(26px, 8vw, 38px);
+      margin: 0 0 28px;
+      font-size: clamp(24px, 7.5vw, 36px);
     }
 
     .flex-row-container {

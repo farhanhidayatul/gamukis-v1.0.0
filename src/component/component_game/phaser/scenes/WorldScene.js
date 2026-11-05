@@ -26,6 +26,7 @@ export default class WorldScene extends Phaser.Scene {
     super({ key: 'WorldScene' });
     this.remotePlayers = new Map();
     this.bots = new Map();
+    this.isInputLocked = false;
   }
 
   create() {
@@ -90,6 +91,18 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   setupBridgeListeners() {
+    // Input lock synchronization (disable Phaser keyboard when React Modal is open)
+    this.unsubInputLock = gameEventBridge.on(
+      GAME_BRIDGE_EVENTS.INPUT_LOCK_CHANGED,
+      ({ locked }) => {
+        this.isInputLocked = Boolean(locked);
+        if (this.isInputLocked && this.localPlayer?.body) {
+          this.localPlayer.body.setVelocity(0, 0);
+          this.localPlayer.setDirection(this.localPlayer.currentDirection, false);
+        }
+      }
+    );
+
     // Remote players synchronization (supporting 30–100 players)
     this.unsubPlayersSync = gameEventBridge.on(
       GAME_BRIDGE_EVENTS.ROOM_PLAYERS_SYNC,
@@ -187,7 +200,11 @@ export default class WorldScene extends Phaser.Scene {
     const activeLocalId = this.localPlayerId || 'local_player';
 
     playersList.forEach((playerData) => {
-      if (!playerData || !playerData.id || playerData.id === activeLocalId || playerData.id === 'local_player') return;
+      const isSelf = !playerData || !playerData.id
+        || playerData.id === activeLocalId
+        || playerData.id === 'local_player'
+        || (this.localPlayer && this.localPlayer.playerId === playerData.id);
+      if (isSelf) return;
 
       activeIds.add(playerData.id);
 
@@ -226,6 +243,17 @@ export default class WorldScene extends Phaser.Scene {
 
   update(time, delta) {
     if (!this.localPlayer || !this.localPlayer.body) return;
+
+    if (this.localPlayer.isDead) {
+      this.localPlayer.body.setVelocity(0, 0);
+      return;
+    }
+
+    if (this.isInputLocked) {
+      this.localPlayer.body.setVelocity(0, 0);
+      this.localPlayer.setDirection(this.localPlayer.currentDirection, false);
+      return;
+    }
 
     let velocityX = 0;
     let velocityY = 0;
@@ -316,9 +344,32 @@ export default class WorldScene extends Phaser.Scene {
 
     for (const [id, bot] of this.bots.entries()) {
       if (!activeIds.has(id)) {
+        if (!bot.isDead) {
+          this.handleBotKilled(bot);
+        }
         bot.destroy();
         this.bots.delete(id);
       }
+    }
+  }
+
+  /**
+   * Spawns a reward coin drop at the location where a monster/slime bot is killed.
+   * 
+   * @param {BotEntity} bot 
+   */
+  handleBotKilled(bot) {
+    if (!bot || bot.hasDroppedCoin) return;
+    bot.hasDroppedCoin = true;
+
+    if (this.coinManager) {
+      const gridX = Math.round((bot.x - TILE_SIZE / 2) / TILE_SIZE);
+      const gridY = Math.round((bot.y - TILE_SIZE / 2) / TILE_SIZE);
+      const coinKey = "coin_drop_" + (bot.botId || "slime") + "_" + Date.now();
+
+      this.coinManager.syncCoins({
+        [coinKey]: { x: gridX, y: gridY, key: coinKey }
+      }, TILE_SIZE);
     }
   }
 
@@ -346,6 +397,8 @@ export default class WorldScene extends Phaser.Scene {
     if (this.unsubBots) this.unsubBots();
     if (this.unsubBotWarning) this.unsubBotWarning();
     if (this.unsubBotAttack) this.unsubBotAttack();
+    if (this.unsubInputLock) this.unsubInputLock();
+    if (this.unsubDeathState) this.unsubDeathState();
     if (this.coinManager) this.coinManager.destroy();
 
     this.remotePlayers.forEach(p => p.destroy());

@@ -33,11 +33,27 @@ export default class BotEntity extends Phaser.GameObjects.Container {
     // 1. Monster Sprite (Anchored at feet)
     const variant = this.variant || 'blood';
     let textureKey = `bot_${variant}_idle_right`;
-    if (!scene.textures.exists(textureKey)) {
+    const isSlime = variant === 'slime';
+
+    if (isSlime) {
+      if (scene.textures?.exists && scene.textures.exists('bot_slime_sheet')) {
+        textureKey = 'bot_slime_sheet';
+      } else {
+        textureKey = 'bot_blood_idle_right';
+      }
+    } else if (!scene.textures?.exists || !scene.textures.exists(textureKey)) {
       textureKey = this.variant === 'demon' ? 'bot_demon_sprite' : 'bot_blood_sprite';
     }
+
     this.sprite = scene.add.sprite(0, 0, textureKey).setOrigin(0.5, 1.0);
-    if (scene.textures.exists(`bot_${variant}_idle_right`)) {
+    if (isSlime) {
+      // Slime sprite sizing & initial setup from characters.png frame 0
+      this.sprite.setScale(1.0);
+      if (typeof this.sprite.setFrame === 'function') {
+        this.sprite.setFrame(0);
+      }
+      this.startSlimeIdleAnimation();
+    } else if (scene.textures?.exists && scene.textures.exists(`bot_${variant}_idle_right`)) {
       this.sprite.setScale(0.4);
     }
     this.add(this.sprite);
@@ -95,6 +111,7 @@ export default class BotEntity extends Phaser.GameObjects.Container {
 
   /**
    * Applies damage and updates visual indicators.
+   * Emits coin drop callback when bot HP reaches 0.
    * 
    * @param {number} damageAmount 
    */
@@ -105,14 +122,48 @@ export default class BotEntity extends Phaser.GameObjects.Container {
     // Damage flash effect
     if (this.sprite) {
       this.sprite.setTint(0xff0000);
-      this.scene.time.delayedCall(120, () => {
+      this.scene.time?.delayedCall?.(120, () => {
         if (this.sprite) this.sprite.clearTint();
       });
+    }
+
+    if (this.health <= 0 && !this.isDead) {
+      this.handleDeath();
     }
   }
 
   /**
-   * Smooth movement lerp for network roaming updates.
+   * Triggers bot defeat, plays death effect, and spawns coin drop.
+   */
+  handleDeath() {
+    this.isDead = true;
+    if (typeof this.onKilled === 'function') {
+      this.onKilled(this);
+    }
+    if (this.scene && typeof this.scene.handleBotKilled === 'function') {
+      this.scene.handleBotKilled(this);
+    }
+  }
+
+  /**
+   * Starts ambient slime bouncing / squash-and-stretch idle animation.
+   */
+  startSlimeIdleAnimation() {
+    if (!this.sprite || !this.scene?.tweens) return;
+
+    this.slimeIdleTween = this.scene.tweens.add({
+      targets: this.sprite,
+      scaleX: 1.15,
+      scaleY: 0.85,
+      duration: 450,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
+  }
+
+  /**
+   * Smooth movement lerp for network roaming updates with slime bounce.
    * 
    * @param {number} targetX 
    * @param {number} targetY 
@@ -121,10 +172,25 @@ export default class BotEntity extends Phaser.GameObjects.Container {
     if (this.moveTween) this.moveTween.stop();
 
     const variant = this.variant || 'blood';
-    if (targetX < this.x && this.scene.textures.exists(`bot_${variant}_idle_left`)) {
-      this.sprite.setTexture(`bot_${variant}_idle_left`);
-    } else if (targetX > this.x && this.scene.textures.exists(`bot_${variant}_idle_right`)) {
-      this.sprite.setTexture(`bot_${variant}_idle_right`);
+    const isSlime = variant === 'slime';
+
+    if (isSlime) {
+      // Slime movement frame cycling (0 -> 1 -> 2)
+      if (typeof this.sprite?.setFrame === 'function') {
+        const nextFrame = (this.sprite.frame?.name || 0) === 0 ? 1 : 0;
+        this.sprite.setFrame(nextFrame);
+      }
+      if (targetX < this.x) {
+        this.sprite?.setFlipX?.(true);
+      } else if (targetX > this.x) {
+        this.sprite?.setFlipX?.(false);
+      }
+    } else {
+      if (targetX < this.x && this.scene.textures?.exists?.(`bot_${variant}_idle_left`)) {
+        this.sprite.setTexture(`bot_${variant}_idle_left`);
+      } else if (targetX > this.x && this.scene.textures?.exists?.(`bot_${variant}_idle_right`)) {
+        this.sprite.setTexture(`bot_${variant}_idle_right`);
+      }
     }
 
     this.moveTween = this.scene.tweens.add({
@@ -132,9 +198,12 @@ export default class BotEntity extends Phaser.GameObjects.Container {
       x: targetX,
       y: targetY,
       duration: 200,
-      ease: 'Linear',
+      ease: isSlime ? 'Quad.easeInOut' : 'Linear',
       onComplete: () => {
         this.moveTween = null;
+        if (isSlime && typeof this.sprite?.setFrame === 'function') {
+          this.sprite.setFrame(0);
+        }
       }
     });
   }
@@ -195,6 +264,10 @@ export default class BotEntity extends Phaser.GameObjects.Container {
     if (this.moveTween) {
       this.moveTween.stop();
       this.moveTween = null;
+    }
+    if (this.slimeIdleTween) {
+      this.slimeIdleTween.stop();
+      this.slimeIdleTween = null;
     }
     super.destroy(fromScene);
   }

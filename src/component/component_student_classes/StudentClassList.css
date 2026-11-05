@@ -1,0 +1,250 @@
+.student-dashboard-page,
+.teacher-classroom-page {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 24px 28px 40px;
+  box-sizing: border-box;
+}
+
+.teacher-classroom-page {
+  max-width: 960px;
+}
+
+.student-dashboard-message {
+  max-width: 620px;
+  margin: 32px auto;
+  padding: 28px 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+.student-dashboard-header,
+.teacher-classroom-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.student-dashboard-title-group h1 {
+  margin: 4px 0;
+  font-size: clamp(1.4rem, 2.5vw, 1.95rem);
+}
+
+.student-dashboard-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.student-class-list-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.student-join-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.student-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #2563eb;
+  margin: 0 0 4px;
+}
+
+.student-join-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.student-join-form input {
+  flex: 1;
+  min-width: 220px;
+  padding: 11px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.student-join-alert {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.student-join-alert.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.student-join-alert.success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.student-enrolled-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.student-enrolled-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.student-enrolled-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.student-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.student-enrolled-card h3,
+.student-enrolled-card h4,
+.student-enrolled-card p,
+.student-class-card h4,
+.student-class-description {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.student-subject-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.student-progress-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.student-progress-badge.done {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.student-progress-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.student-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.student-btn-primary {
+  background: #FCD03E;
+  color: #292929;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+@media (max-width: 1024px) {
+  .student-dashboard-page,
+  .teacher-classroom-page {
+    padding: 20px 20px 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-dashboard-header,
+  .teacher-classroom-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .student-dashboard-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
+  }
+
+  .teacher-classroom-header .student-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .student-dashboard-page,
+  .teacher-classroom-page {
+    padding: 16px 14px 28px;
+  }
+
+  .student-join-card,
+  .student-enrolled-section {
+    padding: 16px;
+  }
+
+  .student-join-form {
+    flex-direction: column;
+  }
+
+  .student-join-form input {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .student-join-form .student-btn,
+  .student-enrolled-card .student-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-dashboard-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .student-card-top {
+    flex-wrap: wrap;
+  }
+}

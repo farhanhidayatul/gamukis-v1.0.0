@@ -247,12 +247,87 @@ export const cancelMembership = async (options = {}) => {
  * checkout URL to redirect the user to.
  * POST /api/memberships/pending/retry
  * @param {RequestInit} [options={}]
- * @returns {Promise<{ status: string, paymentUrl?: string, paymentToken?: string }>}
+ * @returns {Promise<{ status: string, orderId?: string, paymentUrl?: string, paymentToken?: string }>}
  */
 export const retryPendingMembership = async (options = {}) => {
   return await membershipRequest('/pending/retry', {
     method: 'POST',
     body: JSON.stringify({}),
+    ...options
+  });
+};
+
+/**
+ * Actively checks or settles a pending Midtrans membership payment.
+ * POST /api/memberships/pending/verify
+ * @param {object} [payload={}]
+ * @param {RequestInit} [options={}]
+ * @returns {Promise<{ status: string, activated: boolean, membership?: object, pending?: object|null, message?: string }>}
+ */
+export const verifyPendingMembership = async (payload = {}, options = {}) => {
+  return await membershipRequest('/pending/verify', {
+    method: 'POST',
+    body: JSON.stringify(payload || {}),
+    ...options
+  });
+};
+
+/**
+ * Downloads the official PDF invoice for a membership transaction.
+ * GET /api/memberships/:id/invoice
+ * @param {number|string} membershipId
+ * @returns {Promise<{ downloaded: boolean, filename: string, membershipId: number }>}
+ */
+export const downloadMembershipInvoice = async (membershipId) => {
+  const token = await getAuthToken();
+  const id = Number(membershipId);
+  const url = `${MEMBERSHIP_API_URL}/${encodeURIComponent(id)}/invoice`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    }
+  });
+
+  if (!response.ok) {
+    const errData = typeof response.json === 'function'
+      ? await response.json().catch(() => ({}))
+      : {};
+    throw new Error(errData?.message || `Gagal mengunduh invoice PDF (${response.status})`);
+  }
+
+  const filename = `Invoice-Gamukis-INV-GMK-${String(id).padStart(6, '0')}.pdf`;
+  if (typeof response.blob === 'function') {
+    const blob = await response.blob();
+    if (typeof window !== 'undefined' && window.URL && typeof window.URL.createObjectURL === 'function') {
+      const objectUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      if (typeof window.URL.revokeObjectURL === 'function') {
+        window.URL.revokeObjectURL(objectUrl);
+      }
+    }
+  }
+
+  return { downloaded: true, filename, membershipId: id };
+};
+
+/**
+ * Sends or resends the official PDF invoice to the customer's email.
+ * POST /api/memberships/:id/send-invoice
+ * @param {number|string} membershipId
+ * @param {object} [payload={}]
+ * @param {RequestInit} [options={}]
+ * @returns {Promise<{ success: boolean, sent: boolean, invoiceNumber?: string, recipient?: string, message?: string }>}
+ */
+export const sendMembershipInvoiceEmail = async (membershipId, payload = {}, options = {}) => {
+  return await membershipRequest(`/${encodeURIComponent(membershipId)}/send-invoice`, {
+    method: 'POST',
+    body: JSON.stringify(payload || {}),
     ...options
   });
 };
@@ -266,7 +341,10 @@ const membershipApi = {
   getHistory,
   subscribePlan,
   cancelMembership,
-  retryPendingMembership
+  retryPendingMembership,
+  verifyPendingMembership,
+  downloadMembershipInvoice,
+  sendMembershipInvoiceEmail
 };
 
 export default membershipApi;

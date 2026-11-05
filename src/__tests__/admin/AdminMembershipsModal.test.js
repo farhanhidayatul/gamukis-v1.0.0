@@ -1,6 +1,8 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import PlanModal from '../../component/component_admin_memberships/molecules/PlanModal';
+import AdminMemberships from '../../component/component_admin_memberships/AdminMemberships';
+import * as adminApi from '../../database/adminApi';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -207,5 +209,76 @@ describe('Admin PlanModal component', () => {
         })
       })
     );
+  });
+
+  it('renders AdminMemberships with customer transaction history table and PDF/email invoice actions', async () => {
+    jest.spyOn(adminApi, 'getMembershipPlans').mockResolvedValue([
+      { id: 1, code: 'siswa_premium', name: 'Siswa Premium', audience: 'siswa', price: 29000, durationDays: 30, isActive: true, features: {} }
+    ]);
+    jest.spyOn(adminApi, 'getAccessUsers').mockResolvedValue([
+      { authType: 'manual', id: '12', username: 'siswa_andi', email: 'andi@example.test', role: 'siswa' }
+    ]);
+    jest.spyOn(adminApi, 'getAdminMembershipTransactions').mockResolvedValue({
+      transactions: [
+        {
+          id: 205,
+          invoiceNumber: 'INV-GMK-20261028-000205',
+          username: 'siswa_andi',
+          email: 'andi@example.test',
+          audience: 'siswa',
+          name: 'Siswa Premium',
+          code: 'siswa_premium',
+          price: 29000,
+          status: 'active',
+          payment_ref: 'midtrans-205:qris',
+          created_at: '2026-10-28T09:00:00.000Z',
+          started_at: '2026-10-28T09:00:00.000Z',
+          expires_at: '2026-11-27T09:00:00.000Z'
+        }
+      ],
+      summary: {
+        totalCount: 1,
+        activeCount: 1,
+        pendingCount: 0,
+        cancelledCount: 0,
+        totalRevenue: 29000
+      }
+    });
+    const downloadSpy = jest.spyOn(adminApi, 'downloadAdminMembershipInvoice').mockResolvedValue({
+      downloaded: true,
+      filename: 'Invoice-Gamukis-INV-GMK-20261028-000205.pdf',
+      membershipId: 205
+    });
+    const emailSpy = jest.spyOn(adminApi, 'sendAdminMembershipInvoiceEmail').mockResolvedValue({
+      success: true,
+      sent: true,
+      message: 'Invoice berhasil dikirim ke email pelanggan.'
+    });
+
+    await act(async () => {
+      root.render(<AdminMemberships />);
+    });
+
+    expect(container.textContent).toContain('RIWAYAT TRANSAKSI PELANGGAN');
+    expect(container.textContent).toContain('INV-GMK-20261028-000205');
+    expect(container.textContent).toContain('siswa_andi');
+    expect(container.textContent).toContain('andi@example.test');
+
+    const pdfBtn = container.querySelector('[data-testid="admin-invoice-pdf-205"]');
+    const emailBtn = container.querySelector('[data-testid="admin-invoice-email-205"]');
+    expect(pdfBtn).toBeTruthy();
+    expect(emailBtn).toBeTruthy();
+
+    await act(async () => {
+      pdfBtn.click();
+    });
+    expect(downloadSpy).toHaveBeenCalledWith(205);
+
+    await act(async () => {
+      emailBtn.click();
+    });
+    expect(emailSpy).toHaveBeenCalledWith(205, 'andi@example.test');
+
+    jest.restoreAllMocks();
   });
 });

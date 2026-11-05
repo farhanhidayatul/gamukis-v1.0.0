@@ -6,7 +6,8 @@ import {
   getMembershipHistory,
   getHistory,
   subscribePlan,
-  cancelMembership
+  cancelMembership,
+  verifyPendingMembership
 } from '../../database/membershipApi';
 import {
   mockSiswaPlans,
@@ -661,5 +662,85 @@ describe('Tier 1: Feature Coverage (R1, R2, R3)', () => {
       await cancelMembership();
       expect(mockFetch.calls[0].options.headers.Authorization).toBe('Bearer test_siswa_jwt_token');
     });
+
+    itIf(Boolean(MembershipDashboard))(
+      '8.6 should open Midtrans checkout modal and verify/settle pending membership smoothly',
+      async () => {
+        mockFetch = setupMockFetch({
+          '/memberships/me': { status: 200, data: mockPendingMembership },
+          '/memberships/history': { status: 200, data: { history: mockHistoryList } },
+          '/memberships/pending/verify': {
+            status: 200,
+            data: {
+              status: 'active',
+              activated: true,
+              membership: mockActivePremiumMembership.membership,
+              pending: null,
+              message: 'Pembayaran berhasil dikonfirmasi! Paket membership Anda kini aktif.'
+            }
+          }
+        });
+
+        const verifyRes = await verifyPendingMembership({
+          orderId: 'gamukis-membership-5',
+          paymentMethod: 'qris',
+          simulateSettlement: true
+        });
+        expect(verifyRes.status).toBe('active');
+        expect(verifyRes.activated).toBe(true);
+
+        const screen = await renderIntoDom(
+          <MemoryRouter initialEntries={['/membership/dashboard?payment=sandbox_checkout&order_id=gamukis-membership-5']}>
+            <MembershipDashboard />
+          </MemoryRouter>
+        );
+
+        expect(screen.queryByText('MIDTRANS SNAP CHECKOUT')).toBeTruthy();
+        const confirmBtn = screen.container.querySelector('[data-testid="midtrans-confirm-payment-btn"]');
+        expect(confirmBtn).toBeTruthy();
+        await fireClick(confirmBtn);
+        expect(screen.queryByText('Pembayaran berhasil dikonfirmasi')).toBeTruthy();
+        await screen.unmount();
+      }
+    );
+
+    itIf(Boolean(MembershipDashboard))(
+      '8.7 should allow downloading PDF invoice and sending invoice email on active membership history',
+      async () => {
+        mockFetch = setupMockFetch({
+          '/memberships/me': { status: 200, data: mockActivePremiumMembership },
+          '/memberships/history': { status: 200, data: { history: mockHistoryList } },
+          '/memberships/3/invoice': { status: 200, data: { ok: true } },
+          '/memberships/3/send-invoice': {
+            status: 200,
+            data: {
+              success: true,
+              sent: true,
+              invoiceNumber: 'INV-GMK-20260910-000003',
+              recipient: 'siswa@example.test',
+              message: 'Invoice INV-GMK-20260910-000003 berhasil dikirim ke email siswa@example.test.'
+            }
+          }
+        });
+
+        const screen = await renderIntoDom(
+          <MemoryRouter>
+            <MembershipDashboard />
+          </MemoryRouter>
+        );
+
+        const pdfBtn = screen.container.querySelector('[data-testid="download-invoice-btn-3"]');
+        const emailBtn = screen.container.querySelector('[data-testid="email-invoice-btn-3"]');
+        expect(pdfBtn).toBeTruthy();
+        expect(emailBtn).toBeTruthy();
+
+        await fireClick(pdfBtn);
+        expect(screen.queryByText('Invoice PDF')).toBeTruthy();
+
+        await fireClick(emailBtn);
+        expect(screen.queryByText('INV-GMK-20260910-000003')).toBeTruthy();
+        await screen.unmount();
+      }
+    );
   });
 });

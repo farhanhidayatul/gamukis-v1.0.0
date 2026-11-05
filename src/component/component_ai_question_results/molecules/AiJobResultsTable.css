@@ -1,0 +1,107 @@
+.ai-results-table-card {
+  overflow: hidden;
+  border: 1px solid var(--line, #E1E5EA);
+  border-radius: 18px;
+  background: var(--card, #FFFFFF);
+  box-shadow: var(--sh, 0 6px 24px rgba(51, 51, 51, .10));
+}
+
+.ai-results-table-scroll {
+  overflow-x: auto;
+}
+
+.ai-results-table {
+  width: 100%;
+  min-width: 1080px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ai-results-table th,
+.ai-results-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line, #E1E5EA);
+  text-align: left;
+  vertical-align: top;
+  max-width: 280px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.ai-results-table th {
+  background: var(--cream, #F8FAFC);
+  color: var(--mut, #767676);
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.ai-results-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.ai-results-table tbody tr.ai-results-table__row--selected td {
+  background: color-mix(in srgb, var(--y, #FCD03E) 14%, white);
+}
+
+.ai-results-table code {
+  color: var(--ink, #333333);
+  font-size: 12px;
+}
+
+.ai-results-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  color: var(--mut, #767676);
+  font-size: 13px;
+}
+
+.ai-results-pagination div {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-results-pagination button {
+  border: 1px solid var(--line, #E1E5EA);
+  border-radius: 9px;
+  padding: 7px 11px;
+  background: var(--card, #FFFFFF);
+  color: var(--ink, #333333);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.ai-results-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+.ai-results-pagination button:focus-visible {
+  outline: 3px solid var(--y, #FCD03E);
+  outline-offset: 2px;
+}
+
+.ai-results-message {
+  margin: 0;
+  padding: 24px;
+  border: 1px solid var(--line, #E1E5EA);
+  border-radius: 18px;
+  background: var(--card, #FFFFFF);
+  color: var(--mut, #767676);
+}
+
+.ai-results-message--error {
+  border-color: var(--red, #C62828);
+  color: var(--red, #C62828);
+}
+
+@media (max-width: 700px) {
+  .ai-results-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

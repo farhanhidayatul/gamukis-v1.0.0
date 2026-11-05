@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithGoogle } from "../database/firebaseAuth";
 import {
+  clearManualSession,
   requestRegistrationOtp,
   verifyRegistrationOtp
 } from "../database/manualAuth";
@@ -51,7 +52,10 @@ const RegisterPage = () => {
   const handleVerifyOtp = async (otp) => {
     const result = await verifyRegistrationOtp(account.email, otp);
     const role = String(result?.user?.role || '').toLowerCase();
-    navigate(["siswa", "guru"].includes(role) ? "/home" : "/complete-profile");
+    if (["admin", "administrator"].includes(role)) navigate("/admin/dashboard");
+    else if (role === "guru") navigate("/guru/dashboard");
+    else if (role === "siswa") navigate("/siswa/dashboard");
+    else navigate("/complete-profile");
   };
 
   const finishRegistration = async (action) => {
@@ -61,7 +65,9 @@ const RegisterPage = () => {
       const result = await action();
       const role = String(result?.user?.role || '').toLowerCase();
       if (["admin", "administrator"].includes(role)) navigate("/admin/dashboard");
-      else navigate(["siswa", "guru"].includes(role) ? "/home" : "/complete-profile");
+      else if (role === "guru") navigate("/guru/dashboard");
+      else if (role === "siswa") navigate("/siswa/dashboard");
+      else navigate("/complete-profile");
     } catch (registrationError) {
       setError(registrationError.message || "Registrasi gagal. Periksa kembali data Anda.");
     } finally {
@@ -71,8 +77,16 @@ const RegisterPage = () => {
 
   const handleGoogleRegistration = () => {
     finishRegistration(async () => {
+      if (typeof clearManualSession === "function") {
+        clearManualSession();
+      }
       await signInWithGoogle();
-      return createBackendSession();
+      const session = await createBackendSession();
+      if (session?.user && typeof window !== "undefined") {
+        window.localStorage?.setItem("gamukis_manual_user", JSON.stringify(session.user));
+        window.dispatchEvent(new Event("gamukis-manual-auth-change"));
+      }
+      return session;
     });
   };
 
@@ -113,4 +127,3 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
-

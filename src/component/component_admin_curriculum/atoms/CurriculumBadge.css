@@ -1,0 +1,42 @@
+.curriculum-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.curriculum-badge--saintek {
+  background: #EAF4FF;
+  color: #1976D2;
+  border: 1px solid #BFDBFE;
+}
+
+.curriculum-badge--soshum {
+  background: #FFF4C2;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.curriculum-badge--bahasa {
+  background: #DCFCE7;
+  color: #16803C;
+  border: 1px solid #BBF7D0;
+}
+
+.curriculum-badge--ai {
+  background: #EAF4FF;
+  color: #1976D2;
+  border: 1px solid #BFDBFE;
+}
+
+.curriculum-badge--manual {
+  background: #F8FAFC;
+  color: #767676;
+  border: 1px solid #E1E5EA;
+}

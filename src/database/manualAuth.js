@@ -4,10 +4,27 @@ const USER_KEY = "gamukis_manual_user";
 
 const getToken = () => localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
 
+const resolveAuthToken = async () => {
+  const manualToken = getToken();
+  if (manualToken) return manualToken;
+
+  try {
+    const fbUser = typeof window !== "undefined" ? window.__gamukis_auth?.auth?.currentUser : null;
+    if (fbUser && !fbUser.isAnonymous && typeof fbUser.getIdToken === "function") {
+      const idToken = await fbUser.getIdToken();
+      if (idToken) return idToken;
+    }
+  } catch (_) {
+    // Ignore Firebase token fallback errors
+  }
+  return null;
+};
+
 const request = async (path, options = {}) => {
-  const token = getToken();
+  const token = await resolveAuthToken();
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -15,7 +32,15 @@ const request = async (path, options = {}) => {
     }
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.message || "Permintaan autentikasi gagal.");
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      const errMsg = String(data.message || '').toLowerCase();
+      if (errMsg.includes('token') || errMsg.includes('kedaluwarsa') || errMsg.includes('expired') || response.status === 401) {
+        clearManualSession();
+      }
+    }
+    throw new Error(data.message || "Permintaan autentikasi gagal.");
+  }
   return data;
 };
 
@@ -79,6 +104,10 @@ const clearManualSession = () => {
   sessionStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
   sessionStorage.removeItem(USER_KEY);
+  fetch(`${API_URL}/auth/manual/logout`, {
+    method: "POST",
+    credentials: "include"
+  }).catch(() => {});
   window.dispatchEvent(new Event("gamukis-manual-auth-change"));
 };
 

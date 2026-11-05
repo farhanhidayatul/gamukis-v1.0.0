@@ -30,6 +30,11 @@ export const RANK_CONFIG = [
     subTiers: 5,
     cumulativeStartExp: 0,
     cumulativeEndExp: 500,
+    minAccuracy: 20,
+    minGameScore: 15,
+    ruleMode: 'any',
+    maxPenaltyExp: 15,
+    requirementText: 'Min. Akurasi 20% atau 15 Poin',
     badge: rankBadgeNewbie,
     medal: lencanaNewbie,
     themeClass: 'newbie',
@@ -43,6 +48,11 @@ export const RANK_CONFIG = [
     subTiers: 5,
     cumulativeStartExp: 500,
     cumulativeEndExp: 1750,
+    minAccuracy: 40,
+    minGameScore: 40,
+    ruleMode: 'any',
+    maxPenaltyExp: 35,
+    requirementText: 'Min. Akurasi 40% atau 40 Poin',
     badge: rankBadgeRookie,
     medal: lencanaRookie,
     themeClass: 'rookie',
@@ -56,6 +66,11 @@ export const RANK_CONFIG = [
     subTiers: 5,
     cumulativeStartExp: 1750,
     cumulativeEndExp: 4250,
+    minAccuracy: 55,
+    minGameScore: 60,
+    ruleMode: 'both',
+    maxPenaltyExp: 75,
+    requirementText: 'Min. Akurasi 55% & 60 Poin',
     badge: rankBadgeCommon,
     medal: lencanaCommon,
     themeClass: 'common',
@@ -69,6 +84,11 @@ export const RANK_CONFIG = [
     subTiers: 5,
     cumulativeStartExp: 4250,
     cumulativeEndExp: 9250,
+    minAccuracy: 70,
+    minGameScore: 100,
+    ruleMode: 'both',
+    maxPenaltyExp: 150,
+    requirementText: 'Min. Akurasi 70% & 100 Poin',
     badge: rankBadgeBeginner,
     medal: lencanaBeginner,
     themeClass: 'beginner',
@@ -82,12 +102,104 @@ export const RANK_CONFIG = [
     subTiers: 5,
     cumulativeStartExp: 9250,
     cumulativeEndExp: 19250,
+    minAccuracy: 80,
+    minGameScore: 150,
+    ruleMode: 'both',
+    maxPenaltyExp: 300,
+    requirementText: 'Min. Akurasi 80% & 150 Poin',
     badge: rankBadgeLegendary,
     medal: lencanaLegendary,
     themeClass: 'legendary',
     colorGradient: 'linear-gradient(90deg, #ec4899 0%, #8b5cf6 100%)'
   }
 ];
+
+/**
+ * Menentukan objek konfigurasi rank aktif berdasarkan total EXP atau ID rank.
+ */
+export const resolveRankConfig = (currentExp = 0, rankId = null) => {
+  if (rankId) {
+    const found = RANK_CONFIG.find(
+      (r) => r.id === String(rankId).toLowerCase() || r.name.toLowerCase() === String(rankId).toLowerCase()
+    );
+    if (found) return found;
+  }
+  const safeExp = Math.max(0, parseInt(currentExp, 10) || 0);
+  for (let i = RANK_CONFIG.length - 1; i >= 0; i--) {
+    if (safeExp >= RANK_CONFIG[i].cumulativeStartExp) {
+      return RANK_CONFIG[i];
+    }
+  }
+  return RANK_CONFIG[0];
+};
+
+/**
+ * Mengevaluasi apakah performa pertandingan memenuhi ketentuan minimum rank saat ini.
+ * Jika tidak mencapai ketentuan rank, menghasilkan penalti pengurangan EXP (-EXP).
+ */
+export const evaluateRankPerformance = ({
+  coins = 0,
+  botKills = 0,
+  playerKills = 0,
+  accuracy = 0,
+  correctAnswers = 0,
+  score = null,
+  currentExp = 0,
+  rankId = null
+} = {}) => {
+  const c = Math.max(0, parseInt(coins, 10) || 0);
+  const b = Math.max(0, parseInt(botKills, 10) || 0);
+  const p = Math.max(0, parseInt(playerKills, 10) || 0);
+  const acc = Math.max(0, Math.min(100, parseFloat(accuracy) || 0));
+  const ca = Math.max(0, parseInt(correctAnswers, 10) || 0);
+
+  const computedScore = score !== null && score !== undefined
+    ? Math.max(0, parseInt(score, 10) || 0)
+    : (c * 5) + (b * 15) + (p * 30);
+
+  const targetRank = resolveRankConfig(currentExp, rankId);
+
+  const meetsAccuracy = acc >= targetRank.minAccuracy || (targetRank.id === 'newbie' && ca >= 1);
+  const meetsScore = computedScore >= targetRank.minGameScore;
+  const passed = targetRank.ruleMode === 'any'
+    ? (meetsAccuracy || meetsScore)
+    : (meetsAccuracy && meetsScore);
+
+  if (passed) {
+    return {
+      passed: true,
+      penaltyExp: 0,
+      deficitRatio: 0,
+      rank: targetRank,
+      computedScore,
+      accuracy: acc,
+      requirementText: targetRank.requirementText
+    };
+  }
+
+  const accDeficit = targetRank.minAccuracy > 0
+    ? Math.max(0, (targetRank.minAccuracy - acc) / targetRank.minAccuracy)
+    : 0;
+  const scoreDeficit = targetRank.minGameScore > 0
+    ? Math.max(0, (targetRank.minGameScore - computedScore) / targetRank.minGameScore)
+    : 0;
+
+  const deficitRatio = targetRank.ruleMode === 'any'
+    ? Math.min(1, (accDeficit + scoreDeficit) / 2)
+    : Math.min(1, Math.max(accDeficit, scoreDeficit));
+
+  const penaltyExp = -Math.max(5, Math.round(targetRank.maxPenaltyExp * Math.max(0.25, deficitRatio)));
+
+  return {
+    passed: false,
+    penaltyExp,
+    deficitRatio,
+    rank: targetRank,
+    computedScore,
+    accuracy: acc,
+    requirementText: targetRank.requirementText
+  };
+};
 
 /**
  * Menghitung perolehan EXP berdasarkan performa permainan:
@@ -97,6 +209,8 @@ export const RANK_CONFIG = [
  * - Akurasi: hingga 50 EXP (accuracy * 0.5)
  * - Jawaban kuis benar: 10 EXP per jawaban benar
  * - Base bonus match: 20 EXP
+ * - Jika enforceRankPenalty / currentExp / rankId diberikan dan nilai tidak mencapai ketentuan rank,
+ *   mengembalikan nilai pengurangan EXP negatif (-EXP).
  */
 export const calculateMatchExp = ({
   coins = 0,
@@ -104,13 +218,32 @@ export const calculateMatchExp = ({
   playerKills = 0,
   accuracy = 0,
   correctAnswers = 0,
-  score = 0
+  score = null,
+  currentExp = null,
+  rankId = null,
+  enforceRankPenalty = false
 } = {}) => {
   const c = Math.max(0, parseInt(coins, 10) || 0);
   const b = Math.max(0, parseInt(botKills, 10) || 0);
   const p = Math.max(0, parseInt(playerKills, 10) || 0);
   const acc = Math.max(0, Math.min(100, parseFloat(accuracy) || 0));
   const ca = Math.max(0, parseInt(correctAnswers, 10) || 0);
+
+  if (enforceRankPenalty || currentExp !== null || rankId !== null) {
+    const evalResult = evaluateRankPerformance({
+      coins: c,
+      botKills: b,
+      playerKills: p,
+      accuracy: acc,
+      correctAnswers: ca,
+      score,
+      currentExp: currentExp ?? 0,
+      rankId
+    });
+    if (!evalResult.passed) {
+      return evalResult.penaltyExp;
+    }
+  }
 
   const coinExp = c * 5;
   const botExp = b * 15;
@@ -150,6 +283,11 @@ export const calculateExpTierProgress = (totalExp = 0) => {
       nextMedalImg: maxRank.medal,
       themeClass: maxRank.themeClass,
       colorGradient: maxRank.colorGradient,
+      minAccuracy: maxRank.minAccuracy,
+      minGameScore: maxRank.minGameScore,
+      ruleMode: maxRank.ruleMode,
+      maxPenaltyExp: maxRank.maxPenaltyExp,
+      requirementText: maxRank.requirementText,
       isMaxLevel: true
     };
   }
@@ -205,6 +343,11 @@ export const calculateExpTierProgress = (totalExp = 0) => {
     nextMedalImg,
     themeClass: currentRank.themeClass,
     colorGradient: currentRank.colorGradient,
+    minAccuracy: currentRank.minAccuracy,
+    minGameScore: currentRank.minGameScore,
+    ruleMode: currentRank.ruleMode,
+    maxPenaltyExp: currentRank.maxPenaltyExp,
+    requirementText: currentRank.requirementText,
     isMaxLevel: false
   };
 };
@@ -243,4 +386,39 @@ export const playLevelUpSound = () => {
     // Abaikan jika Web Audio tidak diizinkan autoplay
   }
 };
+
+/**
+ * Sintesis audio nada turun (penalty/rank down) menggunakan Web Audio API.
+ */
+export const playRankDownSound = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+
+    const notes = [440.00, 392.00, 349.23, 293.66]; // A4, G4, F4, D4
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
+
+      gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + idx * 0.1 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.1 + 0.25);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + idx * 0.1);
+      osc.stop(ctx.currentTime + idx * 0.1 + 0.26);
+    });
+  } catch (e) {
+    // Abaikan jika Web Audio tidak diizinkan autoplay
+  }
+};
+
 

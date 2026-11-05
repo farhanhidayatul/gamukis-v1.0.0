@@ -1,0 +1,1223 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+.tutorial-page {
+  --tutorial-blue: #1877f2;
+  --tutorial-blue-dark: #0f4ea8;
+  --tutorial-gold: #f5c518;
+  --tutorial-gold-light: #fef7d6;
+  --tutorial-gold-border: #eab308;
+  --tutorial-red-callout: #e53935;
+  --tutorial-green-arrow: #16a34a;
+  --tutorial-ink: #1e293b;
+  --tutorial-muted: #475569;
+  --tutorial-card-bg: #fffdf5;
+  --tutorial-surface: #ffffff;
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(180deg, #f8fafc 0%, #fffdf7 100%);
+  color: var(--tutorial-ink);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  padding-bottom: 64px;
+}
+
+.tutorial-page *,
+.tutorial-page *::before,
+.tutorial-page *::after {
+  box-sizing: border-box;
+}
+
+/* Hidden route probe iframes (preserve DOM route references without auth redirect glitches) */
+.tutorial-hidden-route-probe {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  border: 0 !important;
+}
+
+/* Top Hero Banner */
+.tutorial-intro {
+  background: linear-gradient(135deg, #0d5bd9 0%, #1877f2 60%, #3898ff 100%);
+  color: #ffffff;
+  padding: 36px 24px;
+  border-bottom: 4px solid var(--tutorial-gold);
+}
+
+.tutorial-intro-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.tutorial-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fde047;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.tutorial-intro h1 {
+  margin: 12px 0 8px;
+  font-family: "Fredoka", sans-serif;
+  font-size: clamp(1.85rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.tutorial-intro p {
+  margin: 0;
+  max-width: 780px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Main Content Container */
+.tutorial-content {
+  max-width: 1280px;
+  margin: 28px auto 0;
+  padding: 0 20px;
+}
+
+.tutorial-guide {
+  background: var(--tutorial-surface);
+  border: 2px solid var(--tutorial-gold-border);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+}
+
+.tutorial-guide-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 2px dashed #fde68a;
+}
+
+.tutorial-section-kicker {
+  margin: 0 0 4px;
+  color: #b45309;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.tutorial-guide-header h2 {
+  margin: 0;
+  font-family: "Fredoka", sans-serif;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  color: var(--tutorial-ink);
+}
+
+/* Role Switcher Tabs (Siswa / Guru) */
+.tutorial-audience-tabs {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  background: #fef9c3;
+  border: 1.5px solid var(--tutorial-gold-border);
+  border-radius: 999px;
+}
+
+.tutorial-audience-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #713f12;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.tutorial-audience-tab.is-active {
+  background: var(--tutorial-blue);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.28);
+}
+
+.tutorial-guide-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.tutorial-guide-summary p {
+  margin: 0;
+  color: var(--tutorial-muted);
+  font-size: 0.95rem;
+}
+
+.tutorial-step-count {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #fef08a;
+  color: #854d0e;
+  font-weight: 800;
+  font-size: 0.82rem;
+}
+
+/* Quick-Jump Step Navigation Chips */
+.tutorial-step-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px;
+  background: #fffbeb;
+  border: 1.5px solid #fde047;
+  border-radius: 16px;
+  margin-bottom: 28px;
+}
+
+.tutorial-step-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid #fcd34d;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.tutorial-step-nav-item:hover {
+  border-color: var(--tutorial-blue);
+  color: var(--tutorial-blue);
+}
+
+.tutorial-step-nav-item.is-active {
+  background: var(--tutorial-gold);
+  border-color: #ca8a04;
+  color: #1e293b;
+  box-shadow: 0 3px 10px rgba(234, 179, 8, 0.28);
+}
+
+.tutorial-step-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #fef08a;
+  color: #713f12;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.tutorial-step-nav-item.is-active .tutorial-step-marker {
+  background: #1e293b;
+  color: #fef08a;
+}
+
+.tutorial-progress-track {
+  width: 100%;
+  height: 6px;
+  margin-top: 6px;
+  background: #fef08a;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.tutorial-progress-track span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--tutorial-blue), #22c55e);
+  transition: width 0.25s ease;
+}
+
+/* ==========================================================================
+   PDF STORYBOARD POSTER GRID & YELLOW-BORDERED STEP CONTAINERS
+   ========================================================================== */
+.tutorial-storyboard {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.tutorial-stage {
+  position: relative;
+  background: var(--tutorial-card-bg);
+  border: 2.5px solid var(--tutorial-gold);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 26px rgba(234, 179, 8, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tutorial-stage.is-current {
+  border-color: var(--tutorial-blue);
+  box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.2), 0 14px 32px rgba(15, 23, 42, 0.12);
+}
+
+/* Full-width spans for Langkah 1 (Loading), Langkah 6 (Gameplay), and Langkah 6 (End Game) */
+.tutorial-stage.tutorial-zone-top-full,
+.tutorial-stage.tutorial-zone-bottom-full,
+.tutorial-stage.is-featured {
+  grid-column: 1 / -1;
+}
+
+/* Yellow Gold Pill Header Tab (Matches PDF "Langkah X - ...") */
+.tutorial-yellow-pill-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tutorial-stage-number {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fde047 0%, #f5c518 100%);
+  border: 1.5px solid #ca8a04;
+  color: #1e293b;
+  font-family: "Fredoka", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(202, 138, 4, 0.22);
+}
+
+.tutorial-yellow-pill-header h3 {
+  margin: 0;
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.15rem;
+  color: var(--tutorial-ink);
+}
+
+/* Red Callout Highlight Box & Green Flow Arrows (From PDF Storyboard) */
+.tutorial-red-callout {
+  outline: 2.5px solid var(--tutorial-red-callout) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(229, 57, 53, 0.16);
+  border-radius: 8px;
+}
+
+.tutorial-red-callout-inline {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 2px solid var(--tutorial-red-callout);
+  border-radius: 6px;
+  background: rgba(229, 57, 53, 0.08);
+  color: #b45309;
+  font-weight: 800;
+}
+
+.tutorial-green-arrow-horizontal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tutorial-green-arrow);
+  font-size: 2rem;
+  font-weight: 800;
+  padding: 4px;
+}
+
+.tutorial-green-arrow-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 14px 0;
+  color: var(--tutorial-green-arrow);
+  font-weight: 800;
+  font-size: 0.86rem;
+}
+
+.tutorial-green-arrow-vertical svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 3;
+}
+
+/* Screen Preview Container */
+.tutorial-stage-preview {
+  margin-bottom: 16px;
+}
+
+.tutorial-screen-preview {
+  position: relative;
+  background: #ffffff;
+  border: 2px solid #facc15;
+  border-radius: 16px;
+  padding: 14px;
+  overflow: hidden;
+}
+
+.tutorial-screen-caption {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+/* ==========================================================================
+   SCALED 1366x768 VIRTUAL ROUTE VIEWPORT (EXACT APP.JS ROUTE RENDERING)
+   ========================================================================== */
+.tutorial-scaled-viewport-host {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.tutorial-route-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1366px;
+  transform-origin: top left;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+/* Scope 100vh/100dvh inside virtual route canvas so pages fit their full route height cleanly */
+.tutorial-route-canvas .loading-screen,
+.tutorial-route-canvas .login-container,
+.tutorial-route-canvas .login-left,
+.tutorial-route-canvas .register-container,
+.tutorial-route-canvas .register-bg-assesoris,
+.tutorial-route-canvas .register-left,
+.tutorial-route-canvas .complete-profile-page,
+.tutorial-route-canvas .complete-profile-art {
+  min-height: 768px !important;
+  height: 768px !important;
+  max-height: 768px !important;
+  box-sizing: border-box;
+}
+
+.tutorial-route-canvas .character-customization-page,
+.tutorial-route-canvas .customization-layout,
+.tutorial-route-canvas .student-class-page,
+.tutorial-route-canvas .profile-page,
+.tutorial-route-canvas .membership-plans-page,
+.tutorial-route-canvas .membership-dashboard-page,
+.tutorial-route-canvas .about-page,
+.tutorial-route-canvas .app-teacher-dashboard,
+.tutorial-route-canvas .teacher-editor-page,
+.tutorial-route-canvas .teacher-editor-layout {
+  min-height: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  box-sizing: border-box;
+}
+
+.tutorial-route-canvas .game-page {
+  height: 820px !important;
+  min-height: 820px !important;
+  max-height: 820px !important;
+}
+
+.tutorial-route-canvas .result-container {
+  height: 1220px !important;
+  min-height: 1220px !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Authentic Loading Screen (/) layout inside 1366x768 */
+.tutorial-route-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 40px;
+}
+
+.tutorial-route-loading .photo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.tutorial-route-loading .photo {
+  width: 340px;
+  height: auto;
+  object-fit: contain;
+}
+
+.tutorial-route-loading .box-progress {
+  padding: 20px 0 !important;
+  height: auto !important;
+}
+
+/* Authentic Login & Register adjustments inside 1366x768 */
+.tutorial-route-login .login-left {
+  position: relative;
+  overflow: hidden;
+}
+
+.tutorial-route-login .font-welcome {
+  margin: 0 0 28px 0 !important;
+  font-size: 34px !important;
+}
+
+.tutorial-callout-pad {
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.tutorial-highlight-next-btn .next-button-1 {
+  outline: 3px solid var(--tutorial-red-callout) !important;
+  box-shadow: 0 0 0 5px rgba(229, 57, 53, 0.22);
+}
+
+.tutorial-reg-field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.tutorial-reg-field-row label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.tutorial-reg-field-row input {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.tutorial-reg-gender-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tutorial-reg-gender-row span {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  background: #f8fafc;
+}
+
+.tutorial-reg-gender-row span.is-selected {
+  background: #fef9c3;
+  border-color: #eab308;
+  color: #713f12;
+}
+
+.tutorial-reg-next-btn {
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 12px;
+  border: 0;
+  background: #fcd03e;
+  color: #1e293b;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.tutorial-reg-back-btn {
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.tutorial-kelas-explorer-grid {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* ==========================================================================
+   LANGKAH 6: AUTHENTIC IN-GAME HUD (/inGame) INSIDE SCALED ROUTE VIEWPORT
+   ========================================================================== */
+.tutorial-authentic-ingame-wrapper {
+  position: relative !important;
+  width: 1366px !important;
+  height: 768px !important;
+  min-height: 768px !important;
+  max-height: 768px !important;
+  overflow: hidden !important;
+}
+
+/* Convert fixed HUD elements from inGame.js to absolute inside the 1366x768 canvas */
+.tutorial-authentic-ingame-wrapper .timer {
+  position: absolute !important;
+  top: 14px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 95 !important;
+}
+
+.tutorial-authentic-ingame-wrapper .player-info {
+  position: absolute !important;
+  top: 14px !important;
+  left: 16px !important;
+  z-index: 85 !important;
+  min-width: 248px !important;
+}
+
+.tutorial-authentic-ingame-wrapper .player-info__sub-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+}
+
+.tutorial-authentic-ingame-wrapper .player-info__color-action {
+  display: block !important;
+}
+
+.tutorial-authentic-ingame-wrapper .player-info__color-action #player-color {
+  height: 36px !important;
+  padding: 0 12px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08) !important;
+}
+
+.tutorial-authentic-ingame-wrapper .gamukis-minimap-container {
+  position: absolute !important;
+  top: 14px !important;
+  right: 16px !important;
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  z-index: 100 !important;
+}
+
+.tutorial-authentic-ingame-wrapper .gamukis-hud-toolbar {
+  margin-top: 0 !important;
+  width: auto !important;
+}
+
+.tutorial-authentic-ingame-wrapper .gamukis-hud-mute-btn {
+  width: auto !important;
+  min-width: 152px !important;
+  padding: 10px 18px !important;
+  font-size: 18px !important;
+  border-radius: 10px !important;
+}
+
+.tutorial-authentic-ingame-wrapper .leaderboard-inGame {
+  position: absolute !important;
+  top: 132px !important;
+  right: 16px !important;
+  z-index: 90 !important;
+}
+
+/* Force full HUD Controls (Bottom-Left D-Pad + Bottom-Right 6-Skill Grid) inside /inGame preview */
+.tutorial-authentic-ingame-wrapper .controls {
+  display: flex !important;
+  flex-direction: row !important;
+  position: absolute !important;
+  left: 16px !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  width: auto !important;
+  transform: none !important;
+  z-index: 88 !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  pointer-events: none !important;
+}
+
+.tutorial-authentic-ingame-wrapper .movement-pad {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 10px 12px !important;
+  border-radius: 22px !important;
+  background: rgba(10, 34, 42, 0.76) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.72) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.35) !important;
+  backdrop-filter: blur(8px) !important;
+  pointer-events: auto !important;
+}
+
+.tutorial-authentic-ingame-wrapper .movement-pad .row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  margin: 0 !important;
+}
+
+.tutorial-authentic-ingame-wrapper .movement-pad .row button,
+.tutorial-authentic-ingame-wrapper .movement-pad .row button:nth-child(2) {
+  width: 54px !important;
+  height: 54px !important;
+  margin: 2px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.75) !important;
+  background: linear-gradient(160deg, #71ff70, #35dc59) !important;
+  color: #052e16 !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px #16813a, inset 0 1px rgba(255, 255, 255, 0.5) !important;
+}
+
+.tutorial-authentic-ingame-wrapper .desktop-skill-control {
+  display: none !important;
+}
+
+.tutorial-authentic-ingame-wrapper .mobile-skill-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 88px) !important;
+  gap: 8px !important;
+  padding: 10px 12px !important;
+  border-radius: 22px !important;
+  background: rgba(10, 34, 42, 0.76) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.72) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.35) !important;
+  backdrop-filter: blur(8px) !important;
+  pointer-events: auto !important;
+}
+
+.tutorial-authentic-ingame-wrapper .mobile-skill-button {
+  min-height: 50px !important;
+  height: 50px !important;
+  margin: 0 !important;
+  padding: 4px 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  border-radius: 14px !important;
+  background: #f5c943 !important;
+  color: #26384c !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  box-shadow: 0 4px #95651c !important;
+}
+
+.tutorial-authentic-ingame-wrapper .mobile-skill-button span {
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  opacity: 0.85 !important;
+}
+
+/* Unified Row-Level SVG Connector Overlay binding callouts 1-6 directly to HUD & Arena objects */
+.tutorial-ingame-connector-svg {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 106 !important;
+  overflow: visible !important;
+}
+
+.tutorial-authentic-ingame-wrapper .gamukis-toast-container {
+  position: absolute !important;
+  top: 68px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 120 !important;
+}
+
+.tutorial-authentic-ingame-wrapper .coin-modal-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 110 !important;
+  background-color: rgba(15, 23, 42, 0.62) !important;
+}
+
+.tutorial-authentic-ingame-wrapper .coin-modal {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  margin-right: 0 !important;
+  transform: none !important;
+  max-width: 580px !important;
+}
+
+/* Highlight individual target elements inside /inGame HUD so arrows point clearly */
+.tutorial-authentic-ingame-wrapper .player-info__color-action #player-color,
+.tutorial-authentic-ingame-wrapper .player-name-display,
+.tutorial-ingame-leaderboard-callout .leaderboard-inGame,
+.tutorial-ingame-controls-callout .movement-pad,
+.tutorial-ingame-controls-callout .mobile-skill-grid {
+  outline: 2.5px solid var(--tutorial-red-callout) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(229, 57, 53, 0.18) !important;
+}
+
+.tutorial-result-lb-mini-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   STORYBOARD PAIR GRIDS, CALLOUTS, AND AUTHENTIC WRAPPER MARKERS
+   ========================================================================== */
+.tutorial-loading-storyboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.tutorial-authentic-home,
+.tutorial-authentic-feature-card {
+  border-radius: 14px;
+}
+
+.tutorial-authentic-home-route {
+  overflow: hidden;
+}
+
+.tutorial-auth-pair-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
+}
+
+.tutorial-auth-pair-grid.is-two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tutorial-auth-subcard {
+  background: #fffbeb;
+  border: 1.5px solid #fde047;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tutorial-auth-subcard-title {
+  display: block;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #1e293b;
+  background: #fef08a;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.tutorial-auth-subcard-caption {
+  margin: 0;
+  text-align: center;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: #334155;
+}
+
+.tutorial-auth-live-summary {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ==========================================================================
+   LANGKAH 6: GAMEPLAY HUD WITH 6 POINTER CALLOUTS + QUIZ MODAL
+   ========================================================================== */
+.tutorial-gameplay-annotated-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr) 236px;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.tutorial-gameplay-callouts-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 0;
+  gap: 12px;
+  z-index: 108;
+}
+
+.tutorial-callout-box {
+  position: relative;
+  background: #fffbeb;
+  border: 2px solid #dc2626;
+  border-radius: 10px;
+  padding: 10px 12px 10px 34px;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: #1e293b;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.14);
+}
+
+.tutorial-callout-badge {
+  position: absolute;
+  top: 9px;
+  left: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
+}
+
+.tutorial-callout-line {
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.tutorial-callout-box p {
+  margin: 0;
+}
+
+.tutorial-ingame-point-toast {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  background: #16a34a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.45);
+  z-index: 30;
+}
+
+/* ==========================================================================
+   STAGE DESCRIPTION, INTERACTIVE CONTROLS & ROUTE LINKS
+   ========================================================================== */
+.tutorial-stage-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tutorial-step-description {
+  margin: 0;
+  color: var(--tutorial-ink);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.tutorial-step-detail {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fef9c3;
+  border-left: 4px solid #eab308;
+  color: #713f12;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.tutorial-auth-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1.5px solid #fde047;
+  border-radius: 12px;
+}
+
+.tutorial-auth-mode,
+.tutorial-auth-method,
+.tutorial-register-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tutorial-auth-mode button,
+.tutorial-auth-method button,
+.tutorial-register-stages button {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tutorial-auth-mode button.is-active,
+.tutorial-auth-method button.is-active,
+.tutorial-register-stages button.is-active {
+  background: var(--tutorial-blue);
+  border-color: var(--tutorial-blue);
+  color: #ffffff;
+}
+
+.tutorial-register-stages button span {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.tutorial-auth-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--tutorial-muted);
+}
+
+.tutorial-action-link {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tutorial-action-link:hover {
+  background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+}
+
+.tutorial-authentic-result {
+  overflow: visible !important;
+}
+
+.tutorial-authentic-result .result-actions {
+  padding-bottom: 24px;
+}
+
+.tutorial-stage-edge-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #ca8a04;
+  opacity: 0.35;
+  font-size: 1.2rem;
+}
+
+/* Bottom Prev / Next Step Focus Controls */
+.tutorial-step-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 2px dashed #fde68a;
+}
+
+.tutorial-control-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1.5px solid #eab308;
+  background: #fef9c3;
+  color: #713f12;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tutorial-control-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tutorial-progress-label {
+  font-weight: 800;
+  color: var(--tutorial-ink);
+  font-size: 0.92rem;
+}
+
+.tutorial-footer-note {
+  margin: 20px 0 0;
+  text-align: center;
+  color: var(--tutorial-muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS (TABLET & MOBILE)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .tutorial-storyboard {
+    grid-template-columns: 1fr;
+  }
+
+  .tutorial-gameplay-annotated-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tutorial-authentic-gamepage {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .tutorial-guide {
+    padding: 18px;
+  }
+
+  .tutorial-loading-storyboard,
+  .tutorial-auth-pair-grid,
+  .tutorial-auth-pair-grid.is-two-col,
+  .tutorial-result-bottom-grid,
+  .tutorial-authentic-cards-row,
+  .tutorial-feature-grid.is-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .tutorial-step-controls {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .tutorial-intro {
+    padding: 24px 14px;
+  }
+
+  .tutorial-content {
+    padding: 0 10px;
+  }
+
+  .tutorial-guide {
+    padding: 14px 12px;
+    border-radius: 18px;
+  }
+
+  .tutorial-stage {
+    padding: 14px 12px;
+    border-radius: 16px;
+  }
+
+  .tutorial-screen-preview {
+    padding: 8px;
+  }
+
+  .tutorial-audience-tabs {
+    width: 100%;
+    display: flex;
+  }
+
+  .tutorial-audience-tab {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 12px;
+  }
+
+  .tutorial-step-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 10px;
+  }
+
+  .tutorial-step-nav-item {
+    flex: 0 0 auto;
+  }
+
+  .tutorial-control-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION ACCESSIBILITY OVERRIDE
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-page *,
+  .tutorial-page *::before,
+  .tutorial-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

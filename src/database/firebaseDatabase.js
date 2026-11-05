@@ -81,6 +81,7 @@ const request = async (path, options = {}) => {
   const token = await getEffectiveToken();
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

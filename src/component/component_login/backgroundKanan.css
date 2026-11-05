@@ -1,39 +1,43 @@
 /* General Layout */
 .login-left {
-
     flex: 1;
-    flex-direction: row;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     background: #FCD24A; /* Warna sesuai dengan gambar */
     align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-.icon-gamukis {
-    background-image:url(../../images/gamukis_vector.png);
-    width:300px;
-    height:85px;
-    background-size: contain;
-    align-items: center;
-    justify-content: center;
-    left: 250px;
-    top: 25px;
+    justify-content: flex-start;
+    min-height: 100dvh;
+    box-sizing: border-box;
     position: relative;
 }
 
+.icon-gamukis {
+    background-image: url(../../images/gamukis_vector.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: min(340px, 80%);
+    height: 90px;
+    margin: 40px auto 16px;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+}
 
 .background-anime {
     background-image: url(../../images/asset_background_anime.png);
     background-repeat: no-repeat;
-    background-size: cover; /* Menyesuaikan ukuran tanpa merusak rasio aspek */
-    background-position: center; /* Memastikan gambar tetap di tengah */
-    width: 736px;
-    height: 720px;
+    background-size: cover; /* Mengisi penuh kontainer edge-to-edge tanpa celah samping */
+    background-position: center top; /* Mengunci bagian atas agar rambut dan kepala karakter tidak terpotong */
+    width: 100%;
+    flex: 1; /* Mengisi seluruh sisa tinggi hingga ke bagian bawah kontainer */
+    min-height: 0;
     position: relative;
-    transform: scale(1.21);
-    transform-origin: center;
-    top: 170px;
-    left: 72px;
+    margin-top: 0;
+    margin-bottom: 0;
+    z-index: 1;
 }
 
 /* Media Queries for responsiveness */
@@ -41,90 +45,40 @@
 /* For screens wider than 1024px (Desktop and large laptops) */
 @media (min-width: 1024px) {
     .login-left {
-        /* height: 143.5vh; */
-        height: auto;
+        height: 100dvh;
     }
 
     .icon-gamukis {
-        width:338px;
-        height:96px;
-        left: 200px;
-        top: 60px;
-        background-size: contain;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        
+        width: min(350px, 80%);
+        height: 96px;
+        margin: 48px auto 12px;
     }
-    
 
     .background-anime {
-        /* width: 515px;
-        height: 495px; */
-        position: static;
-        margin-top: 100px;
-        transform: scale(1);
+        width: 100%;
+        flex: 1;
+        background-size: cover;
+        background-position: center top;
     }
-  }
-
-  /* @media (min-width: 1020px) and (max-width: 1024px) {
-    .background-anime {
-        transform: scale(1.21);
-        top: 140px;
-        left: 40px;
-    }
-  } */
-
-  /* @media (min-width: 1260px) {
-    .login-left {
-        flex-direction: row;
-        height: 112vh;
-    }
-
-    .icon-gamukis {
-        width:169px;
-        height:48px;
-        background-size: contain;
-        align-items: center;
-        justify-content: center;
-        left: 225px;
-        top: 25px;
-        position: relative;
-    }
-    
-
-    .background-anime {
-        width: 525px;
-        height: 495px;
-        top: 110px;
-        left: 52px;
-    }
-  } */
+}
 
 /* For screens between 768px and 1023px (Tablets and smaller laptops) */
 @media (min-width: 768px) and (max-width: 1023px) {
     .login-left {
-        flex-direction: column; /* Stack elements vertically on tablet */
-        height: auto;
+        height: 100dvh;
     }
 
     .icon-gamukis {
-        width:169px;
-        height:48px;
-        transform: scale(1.8);
-        background-size: contain;
-        align-items: center;
-        justify-content: center;
-        top: 75px;
-        left: 275px;
-        position: relative;
+        width: min(280px, 80%);
+        height: 76px;
+        margin: 32px auto 10px;
     }
-    
 
     .background-anime {
-        margin-bottom: 80px;
-        transform: scale(1);
-        left: -1px;
+        width: 100%;
+        flex: 1;
+        background-size: cover;
+        background-position: center top;
     }
 }
 
@@ -139,6 +93,6 @@
     }
     
     .icon-gamukis {
-     display: none;
+        display: none;
     }
 }

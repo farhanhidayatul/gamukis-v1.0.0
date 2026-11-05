@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import {
   calculateExpTierProgress,
   calculateMatchExp,
+  evaluateRankPerformance,
   RANK_CONFIG
 } from '../../utils/expRankSystem';
 import RankSection from '../../component/component_result/rankSelection';
@@ -120,7 +121,7 @@ describe('EXP & Rank Difficulty Scaling System', () => {
       expect(exp).toBe(220);
     });
 
-    it('ensures minimum baseline EXP of at least 10 for any played match', () => {
+    it('ensures minimum baseline EXP of at least 10 for any played match when penalty mode is not active', () => {
       const minExp = calculateMatchExp({
         coins: 0,
         botKills: 0,
@@ -129,6 +130,86 @@ describe('EXP & Rank Difficulty Scaling System', () => {
         correctAnswers: 0
       });
       expect(minExp).toBeGreaterThanOrEqual(10);
+    });
+
+    it('deducts EXP (returns negative EXP) when player fails rank threshold across all 5 ranks', () => {
+      // 1. Newbie (0 EXP): fails when 0 accuracy, 0 correct, 0 gameScore -> -15 EXP
+      const newbieFail = calculateMatchExp({
+        coins: 0,
+        botKills: 0,
+        playerKills: 0,
+        accuracy: 0,
+        correctAnswers: 0,
+        currentExp: 100
+      });
+      expect(newbieFail).toBeLessThan(0);
+      expect(newbieFail).toBe(-15);
+
+      // Newbie passes with 1 correct answer even if coins = 0
+      const newbiePass = calculateMatchExp({
+        coins: 0,
+        botKills: 0,
+        playerKills: 0,
+        accuracy: 25,
+        correctAnswers: 1,
+        currentExp: 100
+      });
+      expect(newbiePass).toBeGreaterThan(0);
+
+      // 2. Rookie (600 EXP): requires >= 40% accuracy OR >= 40 score
+      const rookieFail = calculateMatchExp({
+        coins: 2, // 10 score (< 40)
+        botKills: 0,
+        playerKills: 0,
+        accuracy: 20, // < 40%
+        correctAnswers: 1,
+        currentExp: 600
+      });
+      expect(rookieFail).toBeLessThan(0);
+
+      // 3. Common (2000 EXP): requires >= 55% accuracy AND >= 60 score
+      const commonFail = calculateMatchExp({
+        coins: 4, // 20 score (< 60)
+        botKills: 0,
+        playerKills: 0,
+        accuracy: 60, // passes accuracy, but fails score!
+        correctAnswers: 3,
+        currentExp: 2000
+      });
+      expect(commonFail).toBeLessThan(0);
+
+      const commonPass = calculateMatchExp({
+        coins: 12, // 60 score (>= 60)
+        botKills: 0,
+        playerKills: 0,
+        accuracy: 60, // >= 55%
+        correctAnswers: 3,
+        currentExp: 2000
+      });
+      expect(commonPass).toBeGreaterThan(0);
+
+      // 4. Beginner (5000 EXP): requires >= 70% accuracy AND >= 100 score
+      const beginnerFail = calculateMatchExp({
+        coins: 10, // 50 score (< 100)
+        botKills: 1, // +15 = 65 score
+        playerKills: 0,
+        accuracy: 50,
+        correctAnswers: 2,
+        currentExp: 5000
+      });
+      expect(beginnerFail).toBeLessThan(0);
+
+      // 5. Legendary (10000 EXP): requires >= 80% accuracy AND >= 150 score
+      const legendaryFail = evaluateRankPerformance({
+        coins: 5,
+        botKills: 1,
+        playerKills: 0,
+        accuracy: 40,
+        correctAnswers: 2,
+        currentExp: 10000
+      });
+      expect(legendaryFail.passed).toBe(false);
+      expect(legendaryFail.penaltyExp).toBeLessThanOrEqual(-150);
     });
   });
 
@@ -208,6 +289,114 @@ describe('EXP & Rank Difficulty Scaling System', () => {
       });
 
       expect(card.className).toContain('rank-celebrating');
+    });
+
+    it('renders red downward arrow (↓↓) and negative EXP indicator when match EXP decreases', () => {
+      act(() => {
+        root.render(
+          <RankSection
+            coins={1}
+            botKills={0}
+            playerKills={0}
+            accuracy={20}
+            correctAnswers={0}
+            previousExp={2050}
+            currentExp={1975}
+            gainedExp={-75}
+          />
+        );
+      });
+
+      // Red downward arrow is rendered instead of green upward arrow
+      const downArrow = container.querySelector('.rank-arrow-down');
+      expect(downArrow).not.toBeNull();
+      expect(downArrow.textContent).toBe('↓↓');
+      expect(container.querySelector('.rank-arrow-up')).toBeNull();
+
+      // Negative EXP badge and penalty text
+      const expDelta = container.querySelector('[data-testid="rank-exp-delta"]');
+      expect(expDelta).not.toBeNull();
+      expect(expDelta.className).toContain('rank-exp-lost');
+      expect(expDelta.textContent).toBe('-75 EXP Game');
+      expect(container.textContent).toContain('EXP Berkurang!');
+
+      // Progress bar fill has penalty styling
+      const expFill = container.querySelector('.rank-exp-fill');
+      expect(expFill.className).toContain('is-penalty');
+    });
+
+    it('renders RANK DOWN! badge and Rank Turun! label when penalty drops player to a lower rank or sub-tier', () => {
+      act(() => {
+        root.render(
+          <RankSection
+            coins={0}
+            botKills={0}
+            playerKills={0}
+            accuracy={10}
+            correctAnswers={0}
+            previousExp={1760}
+            currentExp={1700}
+            gainedExp={-60}
+          />
+        );
+      });
+
+      expect(container.querySelector('[data-testid="rank-leveldown-badge"]')).not.toBeNull();
+      expect(container.querySelector('[data-testid="rank-leveldown-badge"]').textContent).toBe('RANK DOWN!');
+      expect(container.textContent).toContain('Rank Turun!');
+      expect(container.querySelector('.rank-arrow-down').textContent).toBe('↓↓');
+      expect(container.querySelector('.rank-pill-badge').textContent).toBe('Rookie');
+    });
+
+    it('ensures progress bar strictly decreases and never increases during EXP deduction', () => {
+      act(() => {
+        root.render(
+          <RankSection
+            coins={0}
+            botKills={0}
+            playerKills={0}
+            accuracy={0}
+            correctAnswers={0}
+            previousExp={2050}
+            currentExp={1975}
+            gainedExp={-75}
+          />
+        );
+      });
+
+      // Target is 45% (1975 EXP = 225/500 of Common 1)
+      // Initial start must be >= target (60% down to 45%)
+      const expTrack = container.querySelector('.rank-exp-track');
+      const startPercent = Number(expTrack.getAttribute('aria-valuenow'));
+      expect(startPercent).toBeGreaterThanOrEqual(45);
+      expect(startPercent).toBeLessThanOrEqual(100);
+
+      const expFill = container.querySelector('.rank-exp-fill');
+      const initialWidth = parseInt(expFill.style.width, 10);
+      expect(initialWidth).toBeGreaterThanOrEqual(45);
+    });
+
+    it('ensures progress bar starts at 100% and decreases when player drops tier during penalty', () => {
+      act(() => {
+        root.render(
+          <RankSection
+            coins={0}
+            botKills={0}
+            playerKills={0}
+            accuracy={0}
+            correctAnswers={0}
+            previousExp={1750}
+            currentExp={1675}
+            gainedExp={-75}
+          />
+        );
+      });
+
+      // Target is 70% (1675 EXP in Rookie 5)
+      // Dropping tier must start at 100% and animate down to 70%, never increasing from 0%
+      const expTrack = container.querySelector('.rank-exp-track');
+      const startPercent = Number(expTrack.getAttribute('aria-valuenow'));
+      expect(startPercent).toBe(100);
     });
   });
 });

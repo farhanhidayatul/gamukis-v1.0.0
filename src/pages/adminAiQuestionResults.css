@@ -1,0 +1,63 @@
+.admin-ai-results {
+  display: grid;
+  gap: 18px;
+}
+
+.admin-ai-results > .ai-candidate-preview {
+  margin-top: 6px;
+}
+
+.admin-ai-results__toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.admin-ai-results__toolbar h2 {
+  margin: 0 0 6px;
+  color: var(--ink, #333333);
+  font-size: 22px;
+}
+
+.admin-ai-results__toolbar p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--mut, #767676);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.admin-ai-results__toolbar label {
+  display: grid;
+  gap: 6px;
+  color: var(--ink, #333333);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-ai-results__toolbar select {
+  min-width: 180px;
+  border: 1px solid var(--line, #E1E5EA);
+  border-radius: 9px;
+  padding: 9px 10px;
+  background: var(--card, #FFFFFF);
+  color: var(--ink, #333333);
+  font: inherit;
+}
+
+.admin-ai-results__toolbar select:focus-visible {
+  outline: 3px solid var(--y, #FCD03E);
+  outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+  .admin-ai-results__toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-ai-results__toolbar select {
+    width: 100%;
+  }
+}

@@ -4,7 +4,8 @@
   display: grid;
   grid-template-columns: 51.3% 48.7%;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   color: #353238;
   background: #ffbe06 url("../images/bg_quiz_1.png") center / cover no-repeat;
 }
@@ -258,6 +259,8 @@
   margin: 0 0 12px;
   color: #a22e36;
   font-size: 12px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .complete-profile-notice {
@@ -455,6 +458,7 @@
   }
 
   .complete-profile-roles {
+    grid-template-columns: 1fr;
     gap: 7px;
   }
 
@@ -468,7 +472,7 @@
   }
 
   .complete-profile-role small {
-    font-size: 8px;
+    font-size: 10px;
   }
 
   .complete-profile-submit {

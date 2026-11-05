@@ -43,20 +43,22 @@ const MiniMap = ({
   ));
 
   return (
-    <div className="gamukis-minimap-container" data-testid="gamukis-minimap">
+    <div
+      className={`gamukis-minimap-container ${isCollapsed ? 'is-collapsed' : ''}`}
+      data-testid="gamukis-minimap"
+    >
       <div
-        className="gamukis-minimap-glass"
-        style={{ height: isCollapsed ? '28px' : '102px' }}
+        className={`gamukis-minimap-glass ${isCollapsed ? 'is-collapsed' : ''}`}
       >
         <div
           className="gamukis-minimap-header"
           onClick={() => setIsCollapsed(!isCollapsed)}
           style={{ cursor: 'pointer' }}
-          title={isCollapsed ? 'Klik untuk memperluas Radar' : 'Klik untuk memperkecil Radar'}
+          title={isCollapsed ? 'Klik untuk memperluas Peta' : 'Klik untuk memperkecil Peta'}
         >
           <div className="gamukis-minimap-title">
             <span className="gamukis-minimap-indicator" />
-            <span>RADAR</span>
+            <span>MAP</span>
           </div>
           <div className="gamukis-minimap-stats">
             <span title="Koin aktif">🪙 {activeCoins.length}</span>
@@ -69,7 +71,6 @@ const MiniMap = ({
         {!isCollapsed && (
           <div className="gamukis-minimap-arena">
             <div className="gamukis-minimap-grid" />
-            <div className="gamukis-minimap-sweep" />
 
             {/* Active Coin Dots */}
             {activeCoins.map(([key, coin]) => {

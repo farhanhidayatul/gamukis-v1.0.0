@@ -1,3 +1,4 @@
+import { generateSecureGuestId } from '../component/component_game/utils';
 import { Client } from 'colyseus.js';
 import { getEffectiveToken } from './firebaseDatabase';
 
@@ -23,6 +24,7 @@ export const getColyseusClient = () => {
  */
 export const joinGameRoom = async ({
   player = {},
+  onSnapshot,
   onPlayerAdd,
   onPlayerChange,
   onPlayerRemove,
@@ -39,8 +41,8 @@ export const joinGameRoom = async ({
     let token = await getEffectiveToken();
     if (!token) {
       const guestId = typeof window !== 'undefined'
-        ? (window.sessionStorage?.getItem('gamukis_guest_id') || `guest_${Date.now()}`)
-        : `guest_${Date.now()}`;
+        ? (window.sessionStorage?.getItem('gamukis_guest_id') || generateSecureGuestId())
+        : generateSecureGuestId();
       if (typeof window !== 'undefined') {
         window.sessionStorage?.setItem('gamukis_guest_id', guestId);
       }
@@ -106,6 +108,30 @@ export const joinGameRoom = async ({
       onError?.({ code, message });
     });
 
+    // 5. Initial Snapshot synchronization
+    if (typeof onSnapshot === 'function') {
+      const initialPlayers = {};
+      activeRoom.state.players.forEach((p, sId) => {
+        const formatted = formatColyseusPlayer(p);
+        if (formatted) initialPlayers[formatted.id || sId] = formatted;
+      });
+      const initialCoins = {};
+      activeRoom.state.coins.forEach((c, key) => {
+        initialCoins[key] = { x: c.x, y: c.y };
+      });
+      const initialBots = {};
+      activeRoom.state.bots.forEach((b, botId) => {
+        const formatted = formatColyseusBot(b);
+        if (formatted) initialBots[formatted.id || botId] = formatted;
+      });
+      onSnapshot({
+        players: initialPlayers,
+        coins: initialCoins,
+        bots: initialBots,
+        leaderboard: Object.values(initialPlayers)
+      });
+    }
+
     return () => {
       if (activeRoom) {
         activeRoom.leave();
@@ -141,6 +167,32 @@ export const sendPlayerUpdate = (updateData) => {
   if (activeRoom) {
     activeRoom.send('player:update', updateData);
   }
+};
+
+// Drop-in compatible actions for inGame.js
+export const movePlayer = async (position) => {
+  sendPlayerMove(position?.x, position?.y, position?.direction);
+  return position;
+};
+
+export const claimCoinAction = async ({ coinId, x, y }) => {
+  sendCoinClaim(coinId);
+  return { ok: true, coinId };
+};
+
+export const castSkillAction = async ({ skillIndex = 0 } = {}) => {
+  sendSkillCast(skillIndex);
+  return { ok: true };
+};
+
+export const updatePlayer = async (updateData) => {
+  sendPlayerUpdate(updateData);
+  return updateData;
+};
+
+export const resetPlayer = async (resetData) => {
+  sendPlayerUpdate(resetData);
+  return resetData;
 };
 
 export const formatColyseusPlayer = (p) => {
@@ -207,6 +259,7 @@ export const subscribeToColyseusGame = async ({
 }) => {
   return await joinGameRoom({
     player,
+    onSnapshot,
     onPlayerAdd: (p) => {
       const formatted = formatColyseusPlayer(p);
       if (formatted) onPlayerUpdated?.(formatted);

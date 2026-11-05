@@ -1,0 +1,62 @@
+.teacher-class-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.teacher-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 16px;
+}
+
+.teacher-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.teacher-form-field label {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.teacher-form-field input,
+.teacher-form-field select,
+.teacher-form-field textarea {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+.teacher-form-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+
+.teacher-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+  .teacher-class-form {
+    padding: 16px;
+  }
+
+  .teacher-form-actions {
+    flex-direction: column;
+  }
+
+  .teacher-form-actions button {
+    width: 100%;
+  }
+}

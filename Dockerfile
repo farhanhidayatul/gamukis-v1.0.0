@@ -1,5 +1,5 @@
 # 1. Gunakan Image Node sebagai dasar untuk build
-FROM node:20-alpine
+FROM node:24.22.1-alpine
 
 # 2. Tentukan direktori kerja
 WORKDIR /app

@@ -10,7 +10,6 @@ import ProfileAchievements from "../component/component_profile/profileAchieveme
 import ProfileDetails from "../component/component_profile/profileDetails";
 import SavedCharacterList from "../component/component_customization_char/molecules/SavedCharacterList";
 import { fetchCharacters, setActiveCharacter, deleteCharacter } from "../database/characterApi";
-import { CustomCharacterRenderer } from "../component/component_game/playerInfo";
 import "./profile.css";
 
 const loadStoredAppearance = () => {
@@ -209,10 +208,6 @@ const Profile = () => {
     savedCharacters.find((c) => c.isActive) || savedCharacters[0] || null
   ), [savedCharacters]);
 
-  const activeAppearance = useMemo(() => (
-    activeCharacter?.data || loadStoredAppearance()
-  ), [activeCharacter]);
-
   const handleActivateCharacter = async (id) => {
     try {
       await setActiveCharacter(id);
@@ -323,40 +318,15 @@ const Profile = () => {
                 </div>
               )}
               <div className="profile-characters-layout">
-                {activeAppearance && (
-                  <div className="profile-character-preview-card">
-                    <div className="profile-character-visual-stage">
-                      <CustomCharacterRenderer
-                        appearance={activeAppearance}
-                        direction="down"
-                        style={{
-                          position: 'relative',
-                          top: '10px',
-                          left: '50%',
-                          transform: 'translateX(-50%) scale(1.15)',
-                          transformOrigin: 'top center'
-                        }}
-                      />
-                    </div>
-                    <div className="profile-character-preview-meta">
-                      <span className="profile-character-preview-name">
-                        {activeCharacter?.name || 'Karakter Saya'}
-                      </span>
-                      <span className="profile-character-preview-badge">Aktif</span>
-                    </div>
-                  </div>
-                )}
-                <div className="profile-character-list-wrapper">
-                  <SavedCharacterList
-                    characters={savedCharacters}
-                    maxSlots={maxSlots}
-                    activeCharacterId={activeCharacter?.id}
-                    onActivate={handleActivateCharacter}
-                    onLoad={handleLoadCharacter}
-                    onDelete={handleDeleteCharacter}
-                    isLoading={isLoadingCharacters}
-                  />
-                </div>
+                <SavedCharacterList
+                  characters={savedCharacters}
+                  maxSlots={maxSlots}
+                  activeCharacterId={activeCharacter?.id}
+                  onActivate={handleActivateCharacter}
+                  onLoad={handleLoadCharacter}
+                  onDelete={handleDeleteCharacter}
+                  isLoading={isLoadingCharacters}
+                />
               </div>
             </section>
             <div className="profile-content">

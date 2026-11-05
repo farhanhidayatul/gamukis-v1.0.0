@@ -1,0 +1,34 @@
+.ai-job-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  background: var(--cream, #F8FAFC);
+  color: var(--ink, #333333);
+}
+
+.ai-job-status--completed,
+.ai-job-status--candidates_ready,
+.ai-job-status--review {
+  background: color-mix(in srgb, var(--green, #16803C) 14%, white);
+  color: var(--green, #16803C);
+}
+
+.ai-job-status--failed,
+.ai-job-status--cancelled {
+  background: color-mix(in srgb, var(--red, #C62828) 12%, white);
+  color: var(--red, #C62828);
+}
+
+.ai-job-status--processing,
+.ai-job-status--queued,
+.ai-job-status--retry_wait,
+.ai-job-status--awaiting_continuation {
+  background: color-mix(in srgb, var(--y, #FCD03E) 32%, white);
+  color: var(--ink, #333333);
+}

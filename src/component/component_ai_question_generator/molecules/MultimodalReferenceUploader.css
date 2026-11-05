@@ -1,0 +1,363 @@
+.multimodal-reference-uploader-root {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin: 18px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.multimodal-reference-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header-meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.header-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.header-meta h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.header-meta p {
+  margin: 0;
+  font-size: 0.83rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.toggle-uploader-btn {
+  background: #ebf3fc;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggle-uploader-btn:hover {
+  background: #dbeafe;
+}
+
+.multimodal-reference-body {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.reference-form {
+  background: #f8fafc;
+  padding: 16px 18px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1;
+  min-width: min(100%, 220px);
+}
+
+.form-group label {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.photo-upload-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 22px 16px;
+  text-align: center;
+  background: #ffffff;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+}
+
+.photo-upload-dropzone:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.photo-upload-dropzone:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+}
+
+.photo-upload-dropzone--dragging {
+  border-color: #1976d2 !important;
+  background: rgba(25, 118, 210, 0.08) !important;
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2) !important;
+  transform: scale(1.01);
+}
+
+.photo-upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.photo-file-input {
+  display: none;
+}
+
+.photo-icon {
+  font-size: 1.6rem;
+}
+
+.photo-upload-label small {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.photo-preview-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.photo-thumb {
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  object-fit: contain;
+}
+
+.btn-remove-photo {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.table-builder-section {
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.save-spec-btn {
+  background: #fcd03e;
+  color: #292929;
+  border: 1px solid #f5b900;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  align-self: flex-start;
+  box-shadow: 0 2px 4px rgba(245, 185, 0, 0.25);
+  transition: background 0.15s ease;
+}
+
+.save-spec-btn:hover:not(:disabled) {
+  background: #f5b900;
+}
+
+.save-spec-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.status-alert {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.status-alert.success {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-alert.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.specs-library-section {
+  margin-top: 24px;
+}
+
+.specs-library-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  color: #1e293b;
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.spec-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spec-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.spec-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  color: #475569;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+
+.btn-del-spec {
+  background: transparent;
+  color: #ef4444;
+  border: none;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.spec-card-image img {
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.spec-card-notes {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.spec-card-date {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-top: auto;
+}
+
+.loading-specs,
+.empty-specs {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 8px 0;
+}
+
+
+.btn-edit-spec {
+  background: transparent;
+  color: #1976d2;
+  border: none;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.btn-edit-spec:hover {
+  text-decoration: underline;
+}
+
+.btn-cancel-edit-spec {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.btn-cancel-edit-spec:hover {
+  background: #e2e8f0;
+}

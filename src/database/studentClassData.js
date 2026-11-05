@@ -3,6 +3,51 @@
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+export const parseDurationToMinutes = (duration) => {
+  if (typeof duration === 'number') {
+    return Number.isFinite(duration) && duration > 0 ? Math.round(duration) : null;
+  }
+
+  const normalizedDuration = String(duration || '').trim().toLowerCase();
+  if (!normalizedDuration) return null;
+
+  if (/^\d+$/.test(normalizedDuration)) {
+    const minutes = Number(normalizedDuration);
+    return minutes > 0 ? minutes : null;
+  }
+
+  const match = normalizedDuration.match(/^(?:(\d+)\s*jam)?\s*(?:(\d+)\s*menit)?$/);
+  if (!match || (!match[1] && !match[2])) return null;
+
+  const totalMinutes = (Number(match[1]) || 0) * 60 + (Number(match[2]) || 0);
+  return totalMinutes > 0 ? totalMinutes : null;
+};
+
+export const sumLessonDurationMinutes = (lessons) => {
+  if (!Array.isArray(lessons) || lessons.length === 0) return null;
+
+  let totalMinutes = 0;
+  for (const lesson of lessons) {
+    const lessonMinutes = parseDurationToMinutes(lesson?.duration);
+    if (lessonMinutes === null) return null;
+    totalMinutes += lessonMinutes;
+  }
+
+  return totalMinutes > 0 ? totalMinutes : null;
+};
+
+export const formatDurationMinutes = (durationMinutes) => {
+  if (!Number.isFinite(Number(durationMinutes)) || Number(durationMinutes) <= 0) return '';
+
+  const wholeMinutes = Math.round(Number(durationMinutes));
+  const hours = Math.floor(wholeMinutes / 60);
+  const remainingMinutes = wholeMinutes % 60;
+  return [
+    hours > 0 ? `${hours} Jam` : null,
+    remainingMinutes > 0 ? `${remainingMinutes} Menit` : null
+  ].filter(Boolean).join(' ');
+};
+
 // Fallback catalog if backend is offline or during offline testing
 export const FALLBACK_CLASS_CATEGORIES = [
   {
@@ -706,9 +751,12 @@ export const fetchClassCategories = async () => {
 /**
  * Mengambil daftar kelas siswa dengan filter kategori opsional
  */
-export const fetchClassesByCategory = async (category = null) => {
+export const fetchClassesByCategory = async (category = null, stage = null) => {
   try {
-    const query = category ? `?category=${encodeURIComponent(category)}` : '';
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (stage) params.set('stage', stage);
+    const query = params.toString() ? `?${params.toString()}` : '';
     const response = await fetch(`${API_URL}/classes${query}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
@@ -748,6 +796,20 @@ export const fetchClassDetail = async (slug) => {
   }
 };
 
+export const fetchClassOfferingDetail = async (slug, offeringId) => {
+  try {
+    const response = await fetch(`${API_URL}/classes/subject/${encodeURIComponent(slug)}/offerings/${encodeURIComponent(offeringId)}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const result = await response.json();
+    return result.classDetail || null;
+  } catch (err) {
+    return null;
+  }
+};
+
 /**
  * Mengambil rekomendasi harian materi belajar
  */
@@ -767,6 +829,27 @@ export const fetchDailyRecommendations = async () => {
   }
 };
 
+const buildProgressAuthHeaders = async () => {
+  const headers = { 'Content-Type': 'application/json' };
+  try {
+    const manualToken = typeof localStorage !== 'undefined' ? localStorage.getItem('gamukis_jwt') : null;
+    if (manualToken) {
+      headers.Authorization = `Bearer ${manualToken}`;
+      return headers;
+    }
+    if (typeof window !== 'undefined') {
+      const currentUser = window.__gamukis_auth?.auth?.currentUser;
+      if (currentUser && typeof currentUser.getIdToken === 'function') {
+        const googleToken = await currentUser.getIdToken();
+        if (googleToken) {
+          headers.Authorization = `Bearer ${googleToken}`;
+        }
+      }
+    }
+  } catch (_) {}
+  return headers;
+};
+
 /**
  * Mengambil progress belajar siswa
  */
@@ -775,9 +858,11 @@ export const fetchStudentClassProgress = async (studentId = 'default_student', c
     const url = classSlug
       ? `${API_URL}/classes/progress/${encodeURIComponent(classSlug)}?studentId=${encodeURIComponent(studentId)}`
       : `${API_URL}/classes/progress?studentId=${encodeURIComponent(studentId)}`;
+    const headers = await buildProgressAuthHeaders();
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+      credentials: 'include',
+      headers
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const result = await response.json();
@@ -810,9 +895,11 @@ export const saveStudentClassProgress = async (progressData) => {
   const storageKey = `gamukis_progress_${studentId}_${classSlug || 'all'}`;
   try {
     localStorage.setItem(storageKey, JSON.stringify(progressData));
+    const headers = await buildProgressAuthHeaders();
     const response = await fetch(`${API_URL}/classes/progress`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      headers,
       body: JSON.stringify(progressData)
     });
     if (response.ok) {

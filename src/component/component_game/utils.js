@@ -112,3 +112,25 @@ export const getRandomSafeSpot = (mapData) => {
 
   return randomFromArray(fallbackSafeSpots);
 };
+
+export const generateSecureGuestId = () => {
+  const c = (typeof window !== 'undefined' && window.crypto)
+    || (typeof global !== 'undefined' && global.crypto)
+    || (typeof crypto !== 'undefined' ? crypto : null);
+
+  if (c && typeof c.randomUUID === 'function') {
+    return `guest_${c.randomUUID()}`;
+  }
+  if (c && typeof c.getRandomValues === 'function') {
+    const bytes = new Uint8Array(16);
+    c.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40; // RFC 4122 version 4
+    bytes[8] = (bytes[8] & 0x3f) | 0x80; // RFC 4122 variant 1
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    const uuid = `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+    return `guest_${uuid}`;
+  }
+
+  const randomHex = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  return `guest_${Date.now()}_${randomHex}`;
+};

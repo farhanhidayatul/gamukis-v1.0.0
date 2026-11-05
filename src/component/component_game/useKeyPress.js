@@ -32,7 +32,7 @@ const useKeyPress = (keyMappings) => {
         return;
       }
 
-      const action = keyMappingsRef.current[event.code];
+      const action = keyMappingsRef.current[event.code] || keyMappingsRef.current[event.key];
       if (!action) return;
 
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) {

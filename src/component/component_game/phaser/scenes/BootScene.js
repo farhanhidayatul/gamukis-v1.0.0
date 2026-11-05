@@ -12,6 +12,8 @@
 import Phaser from 'phaser';
 import coinImg from '../../../../images/coin.png';
 import charManSvg from '../../../../images/char-man-1.svg';
+import charGirlSvg from '../../../../images/char_girl_1.svg';
+import charactersImg from '../../../../images/characters.png';
 import bloodIdleLeft from '../../../../images/asset_game/character/bot_enemy/Blood Monster_A/Blood Monster_A/Blood Monster_A_Idle_direction_left.png';
 import bloodIdleRight from '../../../../images/asset_game/character/bot_enemy/Blood Monster_A/Blood Monster_A/Blood Monster_A_Idle_direction_right.png';
 import demonIdleLeft from '../../../../images/asset_game/character/bot_enemy/Demon_A/Demon_A/Demon_A_Idle_direction_left.png';
@@ -47,8 +49,17 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('bot_orc_idle_right', orcIdleRight);
     this.load.image('bot_orc_idle_left', orcIdleLeft);
 
-    // 4. Preload authentic Character SVG
+    // 4. Preload Slime Bot spritesheet (characters.png)
+    if (!this.textures.exists('bot_slime_sheet')) {
+      this.load.spritesheet('bot_slime_sheet', charactersImg, {
+        frameWidth: 32,
+        frameHeight: 32
+      });
+    }
+
+    // 5. Preload authentic Character SVGs (Boy & Girl)
     this.load.image('char_man_svg', charManSvg);
+    this.load.image('char_girl_svg', charGirlSvg);
 
     // 5. Fallback textures in case any network/asset request degrades
     if (!this.textures.exists('char_fallback_base')) {
@@ -113,6 +124,26 @@ export default class BootScene extends Phaser.Scene {
         createDirectionTexture('char_man_up', 20, 37);
         createDirectionTexture('char_man_left', 20, 72);
         createDirectionTexture('char_man_right', 20, 110);
+      }
+
+      // Slice authentic Girl SVG character frames (calibrated with 13.6x scale ratio)
+      const girlSvgTexture = this.textures.get('char_girl_svg');
+      const girlSvgSource = girlSvgTexture && girlSvgTexture.getSourceImage();
+      if (girlSvgSource) {
+        const createGirlDirectionTexture = (key, sx, sy, sw, sh) => {
+          if (this.textures.exists(key)) return;
+          const canvas = document.createElement('canvas');
+          canvas.width = 19;
+          canvas.height = 36;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(girlSvgSource, sx, sy, sw, sh, 0, 0, 19, 36);
+          this.textures.addCanvas(key, canvas);
+        };
+
+        createGirlDirectionTexture('char_girl_down', 270, 0, 250, 490);
+        createGirlDirectionTexture('char_girl_up', 270, 500, 250, 490);
+        createGirlDirectionTexture('char_girl_left', 276, 1490, 250, 490);
+        createGirlDirectionTexture('char_girl_right', 270, 980, 250, 490);
       }
     } catch (e) {
       console.warn('SVG character frame slicing degraded:', e.message);

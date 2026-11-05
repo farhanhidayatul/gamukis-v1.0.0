@@ -64,6 +64,8 @@
 .membership-dashboard-hero-copy > p {
   margin: 7px 0 12px;
   color: rgba(255, 255, 255, 0.86);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .membership-status-pill {
@@ -188,6 +190,8 @@
   background: #e2fff2;
   color: #078459;
   line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .membership-dashboard-toast button {
@@ -232,6 +236,7 @@
 .membership-pending-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -341,6 +346,8 @@
   color: #274761;
   font-size: 0.84rem;
   vertical-align: middle;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .membership-history-status {
@@ -431,13 +438,17 @@
   display: grid;
   place-items: center;
   padding: 20px;
+  box-sizing: border-box;
   background: rgba(10, 24, 63, 0.48);
   backdrop-filter: blur(3px);
 }
 
 .membership-dashboard-modal {
   position: relative;
+  box-sizing: border-box;
   width: min(460px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
   padding: 30px;
   border: 3px solid #0b2d6b;
   border-radius: 18px;
@@ -477,6 +488,8 @@
   border-radius: 9px;
   background: #fff0ec;
   color: #9c4034 !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .membership-dashboard-modal-actions {
@@ -550,9 +563,10 @@
 
   .membership-history-table td {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: 16px;
+    gap: 8px 16px;
     padding: 7px 4px;
     border: 0;
     text-align: right;
@@ -577,6 +591,16 @@
     padding: 20px;
   }
 
+  .membership-pending-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .membership-pending-actions .membership-dashboard-button {
+    width: 100%;
+  }
+
   .membership-dashboard-panel {
     padding: 20px 16px;
   }
@@ -593,4 +617,219 @@
   .membership-dashboard-modal-actions .membership-dashboard-button {
     width: 100%;
   }
+}
+
+
+/* Midtrans Snap Checkout Modal */
+.membership-midtrans-modal {
+  width: min(560px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-color: #1976d2;
+}
+
+.membership-midtrans-header {
+  margin-bottom: 16px;
+}
+
+.membership-midtrans-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e8f2ff;
+  color: #0b4da2;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.membership-midtrans-header p {
+  margin: 4px 0 0;
+  color: #56718a;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.membership-midtrans-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #1a66e0, #0c98c6);
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.membership-midtrans-summary strong {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.membership-midtrans-summary small {
+  display: block;
+  margin-top: 2px;
+  opacity: 0.85;
+  font-size: 0.74rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.membership-midtrans-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+  margin-bottom: 2px;
+}
+
+.membership-midtrans-amount {
+  text-align: right;
+}
+
+.membership-midtrans-amount strong {
+  font-size: 1.2rem;
+  color: #ffd95a;
+}
+
+.membership-midtrans-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.membership-midtrans-method-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 2px solid #dbe5ee;
+  border-radius: 10px;
+  background: #f9fbfe;
+  color: #19324d;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.membership-midtrans-method-btn:hover {
+  border-color: #69a7f8;
+  background: #f0f6ff;
+}
+
+.membership-midtrans-method-btn.is-selected {
+  border-color: #206bf0;
+  background: #eaf3ff;
+  box-shadow: 0 2px 0 rgba(32, 107, 240, 0.2);
+}
+
+.membership-midtrans-method-name {
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.membership-midtrans-method-tag {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #dceaff;
+  color: #1554b8;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.membership-midtrans-instruction {
+  padding: 12px 14px;
+  border: 1px dashed #b9d2f4;
+  border-radius: 10px;
+  background: #f5f9ff;
+}
+
+.membership-midtrans-instruction p {
+  margin: 0 0 8px;
+  color: #32506d;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.membership-midtrans-code-box {
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: #132840;
+  color: #ffd95a;
+  font-family: monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 560px) {
+  .membership-midtrans-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .membership-midtrans-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .membership-midtrans-amount {
+    text-align: left;
+  }
+}
+
+
+/* Invoice PDF & Email Actions */
+.membership-invoice-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.membership-invoice-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.membership-invoice-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.membership-invoice-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.membership-invoice-btn-pdf {
+  border: 1px solid #1a66e0;
+  background: #eaf3ff;
+  color: #1352b8;
+}
+
+.membership-invoice-btn-email {
+  border: 1px solid #f5a623;
+  background: #fff8e2;
+  color: #7a5900;
 }

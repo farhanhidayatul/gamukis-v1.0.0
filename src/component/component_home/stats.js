@@ -285,9 +285,7 @@ const Stats = ({
                   || window.localStorage?.getItem("gamukis_user_accumulated_exp");
                 if (stored !== null) {
                   const localVal = Math.max(0, parseInt(stored, 10) || 0);
-                  if (resolvedExp === null || localVal > resolvedExp) {
-                    resolvedExp = localVal;
-                  }
+                  resolvedExp = localVal;
                 }
               } catch (e) {}
 

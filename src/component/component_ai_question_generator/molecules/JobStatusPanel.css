@@ -1,0 +1,201 @@
+.job-status-panel {
+  border-radius: 12px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.job-status-panel--empty {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.job-status-panel__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.job-status-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.job-status-badge--pending {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.job-status-badge--processing {
+  background: #fef9c3;
+  color: #92400e;
+}
+
+.job-status-badge--review,
+.job-status-badge--done {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.job-status-badge--failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.job-status-panel--pending {
+  border-color: #cbd5e1;
+}
+
+.job-status-panel--processing {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.job-status-panel--review,
+.job-status-panel--done {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.job-status-panel--failed {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+.job-status-socket-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.job-status-socket-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  animation: socket-pulse 2s infinite ease-in-out;
+}
+
+@keyframes socket-pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.job-status-panel__refresh {
+  padding: 4px 12px;
+  font-size: 0.82rem;
+  border: 1px solid #94a3b8;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  color: #334155;
+  transition: background 0.15s;
+}
+
+.job-status-panel__refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.job-status-panel__refresh:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.job-status-panel__message {
+  margin: 0 0 10px;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+/* Live Progress Bar */
+.job-status-live-progress {
+  margin: 10px 0 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.job-status-progress-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.job-status-progress-label {
+  color: #334155;
+}
+
+.job-status-progress-percent {
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.job-status-progress-track {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.job-status-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0d9488 0%, #10b981 100%);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.job-status-progress-fill--animated {
+  background-size: 30px 30px;
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
+    transparent 75%,
+    transparent
+  );
+  animation: progress-bar-stripes 1s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+  from { background-position: 30px 0; }
+  to { background-position: 0 0; }
+}
+
+.job-status-panel__id {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.job-status-panel__id code {
+  background: #e2e8f0;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}

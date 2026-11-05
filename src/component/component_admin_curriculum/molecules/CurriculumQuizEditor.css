@@ -1,0 +1,396 @@
+.curriculum-quiz-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.curriculum-typed-question-editor {
+  margin: 14px 0;
+}
+
+.curriculum-typed-question-editor .question-editor-panel {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 16px;
+  background: #f8fafc;
+}
+
+.curriculum-quiz-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.curriculum-quiz-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.curriculum-quiz-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.curriculum-quiz-card__prompt {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.curriculum-quiz-card__options {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  display: grid;
+  gap: 6px;
+}
+
+.curriculum-quiz-card__option {
+  padding: 6px 12px;
+  background: #f8fafc;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  border: 1px solid #e2e8f0;
+}
+
+.curriculum-quiz-card__option--correct {
+  background: #ecfdf5;
+  border-color: #86efac;
+  color: #065f46;
+  font-weight: 700;
+}
+
+.curriculum-ai-picker-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+}
+
+.curriculum-ai-picker-content {
+  background: #ffffff;
+  width: 100%;
+  max-width: 800px;
+  max-height: 85vh;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.curriculum-quiz-card__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.curriculum-quiz-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.curriculum-quiz-btn--edit {
+  background: #ffffff;
+  color: #1976d2;
+  border: 1px solid #90caf9;
+}
+
+.curriculum-quiz-btn--edit:hover:not(:disabled) {
+  background: #e3f2fd;
+  color: #1565c0;
+  border-color: #64b5f6;
+}
+
+.curriculum-quiz-btn--delete {
+  background: #fff1f2;
+  color: #dc2626;
+  border: 1px solid #fecdd3;
+}
+
+.curriculum-quiz-btn--delete:hover:not(:disabled) {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.curriculum-question-form {
+  display: grid;
+  width: 100% !important;
+  max-width: none !important;
+  align-self: stretch;
+  box-sizing: border-box;
+  transform: none !important;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.curriculum-question-form label,
+.curriculum-question-fields {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.curriculum-question-type-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.curriculum-question-type-fieldset legend,
+.curriculum-question-prompt,
+.curriculum-form-section-heading h5,
+.curriculum-question-details summary {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.curriculum-question-type-fieldset legend {
+  margin-bottom: 8px;
+}
+
+.curriculum-question-form input,
+.curriculum-question-form textarea,
+.curriculum-question-form select {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #94a3b8;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.curriculum-question-form textarea {
+  min-height: 96px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.curriculum-question-types,
+.curriculum-question-option,
+.curriculum-drag-pair,
+.curriculum-question-meta,
+.curriculum-question-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.curriculum-question-types {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.curriculum-question-types button {
+  display: grid;
+  gap: 4px;
+  min-height: 86px;
+  padding: 12px;
+  text-align: left;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.curriculum-question-types button span {
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.curriculum-question-types button.active {
+  background: #fff4c2;
+  border-color: #f5b900;
+  color: #292929;
+  box-shadow: 0 3px 0 #f5b900;
+}
+
+.curriculum-question-types button.active span {
+  color: #475569;
+}
+
+.curriculum-question-option input:not([type='radio']),
+.curriculum-drag-pair input {
+  flex: 1;
+}
+
+.curriculum-question-fields {
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.curriculum-form-section-heading {
+  margin-bottom: 4px;
+}
+
+.curriculum-form-section-heading h5,
+.curriculum-form-section-heading p {
+  margin: 0;
+}
+
+.curriculum-form-section-heading p {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
+.curriculum-option-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #eaf4ff;
+  color: #1976d2;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.curriculum-question-option input[type='radio'] {
+  width: 18px;
+  height: 18px;
+  accent-color: #1976d2;
+}
+
+.curriculum-drag-pair {
+  align-items: flex-end;
+}
+
+.curriculum-drag-pair label {
+  flex: 1;
+}
+
+.curriculum-inline-remove,
+.curriculum-add-row {
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.curriculum-inline-remove {
+  padding: 8px 10px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.curriculum-add-row {
+  padding: 9px 12px;
+  border: 1px dashed #94a3b8;
+  background: #ffffff;
+  color: #1976d2;
+}
+
+.curriculum-question-meta {
+  align-items: flex-end;
+}
+
+.curriculum-question-meta label {
+  flex: 1;
+}
+
+.curriculum-question-details {
+  padding: 12px 16px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.curriculum-question-details summary {
+  cursor: pointer;
+}
+
+.curriculum-question-details[open] summary {
+  margin-bottom: 14px;
+}
+
+.curriculum-question-type-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 0.72rem;
+}
+
+.curriculum-quiz-status { color: #065f46; }
+.curriculum-quiz-error { color: #991b1b; }
+.curriculum-ai-candidate { display: flex; gap: 8px; margin: 8px 0; overflow-wrap: anywhere; word-break: break-word; }
+
+@media (max-width: 640px) {
+  .curriculum-question-types,
+  .curriculum-drag-pair,
+  .curriculum-question-meta { flex-direction: column; align-items: stretch; }
+
+  .curriculum-question-types {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .curriculum-question-option,
+  .curriculum-drag-pair {
+    flex-wrap: wrap;
+  }
+
+  .curriculum-question-option input:not([type='radio']) {
+    flex-basis: calc(100% - 38px);
+  }
+
+  .curriculum-inline-remove,
+  .curriculum-add-row {
+    width: 100%;
+  }
+}
+
+.curriculum-quiz-card--editing {
+  border: 2px solid #fcd03e;
+  background: #fffdf5;
+  box-shadow: 0 4px 12px rgba(252, 208, 62, 0.15);
+}

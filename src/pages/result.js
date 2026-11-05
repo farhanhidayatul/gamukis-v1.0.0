@@ -173,19 +173,32 @@ const Result = () => {
   const clippedAccuracy = Math.max(0, Math.min(accuracy, 100));
   const badgePos = Math.max(3, Math.min(clippedAccuracy, 97));
 
-  // Hitung perolehan EXP pertandingan dan akumulasi EXP pemain
-  const earnedMatchExp = calculateMatchExp({
-    coins,
-    botKills,
-    playerKills,
-    academicScore,
-    accuracy: clippedAccuracy,
-    correctAnswers: correctAnswers.length
-  });
+  // Hitung perolehan EXP pertandingan dan akumulasi EXP pemain berdasarkan ketentuan tiap rank
+  // Default baseline 2050 EXP = Common 1 dengan 60% progress (300/500 EXP) agar saat berkurang tidak langsung jatuh dari 0%
+  const DEFAULT_BASELINE_EXP = 2050;
+  const initialStoredExpRef = useRef(null);
 
   const [userExpData, setUserExpData] = useState(() => {
+    const computeForBaseline = (prevExp) => {
+      const safePrev = Math.max(0, parseInt(prevExp, 10) || 0);
+      const matchExp = calculateMatchExp({
+        coins,
+        botKills,
+        playerKills,
+        academicScore,
+        score: gameScore,
+        accuracy: clippedAccuracy,
+        correctAnswers: correctAnswers.length,
+        currentExp: safePrev
+      });
+      return {
+        previousExp: safePrev,
+        currentExp: Math.max(0, safePrev + matchExp)
+      };
+    };
+
     if (typeof window === 'undefined') {
-      return { previousExp: 1750, currentExp: 1750 + earnedMatchExp };
+      return computeForBaseline(DEFAULT_BASELINE_EXP);
     }
     try {
       const manualUser = getManualUser();
@@ -193,28 +206,57 @@ const Result = () => {
       const account = (fbUser && !fbUser.isAnonymous ? fbUser : null) || manualUser;
       const userId = account?.uid || account?.id;
       if (!userId || location.state?.isGuest) {
-        return { previousExp: 1750, currentExp: 1750 + earnedMatchExp };
+        return computeForBaseline(DEFAULT_BASELINE_EXP);
       }
       const expKey = `gamukis_user_exp_${userId}`;
       const stored = window.localStorage.getItem(expKey) || window.localStorage.getItem('gamukis_user_accumulated_exp');
       if (stored !== null) {
-        const prev = Math.max(0, parseInt(stored, 10) || 0);
-        const curr = prev + earnedMatchExp;
-        window.localStorage.setItem(expKey, String(curr));
-        window.localStorage.setItem('gamukis_user_accumulated_exp', String(curr));
-        return { previousExp: prev, currentExp: curr };
+        const rawStored = Math.max(0, parseInt(stored, 10) || 0);
+        // Jika stored masih baseline lama 1750 (0% Common 1) dan pertandingan mengalami penalti (-EXP),
+        // gunakan DEFAULT_BASELINE_EXP (2050 = 60% Common 1) agar pengurangan EXP mulus (60% -> 45%)
+        const testPenalty = calculateMatchExp({
+          coins,
+          botKills,
+          playerKills,
+          academicScore,
+          score: gameScore,
+          accuracy: clippedAccuracy,
+          correctAnswers: correctAnswers.length,
+          currentExp: rawStored
+        });
+        const initialExp = (rawStored === 1750 && testPenalty < 0) ? DEFAULT_BASELINE_EXP : rawStored;
+
+        initialStoredExpRef.current = initialExp;
+        const resultExp = computeForBaseline(initialExp);
+        window.localStorage.setItem(expKey, String(resultExp.currentExp));
+        window.localStorage.setItem('gamukis_user_accumulated_exp', String(resultExp.currentExp));
+        return resultExp;
       }
-      return { previousExp: 1750, currentExp: 1750 + earnedMatchExp };
+      return computeForBaseline(DEFAULT_BASELINE_EXP);
     } catch (e) {
-      return { previousExp: 1750, currentExp: 1750 + earnedMatchExp };
+      return computeForBaseline(DEFAULT_BASELINE_EXP);
     }
+  });
+
+  const earnedMatchExp = calculateMatchExp({
+    coins,
+    botKills,
+    playerKills,
+    academicScore,
+    score: gameScore,
+    accuracy: clippedAccuracy,
+    correctAnswers: correctAnswers.length,
+    currentExp: userExpData.previousExp
   });
 
   const userExpDataRef = useRef(userExpData);
   userExpDataRef.current = userExpData;
+  const earnedMatchExpRef = useRef(earnedMatchExp);
+  earnedMatchExpRef.current = earnedMatchExp;
 
   // Sinkronisasi dengan data pencapaian yang ada di fitur Home
   const hasRecordedRef = useRef(false);
+  const hasSyncedStatsRef = useRef(false);
 
   useEffect(() => {
     let isCurrent = true;
@@ -245,7 +287,7 @@ const Result = () => {
         timeRemaining: 0,
         userId,
         username: account.displayName || account.username || resultUserName || 'Pemain',
-        exp: earnedMatchExp,
+        exp: earnedMatchExpRef.current,
         totalExp: userExpDataRef.current.currentExp,
         botKills,
         playerKills,
@@ -260,23 +302,38 @@ const Result = () => {
     if (statsPromise && typeof statsPromise.then === 'function') {
       statsPromise
         .then((stats) => {
-          if (!isCurrent || !stats) return;
-          const rawExp = stats.totalExp !== undefined && stats.totalExp !== null
-            ? Number(stats.totalExp)
-            : ((Number(stats.totalScore) || 0) + (Number(stats.totalCoins) ? Number(stats.totalCoins) * 5 : 0));
-          if (!isNaN(rawExp) && rawExp >= 0) {
-            const expKey = `gamukis_user_exp_${userId}`;
-            const prev = rawExp;
-            const curr = prev + earnedMatchExp;
+          if (!isCurrent || !stats || hasSyncedStatsRef.current) return;
+          hasSyncedStatsRef.current = true;
 
-            setUserExpData({ previousExp: prev, currentExp: curr });
-            try {
-              window.localStorage.setItem(expKey, String(curr));
-              window.localStorage.setItem('gamukis_user_accumulated_exp', String(curr));
-              if (typeof window.dispatchEvent === 'function') {
-                window.dispatchEvent(new CustomEvent('gamukis-exp-updated', { detail: { userId, exp: curr } }));
-              }
-            } catch (e) {}
+          // Hanya lakukan penyesuaian jika user belum memiliki riwayat EXP di localStorage sebelum match ini
+          if (initialStoredExpRef.current === null) {
+            const rawExp = stats.totalExp !== undefined && stats.totalExp !== null
+              ? Number(stats.totalExp)
+              : ((Number(stats.totalScore) || 0) + (Number(stats.totalCoins) ? Number(stats.totalCoins) * 5 : 0));
+            if (!isNaN(rawExp) && rawExp >= 0) {
+              const expKey = `gamukis_user_exp_${userId}`;
+              const prev = Math.max(0, rawExp);
+              const rankAwareMatchExp = calculateMatchExp({
+                coins,
+                botKills,
+                playerKills,
+                academicScore,
+                score: gameScore,
+                accuracy: clippedAccuracy,
+                correctAnswers: correctAnswers.length,
+                currentExp: prev
+              });
+              const curr = Math.max(0, prev + rankAwareMatchExp);
+
+              setUserExpData({ previousExp: prev, currentExp: curr });
+              try {
+                window.localStorage.setItem(expKey, String(curr));
+                window.localStorage.setItem('gamukis_user_accumulated_exp', String(curr));
+                if (typeof window.dispatchEvent === 'function') {
+                  window.dispatchEvent(new CustomEvent('gamukis-exp-updated', { detail: { userId, exp: curr } }));
+                }
+              } catch (e) {}
+            }
           }
         })
         .catch(() => {});
@@ -285,7 +342,7 @@ const Result = () => {
     return () => {
       isCurrent = false;
     };
-  }, [activeUser, isLoggedIn, earnedMatchExp, location.state?.isGuest]);
+  }, [activeUser, isLoggedIn, location.state?.isGuest]);
 
   // Review Soal & Jawaban
   const allAnswers = [
@@ -304,12 +361,21 @@ const Result = () => {
         window.localStorage.removeItem('gamukis_registered_game_session');
       } catch (e) {}
     }
+
+    // In class game mode, navigate back to the class page so student can start a fresh session
+    if (location.state?.classGameMode && location.state?.classId) {
+      navigate(`/siswa/classes/${location.state.classId}`, { replace: true });
+      return;
+    }
+
     navigate('/gamePage', {
       replace: true,
       state: {
         resetSession: true,
         selectedCard: location.state?.selectedCard || null,
-        subject: location.state?.subject || null
+        subject: location.state?.subject || null,
+        selectedChapter: location.state?.selectedChapter || backupData.selectedChapter || null,
+        gameDurationSeconds: location.state?.gameDurationSeconds ?? backupData.gameDurationSeconds
       }
     });
   };
@@ -388,12 +454,3 @@ const Result = () => {
 };
 
 export default Result;
-
-
-
-
-
-
-
-
-

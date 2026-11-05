@@ -3,6 +3,7 @@ import {
   getAuth,
   onAuthStateChanged,
   signInAnonymously,
+  signInWithCustomToken,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
@@ -23,6 +24,17 @@ const observeAuthState = (callback) => {
 // Fungsi untuk login dengan Google
 const signInWithGoogle = () => {
   return signInWithPopup(auth, provider)
+    .then((result) => {
+      return result.user;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+// Fungsi untuk login dengan Custom Token (Firebase / Google)
+const signInWithCustom = (token) => {
+  return signInWithCustomToken(auth, token)
     .then((result) => {
       return result.user;
     })
@@ -80,15 +92,23 @@ const waitForAuth = async () => {
   });
 };
 
+if (typeof window !== 'undefined') {
+  window.__gamukis_auth = {
+    auth,
+    signInWithCustom,
+    signInWithGoogle
+  };
+}
+
 // Pastikan semua fungsi yang diperlukan diekspor
 export {
   auth,
   observeAuthState,
   signInWithGoogle,
+  signInWithCustom,
   signInAnon,
   signInWithEmail,
   registerWithEmail,
   onAuthStateChanged,
   waitForAuth
 };
-

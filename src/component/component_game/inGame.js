@@ -23,7 +23,7 @@ import PlayerPanel from './molecules/PlayerPanel';
 import "./style.css";
 import useKeyPress from './useKeyPress';
 import CoinModal from './modal';
-import { questions as defaultQuestions, getQuestionsForSubject } from './questions';
+import { questions as defaultQuestions, getQuestionsForSubject, getQuestionsForChapter } from './questions';
 import {
   getNextStudentClassGameQuestion,
   submitStudentClassGameAnswer,
@@ -36,6 +36,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { mapData, mapWidth, mapHeight } from './tiledMapData';
 import MiniMap from './miniMap';
 import ToastNotification, { emitToast } from './toastNotification';
+import { reportInGameAnomaly } from '../../database/ingameAnomalyApi';
 import {
   playCoinCollectSound,
   playCorrectAnswerSound,
@@ -57,6 +58,7 @@ export const createSessionId = () => `${Date.now()}_${Math.random().toString(36)
 export const ANONYMOUS_SESSION_KEY = 'gamukis_anonymous_game_session';
 export const REGISTERED_SESSION_KEY = 'gamukis_registered_game_session';
 export const GAME_DURATION_MS = 5 * 60 * 1000;
+export const MAX_GAME_DURATION_MS = 48 * 60 * 60 * 1000;
 export const RESPAWN_COOLDOWN_SECONDS = 15;
 export const RESPAWN_INVULNERABILITY_SECONDS = 3;
 
@@ -120,6 +122,21 @@ export const getLocalFallbackBots = () => {
     acc[bot.id] = { ...bot };
     return acc;
   }, {});
+};
+const DEFAULT_GAME_DURATION_SECONDS = GAME_DURATION_MS / 1000;
+
+const resolveGameDurationSeconds = (value) => {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue) || numericValue <= 0) {
+    return DEFAULT_GAME_DURATION_SECONDS;
+  }
+  return Math.min(Math.round(numericValue), MAX_GAME_DURATION_MS / 1000);
+};
+
+const resolveGameDurationMs = (value) => {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue) || numericValue <= 0) return GAME_DURATION_MS;
+  return Math.min(Math.round(numericValue), MAX_GAME_DURATION_MS);
 };
 
 export const DEFAULT_FALLBACK_COIN_SPOTS = [
@@ -203,7 +220,7 @@ export const getAnonymousSessionCache = () => {
     const cached = JSON.parse(raw);
     if (!cached || !cached.gameStartedAt || !cached.sessionId) return null;
     const elapsed = Date.now() - Number(cached.gameStartedAt);
-    if (elapsed < GAME_DURATION_MS && Number(cached.health ?? 3) > 0) {
+    if (elapsed < resolveGameDurationMs(cached.gameDurationMs) && Number(cached.health ?? 3) > 0) {
       return cached;
     }
     window.localStorage.removeItem(ANONYMOUS_SESSION_KEY);
@@ -235,7 +252,7 @@ export const getActiveSessionCache = (isGuestUser) => {
         const cachedFallback = JSON.parse(fallbackRaw);
         if (cachedFallback && cachedFallback.gameStartedAt && Number(cachedFallback.health ?? 3) > 0) {
           const elapsed = Date.now() - Number(cachedFallback.gameStartedAt);
-          if (elapsed < GAME_DURATION_MS) return cachedFallback;
+          if (elapsed < resolveGameDurationMs(cachedFallback.gameDurationMs)) return cachedFallback;
         }
       }
       return null;
@@ -243,7 +260,7 @@ export const getActiveSessionCache = (isGuestUser) => {
     const cached = JSON.parse(raw);
     if (!cached || !cached.gameStartedAt || !cached.sessionId) return null;
     const elapsed = Date.now() - Number(cached.gameStartedAt);
-    if (elapsed < GAME_DURATION_MS && Number(cached.health ?? 3) > 0) {
+    if (elapsed < resolveGameDurationMs(cached.gameDurationMs) && Number(cached.health ?? 3) > 0) {
       return cached;
     }
     window.localStorage.removeItem(key);
@@ -277,7 +294,7 @@ export const clearActiveSessionCaches = () => {
   } catch (e) {}
 };
 
-const playerColors = ["blue", "red", "orange", "yellow", "green", "purple", "man"];
+const playerColors = ["man", "girl"];
 
 /**
  * Format duration seconds into MySQL TIME string format (HH:MM:SS).
@@ -334,9 +351,14 @@ const InGame = () => {
 
   // Resolve questions for subject if provided via location state, fallback to default
   const activeSubject = location.state?.subject || 'indonesia';
-  const activeQuestions = location.state?.questions && Array.isArray(location.state.questions) && location.state.questions.length > 0
+  const subjectQuestions = location.state?.questions && Array.isArray(location.state.questions) && location.state.questions.length > 0
     ? location.state.questions
     : (getQuestionsForSubject(activeSubject) || defaultQuestions);
+  const activeQuestions = getQuestionsForChapter(
+    activeSubject,
+    location.state?.selectedChapter,
+    subjectQuestions
+  );
 
   const [cameraZoom, setCameraZoom] = useState(getCameraZoom);
   const [isMuted, setIsMuted] = useState(() => isSoundMuted());
@@ -427,6 +449,50 @@ const InGame = () => {
     window.addEventListener('resize', updateCameraZoom);
     return () => window.removeEventListener('resize', updateCameraZoom);
   }, []);
+
+  // Layer 1: Passive In-Game Telemetry & Anomaly Guard
+  useEffect(() => {
+    let lastFrame = performance.now();
+    let animFrameId = null;
+
+    // 1. Heartbeat Watchdog: Detect client freezes > 1800ms
+    const checkFrame = () => {
+      const now = performance.now();
+      const delta = now - lastFrame;
+      lastFrame = now;
+
+      if (delta > 1800) {
+        reportInGameAnomaly({
+          type: 'CLIENT_FREEZE',
+          severity: 'HIGH',
+          playerId: playerId || 'anonymous',
+          message: `Client loop freeze detected (${Math.round(delta)}ms)`,
+          details: { deltaMs: Math.round(delta) }
+        }).catch(() => {});
+      }
+      animFrameId = requestAnimationFrame(checkFrame);
+    };
+    animFrameId = requestAnimationFrame(checkFrame);
+
+    // 2. Sprite & Asset 404 Guard
+    const handleAssetError = (e) => {
+      if (e && e.target && e.target.tagName === 'IMG') {
+        reportInGameAnomaly({
+          type: 'ASSET_LOAD_FAILURE',
+          severity: 'LOW',
+          playerId: playerId || 'anonymous',
+          message: `Asset sprite failed to load: ${e.target.src}`,
+          details: { src: e.target.src }
+        }).catch(() => {});
+      }
+    };
+    window.addEventListener('error', handleAssetError, true);
+
+    return () => {
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      window.removeEventListener('error', handleAssetError, true);
+    };
+  }, [playerId]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
@@ -525,7 +591,21 @@ const InGame = () => {
   const POINT_THRESHOLD = 5; // Question triggers every 5 coins collected
 
   const currentPlayer = playerId ? players[playerId] : null;
-  const gameDurationSeconds = 5 * 60;
+  const routeDurationSeconds = location.state?.gameDurationSeconds ??
+      location.state?.selectedCard?.gameDurationSeconds ??
+      location.state?.selectedCard?.durationSeconds ??
+      (location.state?.selectedCard?.gameDurationMinutes !== undefined
+        ? Number(location.state.selectedCard.gameDurationMinutes) * 60
+        : undefined) ??
+      (location.state?.selectedCard?.durationMinutes !== undefined
+        ? Number(location.state.selectedCard.durationMinutes) * 60
+        : undefined);
+  const cachedGameDurationMs = currentPlayer?.gameDurationMs ?? initialSessionCache.current?.gameDurationMs;
+  const gameDurationSeconds = resolveGameDurationSeconds(
+    cachedGameDurationMs !== undefined
+      ? Number(cachedGameDurationMs) / 1000
+      : routeDurationSeconds
+  );
   const effectiveGameStartedAt = currentPlayer?.gameStartedAt || sessionStartTimeRef.current;
   const elapsedGameSeconds = effectiveGameStartedAt
     ? Math.floor((Date.now() - Number(effectiveGameStartedAt)) / 1000)
@@ -567,7 +647,8 @@ const InGame = () => {
         const accuracy = totalQ > 0 ? (correctAnswers.length / totalQ) * 100 : 0;
         const botKills = botKillsRef.current || 0;
         const playerKills = playerKillsRef.current || 0;
-        const gameScore = (Number(currentCoins) * 5) + (botKills * 15) + (playerKills * 30);
+        const pointsBase = Math.max(0, Number(currentPlayer?.pointsBase) || 0);
+        const gameScore = pointsBase + (Number(currentCoins) * 5) + (botKills * 15) + (playerKills * 30);
         const matchExp = calculateMatchExp({
           coins: Number(currentCoins),
           botKills,
@@ -580,7 +661,7 @@ const InGame = () => {
           score: gameScore,
           coins: Math.max(0, Number(currentCoins) || 0),
           accuracy,
-          timeRemaining: Math.max(0, 300 - elapsedSeconds),
+          timeRemaining: Math.max(0, gameDurationSeconds - elapsedSeconds),
           userId: resolvedUserId,
           username: currentPlayer?.name || 'Pemain',
           exp: matchExp,
@@ -594,7 +675,7 @@ const InGame = () => {
         throw error;
       });
     return historySavePromiseRef.current;
-  }, [activeQuestions.length, currentPlayer?.coins, currentPlayer?.name, manualUser?.id, playerId]);
+  }, [activeQuestions.length, currentPlayer?.coins, currentPlayer?.name, gameDurationSeconds, manualUser?.id, playerId]);
 
   const saveAnonymousCache = useCallback((updatedCoins, updatedHealth, updatedLastQCoins, updatedAnswers) => {
     if (typeof window === 'undefined') return;
@@ -612,6 +693,7 @@ const InGame = () => {
         health: currentHealth,
         lastQuestionCoins: currentLastQ,
         gameStartedAt: sessionStartTimeRef.current,
+        gameDurationMs: gameDurationSeconds * 1000,
         sessionAnswers: currentAnswers,
         subject: activeSubject,
         // Persist kill counters so they survive page refresh (re-seeded from cache on mount,
@@ -630,10 +712,10 @@ const InGame = () => {
         window.sessionStorage?.setItem(ANONYMOUS_SESSION_KEY, serialized);
       }
       try {
-        document.cookie = `${cacheKey}=${encodeURIComponent(serialized)}; path=/; max-age=300; SameSite=Lax`;
+        document.cookie = `${cacheKey}=${encodeURIComponent(serialized)}; path=/; max-age=${gameDurationSeconds}; SameSite=Lax`;
       } catch (ce) {}
     } catch (e) {}
-  }, [activeSubject, currentPlayer?.coins, currentPlayer?.health, currentPlayer?.lastQuestionCoins, isGuest]);
+  }, [activeSubject, currentPlayer?.coins, currentPlayer?.health, currentPlayer?.lastQuestionCoins, gameDurationSeconds, isGuest]);
 
   const clearRespawnAndInvulnerableTimers = useCallback(() => {
     if (respawnTimerRef.current) {
@@ -698,6 +780,8 @@ const InGame = () => {
     const resultState = {
       selectedCard: location.state?.selectedCard || null,
       subject: activeSubject,
+      selectedChapter: location.state?.selectedChapter || null,
+      gameDurationSeconds,
       sessionAnswers: sessionAnswersRef.current || [],
       coins: Math.max(0, Number(currentCoins) || 0),
       botKills: botKillsRef.current || 0,
@@ -749,7 +833,7 @@ const InGame = () => {
       finalizationLockRef.current = false;
       isFinalizingSessionRef.current = false;
     }
-  }, [activeQuestions.length, activeSubject, classGameClassId, classGameSessionId, clearRespawnAndInvulnerableTimers, currentPlayer?.coins, location.state, navigate, persistGameHistory]);
+  }, [activeQuestions.length, activeSubject, classGameClassId, classGameSessionId, clearRespawnAndInvulnerableTimers, currentPlayer?.coins, gameDurationSeconds, location.state, navigate, persistGameHistory]);
 
   // Handle health depletion: 15-second Respawn Cooldown (CD), then revive at safe spot with 3-second Invulnerability.
   // The session only ends when the 5-minute timer expires (onTimeUp).
@@ -759,9 +843,26 @@ const InGame = () => {
     isRespawningRef.current = true;
     playerDeathsRef.current += 1;
 
+    // R2 Death penalty: client-side optimistic synchronization for coins reset & points deduction
+    setPlayers((prev) => {
+      const self = prev[playerId];
+      if (!self) return prev;
+      const currentTotal = (Number(self.pointsBase) || 0) + ((Number(self.coins) || 0) * 5) + ((botKillsRef.current || 0) * 15) + ((playerKillsRef.current || 0) * 30);
+      const penalizedPoints = Math.max(0, currentTotal - 300);
+      return {
+        ...prev,
+        [playerId]: {
+          ...self,
+          coins: 0,
+          pointsBase: penalizedPoints
+        }
+      };
+    });
+
     const localId = playerId;
     let remainingCooldown = RESPAWN_COOLDOWN_SECONDS;
     setRespawnCountdown(remainingCooldown);
+    gameEventBridge.emit(GAME_BRIDGE_EVENTS.LOCAL_PLAYER_DEATH_STATE, { isDead: true, respawnCountdown: remainingCooldown });
     emitToast(`Kamu gugur! Hidup kembali dalam ${RESPAWN_COOLDOWN_SECONDS} detik...`, 'warning', 3000);
 
     if (respawnTimerRef.current) {
@@ -774,6 +875,7 @@ const InGame = () => {
         respawnTimerRef.current = null;
         setRespawnCountdown(0);
         isRespawningRef.current = false;
+        gameEventBridge.emit(GAME_BRIDGE_EVENTS.LOCAL_PLAYER_DEATH_STATE, { isDead: false, respawnCountdown: 0 });
         return;
       }
 
@@ -786,6 +888,7 @@ const InGame = () => {
       clearInterval(respawnTimerRef.current);
       respawnTimerRef.current = null;
       setRespawnCountdown(0);
+      gameEventBridge.emit(GAME_BRIDGE_EVENTS.LOCAL_PLAYER_DEATH_STATE, { isDead: false, respawnCountdown: 0 });
 
       const { x: respawnX, y: respawnY } = getRandomSafeSpot(mapData);
       const invulnUntil = Date.now() + (RESPAWN_INVULNERABILITY_SECONDS * 1000);
@@ -875,12 +978,25 @@ const InGame = () => {
   };
 
   const changeColor = () => {
-    const currentIndex = playerColors.indexOf(playerColor);
+    const activeColor = (playerId && players[playerId]?.color) || playerColor || 'man';
+    const currentIndex = playerColors.indexOf(activeColor);
     const nextIndex = (currentIndex + 1) % playerColors.length;
-    const newColor = playerColors[nextIndex];
+    const newColor = playerColors[nextIndex] || 'man';
+    const newGender = newColor === 'girl' ? 'female' : 'male';
     setPlayerColor(newColor);
     if (playerId) {
-      updatePlayer({ color: newColor }).catch(console.error);
+      setPlayers((prev) => {
+        if (!prev[playerId]) return prev;
+        return {
+          ...prev,
+          [playerId]: {
+            ...prev[playerId],
+            color: newColor,
+            gender: newGender
+          }
+        };
+      });
+      updatePlayer({ color: newColor, gender: newGender }).catch(console.error);
     }
   };
 
@@ -1023,17 +1139,13 @@ const InGame = () => {
       getNextStudentClassGameQuestion(classGameClassId, classGameSessionId)
         .then((serverQuestion) => {
           if (!serverQuestion || !serverQuestion.questionId) {
-            // No more questions — navigate to results
+            // No more questions — keep playing until timer finishes
             const pendingQuestion = pendingQuestionRef.current;
             if (pendingQuestion) {
               lastQuestionMilestoneRef.current = pendingQuestion.milestone;
               pendingQuestionRef.current = null;
               updatePlayer({ lastQuestionCoins: pendingQuestion.reachedCoinCount }).catch(console.error);
             }
-            completeStudentClassGameSession(classGameClassId, classGameSessionId).catch((err) => {
-              console.warn('Class game session complete warning:', err.message);
-            });
-            navigateToResults({ forceCoins: currentPlayer?.coins });
             return;
           }
           // Map server question DTO to modal format
@@ -1091,7 +1203,7 @@ const InGame = () => {
           pendingQuestionRef.current = null;
           updatePlayer({ lastQuestionCoins: pendingQuestion.reachedCoinCount }).catch(console.error);
         }
-        navigateToResults({ forceCoins: currentPlayer?.coins });
+        // R1: Soal telah selesai dijawab, tetapi game belum berakhir (menunggu pemain lain sampai timer room selesai)
       }
     }).catch((error) => {
       pendingQuestionRef.current = null;
@@ -1456,7 +1568,9 @@ const InGame = () => {
       const y = (previousPlayer && Number.isFinite(previousPlayer.y) && !(previousPlayer.x === 0 && previousPlayer.y === 0))
         ? previousPlayer.y
         : safeSpot.y;
-      const color = previousPlayer?.color || randomFromArray(playerColors);
+      const savedAppearance = loadSavedAppearance();
+      const guestGenderColor = (savedAppearance?.gender === 'Perempuan' || savedAppearance?.gender === 'female') ? 'girl' : 'man';
+      const color = previousPlayer?.color || (guest ? guestGenderColor : randomFromArray(playerColors));
       setPlayerColor(color);
 
       const resolvedAppearance = guest ? null : loadSavedAppearance();
@@ -1495,6 +1609,7 @@ const InGame = () => {
           name: initialName,
           direction: "right",
           color,
+          gender: color === 'girl' ? 'female' : 'male',
           x,
           y,
           coins: initialCoins,
@@ -1504,6 +1619,7 @@ const InGame = () => {
           playerKills: initialPlayerKills,
           sessionId: sessionIdRef.current,
           gameStartedAt: initialGameStartedAt,
+          gameDurationMs: gameDurationSeconds * 1000,
           answerOwnerId: answerOwnerIdRef.current,
           allQuestion: activeQuestions.length,
           appearance: resolvedAppearance,
@@ -1927,6 +2043,7 @@ const InGame = () => {
             name: initialName,
             direction: "right",
             color,
+            gender: color === 'girl' ? 'female' : 'male',
             x,
             y,
             coins: initialCoins,
@@ -1934,6 +2051,7 @@ const InGame = () => {
             lastQuestionCoins: initialLastQCoins,
             sessionId: sessionIdRef.current,
             gameStartedAt: initialGameStartedAt,
+            gameDurationMs: gameDurationSeconds * 1000,
             answerOwnerId: answerOwnerIdRef.current,
             allQuestion: activeQuestions.length,
             appearance: resolvedAppearance,
@@ -2081,6 +2199,9 @@ const InGame = () => {
     'KeyD': () => handleArrowPress(1, 0),
     'ArrowRight': () => handleArrowPress(1, 0),
     'KeyC': changeColor,
+    'Keyc': changeColor,
+    'c': changeColor,
+    'C': changeColor,
     'Space': () => castSkill(activeSkillIndex),
     'Digit1': () => castSkill(0),
     'Digit2': () => castSkill(1),
@@ -2142,6 +2263,7 @@ const InGame = () => {
                 skillIndex={key === playerId ? activeSkillIndex : (players[key]?.skillIndex || 0)}
                 isGuest={key === playerId ? isGuest : (players[key]?.isGuest !== undefined ? Boolean(players[key]?.isGuest) : (players[key]?.appearance ? false : true))}
                 appearance={key === playerId ? (isGuest ? null : currentAppearance) : (players[key]?.isGuest ? null : players[key]?.appearance)}
+                isDead={key === playerId ? (respawnCountdown > 0 || (typeof players[key]?.health === 'number' && players[key].health <= 0)) : (typeof players[key]?.health === 'number' && players[key].health <= 0)}
               />
             ))}
           {Object.values(bots || {})

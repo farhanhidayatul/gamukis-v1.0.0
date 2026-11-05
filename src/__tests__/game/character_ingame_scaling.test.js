@@ -31,8 +31,10 @@ describe('In-Game Custom Character Scaling & Shadow Alignment', () => {
     });
 
     it('should position name container and arrow indicators properly above character head in CSS', () => {
-      expect(customCssContent).toMatch(/\.game-wrapper\s+\.Character\.has-custom-appearance\s+\.Character_name-container\s*\{[^}]*top:\s*-38px/);
-      expect(customCssContent).toMatch(/\.game-wrapper\s+\.Character\.has-custom-appearance\s+\.Character_you-arrow\s*\{[^}]*top:\s*-50px/);
+      expect(customCssContent).toMatch(/\.game-wrapper\s+\.Character\.has-custom-appearance\s+\.Character_name-container\s*\{[^}]*top:\s*-32px/);
+      expect(customCssContent).toMatch(/\.game-wrapper\s+\.Character\.has-custom-appearance\s+\.Character_you-arrow\s*\{[^}]*top:\s*-21px/);
+      expect(customCssContent).toMatch(/\.game-wrapper\s+\.Character\.has-custom-appearance\s+\.Character_you-arrow\s*\{[^}]*left:\s*8px/);
+      expect(customCssContent).toMatch(/\.game-wrapper\s+\.Character\.has-custom-appearance\s+\.Character_you-arrow\s*\{[^}]*transform:\s*translateX\(-50%\)/);
     });
 
     it('should enforce consistent root position (top: 0, left: 0) on .Character.has-custom-appearance matching in-game characters', () => {
@@ -55,8 +57,8 @@ describe('In-Game Custom Character Scaling & Shadow Alignment', () => {
     });
 
     it('should configure name container and arrow indicator styles for custom appearance', () => {
-      expect(playerInfoContent).toMatch(/hasCustomAppearance\s*\?\s*\{\s*top:\s*['"]-38px['"],\s*left:\s*['"]8px['"]/);
-      expect(playerInfoContent).toMatch(/hasCustomAppearance\s*\?\s*\{\s*top:\s*['"]-50px['"],\s*left:\s*['"]8px['"]/);
+      expect(playerInfoContent).toMatch(/hasCustomAppearance\s*\?\s*\{\s*top:\s*['"]-32px['"],\s*left:\s*['"]8px['"]/);
+      expect(playerInfoContent).toMatch(/hasCustomAppearance\s*\?\s*\{\s*top:\s*['"]-21px['"],\s*left:\s*['"]8px['"]/);
     });
 
     it('should use unified cropped head image and hair key transition in PlayerInfo', () => {

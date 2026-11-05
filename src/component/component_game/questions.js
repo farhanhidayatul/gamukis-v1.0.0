@@ -291,6 +291,60 @@ export const getQuestionsForSubject = (subjectKey) => {
   return questions;
 };
 
+const normalizeQuestionText = (value) => String(value || '')
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLocaleLowerCase();
+
+const getChapterSearchTerms = (chapter) => {
+  if (!chapter || typeof chapter !== 'object') return [];
+  const lessonTitles = Array.isArray(chapter.lessons)
+    ? chapter.lessons.map((lesson) => lesson?.title)
+    : [];
+  const topics = Array.isArray(chapter.topics) ? chapter.topics : [];
+  return [...new Set([chapter.title, ...topics, ...lessonTitles]
+    .map(normalizeQuestionText)
+    .filter((term) => term.length >= 3))];
+};
+
+/**
+ * Prioritizes the selected chapter's questions while retaining the complete
+ * subject bank when no question has matching chapter metadata or wording.
+ * @param {string} subjectKey - Subject id, slug, or title
+ * @param {object|null} selectedChapter - Selected curriculum chapter
+ * @param {Array<object>} [questionBank] - Optional preloaded questions
+ * @returns {Array<object>} Matching questions, or the full subject bank
+ */
+export const getQuestionsForChapter = (subjectKey, selectedChapter, questionBank) => {
+  const bank = Array.isArray(questionBank)
+    ? questionBank
+    : getQuestionsForSubject(subjectKey);
+  const searchTerms = getChapterSearchTerms(selectedChapter);
+  if (searchTerms.length === 0) return bank;
+
+  const matchingQuestions = bank.filter((question) => {
+    const metadata = [
+      question?.topic,
+      question?.topicTitle,
+      question?.chapter,
+      question?.chapterTitle,
+      question?.lesson,
+      question?.tags
+    ].flat().map(normalizeQuestionText).filter(Boolean);
+    const questionContent = normalizeQuestionText([
+      question?.question,
+      question?.prompt,
+      question?.explanation
+    ].join(' '));
+    return searchTerms.some((term) => (
+      metadata.some((value) => value.includes(term))
+      || questionContent.includes(term)
+    ));
+  });
+
+  return matchingQuestions.length > 0 ? matchingQuestions : bank;
+};
+
 /**
  * Asynchronously fetches questions dynamically from Backend API (/api/questions/random).
  * If the network fails, backend is offline, or subject returns empty,
@@ -343,6 +397,7 @@ if (typeof module !== 'undefined' && module.exports) {
     QUESTION_CATEGORIES,
     SUBJECT_REGISTRY,
     getQuestionsForSubject,
+    getQuestionsForChapter,
     fetchDynamicQuestions,
     getAvailableSubjects,
     default: questions

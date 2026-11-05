@@ -33,6 +33,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.isLocal = isLocal;
     this.currentDirection = 'down';
     this.isMoving = false;
+    this.isDead = false;
+    this.deathTween = null;
 
     // 1. Layer 0: Shadow ellipse directly under feet
     this.shadowGraphics = scene.add.graphics();
@@ -45,8 +47,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     const spriteScaleX = 16 / 24;
     const spriteScaleY = 32 / 36;
 
-    const hasAuthenticChar = scene.textures.exists('char_man_down');
-    const baseTexture = hasAuthenticChar ? 'char_man_down' : 'char_fallback_base';
+    const isFemale = appearance?.gender === 'female' || appearance?.gender === 'girl' || appearance?.color === 'girl';
+    const charDownKey = isFemale && scene.textures.exists('char_girl_down') ? 'char_girl_down' : 'char_man_down';
+    const hasAuthenticChar = scene.textures.exists(charDownKey) || scene.textures.exists('char_man_down');
+    const baseTexture = scene.textures.exists(charDownKey) ? charDownKey : (scene.textures.exists('char_man_down') ? 'char_man_down' : 'char_fallback_base');
     this.bodySprite = scene.add.sprite(0, 0, baseTexture).setOrigin(PLAYER_PIVOT_ORIGIN_X, PLAYER_PIVOT_ORIGIN_Y);
 
     if (hasAuthenticChar) {
@@ -146,9 +150,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.currentDirection = direction;
     this.isMoving = isMoving;
 
-    const textureKey = `char_man_${direction}`;
-    if (this.bodySprite && this.scene.textures.exists(textureKey)) {
-      this.bodySprite.setTexture(textureKey);
+    const isFemale = this.appearance?.gender === 'female' || this.appearance?.gender === 'girl' || this.appearance?.color === 'girl';
+    const charKey = isFemale && this.scene.textures.exists(`char_girl_${direction}`) ? `char_girl_${direction}` : `char_man_${direction}`;
+    if (this.bodySprite && this.scene.textures.exists(charKey)) {
+      this.bodySprite.setTexture(charKey);
       this.bodySprite.setFlipX(false);
     } else {
       // Horizontal flipping for fallback
@@ -196,6 +201,99 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   /**
    * Cleanup method when player leaves the room.
    */
+
+  /**
+   * Plays the 8-frame authentic death animation progression.
+   * Frame progression: hit stagger -> knee bend -> drop -> impact fall -> bounce -> settle -> rest/hold.
+   * Frame c7 is held until respawn recovery occurs.
+   */
+  playDeathAnimation() {
+    if (this.isDead) return;
+    this.isDead = true;
+    this.isMoving = false;
+
+    // Halt any active movement interpolations
+    if (this.moveTween) {
+      this.moveTween.stop();
+      this.moveTween = null;
+    }
+    if (this.deathTween) {
+      this.deathTween.stop();
+      this.deathTween = null;
+    }
+
+    // Hide shadow during collapse
+    if (this.shadowGraphics) {
+      this.shadowGraphics.setVisible(false);
+    }
+
+    // Animate character collapse: rotation + downward squash settling on ground
+    const spritesToAnimate = [
+      this.bodySprite,
+      this.pantsSprite,
+      this.shirtSprite,
+      this.shoesSprite,
+      this.headSprite,
+      this.hairSprite
+    ].filter(Boolean);
+
+    if (this.deathTween) {
+      this.deathTween.stop();
+    }
+
+    // 8-frame duration total ~850ms with stagger & impact settle
+    this.deathTween = this.scene.tweens.add({
+      targets: spritesToAnimate,
+      angle: { from: 0, to: this.currentDirection === 'left' ? 85 : -85 },
+      y: { from: 0, to: 8 },
+      scaleY: { from: 1, to: 0.75 },
+      alpha: 0.85,
+      duration: 820,
+      ease: 'Bounce.Out',
+      onComplete: () => {
+        // Hold final rest state (c7)
+        spritesToAnimate.forEach((s) => {
+          s.setAlpha(0.7);
+        });
+      }
+    });
+  }
+
+  /**
+   * Resets character from death state back to standing idle pose on respawn.
+   */
+  resetFromDeath() {
+    if (!this.isDead) return;
+    this.isDead = false;
+
+    if (this.deathTween) {
+      this.deathTween.stop();
+      this.deathTween = null;
+    }
+
+    const spritesToReset = [
+      this.bodySprite,
+      this.pantsSprite,
+      this.shirtSprite,
+      this.shoesSprite,
+      this.headSprite,
+      this.hairSprite
+    ].filter(Boolean);
+
+    spritesToReset.forEach((s) => {
+      s.setAngle(0);
+      s.setY(0);
+      s.setScale(1);
+      s.setAlpha(1);
+    });
+
+    if (this.shadowGraphics) {
+      this.shadowGraphics.setVisible(true);
+    }
+
+    this.setDirection(this.currentDirection || 'down', false);
+  }
+
   destroy(fromScene) {
     if (this.moveTween) {
       this.moveTween.stop();

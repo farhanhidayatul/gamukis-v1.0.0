@@ -61,4 +61,14 @@
   .admin-monitoring {
     margin-top: 24px;
   }
+
+  .admin-monitoring__heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .admin-monitoring__heading h2 {
+    font-size: 22px;
+  }
 }

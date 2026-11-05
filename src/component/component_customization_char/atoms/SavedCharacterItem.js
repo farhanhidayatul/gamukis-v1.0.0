@@ -1,4 +1,5 @@
 import React from 'react';
+import { CustomCharacterRenderer } from '../../component_game/playerInfo';
 import './SavedCharacterItem.css';
 
 /**
@@ -24,8 +25,27 @@ const SavedCharacterItem = ({
 }) => {
   if (!character) return null;
 
+  const appearance = character.data && typeof character.data === 'object' ? character.data : null;
+
   return (
     <div className={`saved-char-item ${isActive ? 'active' : ''}`}>
+      <div className="saved-char-preview-stage" role="img" aria-label={`Pratinjau ${character.name || 'karakter'}`}>
+        {appearance ? (
+          <CustomCharacterRenderer
+            appearance={appearance}
+            direction="down"
+            style={{
+              position: 'relative',
+              top: 0,
+              left: 'auto',
+              transform: 'scale(1.15)',
+              transformOrigin: 'center center'
+            }}
+          />
+        ) : (
+          <span className="saved-char-preview-empty">Pratinjau tidak tersedia</span>
+        )}
+      </div>
       <div className="saved-char-info">
         <span className="saved-char-name">{character.name}</span>
         {isActive && <span className="active-badge">Aktif</span>}

@@ -8,26 +8,35 @@
   justify-content: space-between;
   align-items: center;
   padding: 1%;
-  width: auto;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   height: 80px;
   background-color: white;
   box-shadow: 0 7px 15px 0 rgba(0, 0, 0, 0.5);
 }
+
 .navigation {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 0;
+  padding-left: 0;
   padding-right: 5%;
 }
+
 .navigation > li {
   list-style-type: none;
   padding: 15px;
 }
+
 .navigation > li > a {
+  display: block;
   color: #292929;
   font-size: 20px;
   text-decoration: none;
   text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .navigation > li > a:hover {
@@ -36,15 +45,12 @@
 }
 
 .active {
+  display: inline-block;
   background-color: #fcd03e;
   color: #292929;
   border-radius: 40px;
   font-weight: bold;
-
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 8px 14px;
 }
 
 .active:hover {
@@ -53,8 +59,8 @@
 
 .ImgContainer {
   display: flex;
-  justify-content: center; /* Meletakkan gambar di tengah secara horizontal */
-  align-items: center; /* Meletakkan gambar di tengah secara vertikal */
+  justify-content: center;
+  align-items: center;
 }
 
 .ImgContainer > .ImgContainer-2 {
@@ -62,9 +68,9 @@
 }
 
 .Img {
-  width: 30%; /* Lebar foto mengikuti lebar container */
-  height: auto; /* Menyesuaikan tinggi sesuai rasio aspek foto */
-  max-width: 100%; /* Hindari foto melebihi lebar container */
+  width: 30%;
+  height: auto;
+  max-width: 100%;
 }
 
 .btn-login {
@@ -75,8 +81,8 @@
   text-decoration: none;
   justify-content: center;
   align-items: center;
-  border: none; /* Menambahkan properti border dan menghilangkan garis tepi */
-  outline: none; /* Opsional: menghilangkan outline saat tombol mendapatkan fokus */
+  border: none;
+  outline: none;
   margin-right: 5%;
   margin-top: 0;
   background-color: #1D9FE8;
@@ -186,93 +192,10 @@
   color: #368ed2;
 }
 
-@media screen and (min-width: 360px) and (max-width: 500px) {
+@media (max-width: 1024px) {
   .wrapper {
-    display: flex;
-    justify-content: space-between;
-    padding: 2%;
-    width: auto;
-    height: 40px;
-    background-color: white;
-    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.5);
-  }
-
-  .profile-menu {
-    margin-right: 2%;
-    margin-top: 3px;
-  }
-
-  .profile-trigger {
-    gap: 4px;
-    width: 98px;
-    min-height: 30px;
-    padding: 4px 6px 4px 10px;
-    border-radius: 9px;
-  }
-
-  .profile-greeting span {
-    font-size: 5px;
-  }
-
-  .profile-greeting strong {
-    font-size: 6px;
-  }
-
-  .profile-image {
-    width: 18px;
-    height: 18px;
-  }
-
-  .profile-chevron {
-    font-size: 9px;
-  }
-
-  .profile-dropdown {
-    width: 120px;
-  }
-
-  .profile-dropdown a,
-  .profile-dropdown button {
-    padding: 7px 8px;
-    font-size: 9px;
-  }
-  .navigation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-right: 5%;
-  }
-  .navigation > li {
-    list-style-type: none;
-    padding: 6px;
-  }
-  .navigation > li > a {
-    color: #292929;
-    font-size: 6px;
-    text-decoration: none;
-    text-transform: capitalize;
-    display: flex;
-  }
-  
-  
-  .navigation > li > a:hover {
-    color: #fcd03e;
-    transition: all 0.5s ease-in-out;
-  }
-  
-
-@media screen and (max-width: 767px) {
-  .wrapper {
-    min-height: 58px;
-    height: auto;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-  }
-
-  .ImgContainer,
-  .ImgContainer-2 {
-    flex: 0 0 auto;
+    padding: 8px 16px;
+    gap: 10px;
   }
 
   .ImgContainer > .ImgContainer-2 {
@@ -280,193 +203,35 @@
   }
 
   .Img {
-    width: clamp(92px, 24vw, 140px);
+    width: clamp(100px, 14vw, 150px);
   }
 
   .navigation {
-    min-width: 0;
-    flex: 1 1 auto;
-    gap: 2px;
-    padding: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .navigation::-webkit-scrollbar {
-    display: none;
+    padding-right: 0;
+    gap: 4px;
   }
 
   .navigation > li {
-    flex: 0 0 auto;
-    padding: 4px;
+    padding: 6px;
   }
 
   .navigation > li > a {
-    font-size: clamp(10px, 2.4vw, 14px);
-    white-space: nowrap;
-  }
-
-  .active {
-    padding: 7px 10px;
+    font-size: clamp(13px, 1.5vw, 16px);
   }
 
   .btn-login {
-    flex: 0 0 auto;
-    width: clamp(86px, 21vw, 140px);
-    height: 34px;
-    margin: 0;
-  }
-
-  .btn-login .Navlink {
-    font-size: clamp(9px, 2.2vw, 13px);
-    white-space: nowrap;
+    width: clamp(130px, 16vw, 170px);
+    margin-right: 0;
   }
 
   .profile-menu {
-    flex: 0 0 auto;
-    margin: 0;
+    margin-right: 0;
   }
 
   .profile-trigger {
-    width: clamp(92px, 24vw, 150px);
-    min-height: 42px;
-    padding: 6px 8px 6px 10px;
+    width: clamp(136px, 17vw, 176px);
+    padding: 6px 10px;
   }
-}
-  .active {
-    background-color: #fcd03e;
-    color: #292929;
-    border-radius: 20px;
-    font-weight: bold;
-  
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  
-  .active:hover {
-    color: #292929 !important;
-  }
-  
-  .ImgContainer {
-    display: flex;
-    justify-content: center; /* Meletakkan gambar di tengah secara horizontal */
-    align-items: center; /* Meletakkan gambar di tengah secara vertikal */
-  }
-  
-  .ImgContainer > .ImgContainer-2 {
-    margin-left: 10%;
-  }
-  
-  .Img {
-    width: 100%; /* Lebar foto mengikuti lebar container */
-    height: auto; /* Menyesuaikan tinggi sesuai rasio aspek foto */
-    max-width: 100px
-  }
-  
-  .btn-login {
-    width: 80px;
-    height: 20px;
-    display: flex;
-    border-radius: 20px;
-    text-decoration: none;
-    justify-content: center;
-    align-items: center;
-    border: none; /* Menambahkan properti border dan menghilangkan garis tepi */
-    outline: none; /* Opsional: menghilangkan outline saat tombol mendapatkan fokus */
-    margin-right: 5%;
-    margin-top: 10px;
-    background-color: #1D9FE8;
-    box-shadow: 0 5px 15px 0 rgba(79, 143, 246, 0.5);
-    transition: 0.75s;
-  }
-  
-  .btn-login .Navlink {
-    text-decoration: none;
-    color: #fff;
-    font-size: 6px;
-    transition: 0.75s;
-  }
-  
-  .btn-login:hover {
-    color: #fff;
-    background-color: #2825A6;
-  }
-}
-
-@media screen and (max-width: 0px) {
-  .wrapper {
-    display: flex;
-    justify-content: space-between;
-    padding: 1%;
-    width: auto;
-    height: 80px;
-    background-color: white;
-    box-shadow: 0 7px 15px 0 rgba(0, 0, 0, 0.5);
-  }
-  .navigation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-right: 2.5%;
-  }
-  .navigation > li {
-    list-style-type: none;
-    padding: 10px;
-  }
-  .navigation > li > a {
-    color: #292929;
-    font-size: 14px;
-    text-decoration: none;
-    text-transform: capitalize;
-  }
-
-  .navigation > li > a:hover {
-    color: #fcd03e;
-    transition: all 0.5s ease-in-out;
-  }
-
-  .active {
-    background-color: #fcd03e;
-    color: #292929;
-    border-radius: 40px;
-    font-weight: bold;
-
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .active:hover {
-    color: #292929 !important;
-  }
-
-  .ImgContainer > .ImgContainer-2 {
-    margin-left: 10%;
-  }
-}
-
-.wrapper {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-}
-
-.navigation {
-  min-width: 0;
-  padding-left: 0;
-}
-
-.navigation > li > a {
-  display: block;
-  white-space: nowrap;
-}
-
-.active {
-  display: inline-block;
-  padding: 8px 14px;
 }
 
 @media (max-width: 767px) {
@@ -550,6 +315,17 @@
   .profile-greeting strong {
     font-size: 11px;
   }
+
+  .profile-dropdown {
+    width: max(168px, 100%);
+    right: 0;
+  }
+
+  .profile-dropdown a,
+  .profile-dropdown button {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 380px) {
@@ -575,4 +351,3 @@
     width: 88px;
   }
 }
-

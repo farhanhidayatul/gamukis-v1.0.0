@@ -1,6 +1,12 @@
+.notfound-page,
+.notfound-page * {
+  box-sizing: border-box;
+}
+
 .notfound-page {
   display: grid;
   min-height: 100vh;
+  min-height: 100dvh;
   place-items: center;
   padding: 32px 16px;
   overflow: hidden;

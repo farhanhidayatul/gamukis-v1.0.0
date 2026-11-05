@@ -3,6 +3,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import StudentClass from '../pages/studentClass';
+import * as studentClassDataApi from '../database/studentClassData';
 import {
   FALLBACK_CLASSES,
   FALLBACK_CLASS_CATEGORIES,
@@ -82,6 +83,22 @@ describe('Fitur Deskripsi Kelas Siswa & Kategori Materi', () => {
     expect(container.textContent).toContain('SOSHUM');
     expect(container.textContent).toContain('BAHASA');
     expect(container.textContent).toContain('Rekomendasi Materi Harian');
+  });
+
+  test('menempatkan eksplorasi kelas sebelum rekomendasi dan tidak menampilkan metrik dashboard', () => {
+    renderComponent();
+
+    expect(container.querySelector('.hero-metrics')).toBeNull();
+    const contentSections = Array.from(container.querySelectorAll(
+      '.class-hero-section, .class-navigation-section, .class-explorer-layout, .daily-recommendations-widget'
+    )).map((section) => section.className);
+
+    expect(contentSections).toEqual([
+      'class-hero-section',
+      'class-navigation-section',
+      'class-explorer-layout',
+      'daily-recommendations-widget'
+    ]);
   });
 
   test('kategori BAHASA menampilkan seluruh 8 mata pelajaran bahasa yang diwajibkan', async () => {
@@ -210,5 +227,59 @@ describe('Fitur Deskripsi Kelas Siswa & Kategori Materi', () => {
 
     // Verifikasi daftar yang difilter
     expect(container.textContent).toContain('Spanyol');
+  });
+
+  test('siswa dapat membuka template offering kosong yang ditandai sebagai draf', async () => {
+    const offering = {
+      id: 'bahasa-indonesia-SD-1',
+      educationStage: 'SD',
+      schoolGrade: '1',
+      questionCount: 0,
+      contentStatus: 'draft',
+      isTemplate: true
+    };
+    const subject = {
+      ...FALLBACK_CLASSES.find((item) => item.id === 'bahasa-indonesia'),
+      offerings: [offering]
+    };
+    const categorySpy = jest.spyOn(studentClassDataApi, 'fetchClassCategories').mockResolvedValue(FALLBACK_CLASS_CATEGORIES);
+    const classesSpy = jest.spyOn(studentClassDataApi, 'fetchClassesByCategory').mockResolvedValue([subject]);
+    const detailSpy = jest.spyOn(studentClassDataApi, 'fetchClassDetail').mockResolvedValue(subject);
+    const offeringDetailSpy = jest.spyOn(studentClassDataApi, 'fetchClassOfferingDetail').mockResolvedValue({
+      ...subject,
+      description: 'Template draf untuk kelas satu.',
+      learningObjectives: ['Mengenali konsep dasar.'],
+      syllabus: [{ chapterNumber: 1, title: 'Bab Pengantar', lessons: [{ id: 'lesson-1', title: 'Konsep Dasar', duration: '30 Menit', type: 'article' }] }],
+      miniQuiz: [],
+      offering
+    });
+    const recommendationSpy = jest.spyOn(studentClassDataApi, 'fetchDailyRecommendations').mockResolvedValue(FALLBACK_DAILY_RECOMMENDATIONS);
+    const progressSpy = jest.spyOn(studentClassDataApi, 'fetchStudentClassProgress').mockResolvedValue({ completedLessons: [], completedChapters: [] });
+
+    await act(async () => {
+      root.render(<BrowserRouter><StudentClass /></BrowserRouter>);
+      await Promise.resolve();
+    });
+    const subjectButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Lihat Silabus & Deskripsi'));
+    await act(async () => subjectButton.click());
+    const stageButton = Array.from(container.querySelectorAll('.detail-tab-btn')).find((button) => button.textContent === 'SD');
+    await act(async () => stageButton.click());
+    const gradeButton = Array.from(container.querySelectorAll('.classes-cards-list button')).find((button) => button.textContent.includes('Kelas 1'));
+    expect(container.querySelector('.offering-choice-title').textContent).toBe('Kelas 1');
+    expect(container.querySelector('.offering-choice-meta').textContent).toBe('0 soal');
+    expect(container.querySelector('.offering-status.draft').textContent).toBe('Draf');
+    await act(async () => gradeButton.click());
+
+    expect(offeringDetailSpy).toHaveBeenCalledWith('bahasa-indonesia', offering.id);
+    expect(container.textContent).toContain('Kurikulum draf');
+    const syllabusTab = Array.from(container.querySelectorAll('.detail-tab-btn')).find((button) => button.textContent.includes('Silabus & Bab'));
+    await act(async () => syllabusTab.click());
+    expect(container.textContent).toContain('Bab Pengantar');
+    const quizTab = Array.from(container.querySelectorAll('.detail-tab-btn')).find((button) => button.textContent.includes('Latihan Kilat'));
+    await act(async () => quizTab.click());
+    expect(container.textContent).toContain('Kuis belum tersedia pada template draf ini.');
+    expect(container.querySelector('.btn-hero-launch-game')).toBeNull();
+
+    [categorySpy, classesSpy, detailSpy, offeringDetailSpy, recommendationSpy, progressSpy].forEach((spy) => spy.mockRestore());
   });
 });

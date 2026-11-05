@@ -1,0 +1,131 @@
+.class-preview-panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.class-preview-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.class-preview-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.preview-tab-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.preview-tab-btn.active {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
+
+.class-preview-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.class-preview-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.class-preview-card-head {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.class-preview-options {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.class-preview-option {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.class-preview-option.correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.preview-answer-key-badge {
+  font-size: 0.78rem;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.class-preview-explanation {
+  margin-top: 10px;
+  padding: 10px;
+  background: #eff6ff;
+  border-radius: 8px;
+  color: #1e3a8a;
+}
+
+@media (max-width: 640px) {
+  .class-preview-panel {
+    padding: 16px;
+  }
+
+  .class-preview-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .class-preview-toggle {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .preview-tab-btn {
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .class-preview-card-head,
+  .class-preview-option {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 420px) {
+  .class-preview-toggle {
+    grid-template-columns: 1fr;
+  }
+}

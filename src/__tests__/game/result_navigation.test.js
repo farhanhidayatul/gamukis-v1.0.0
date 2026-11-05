@@ -45,10 +45,10 @@ describe('Result navigation', () => {
     window.sessionStorage.clear();
   });
 
-  const renderResult = () => act(() => {
+  const renderResult = (state = { selectedCard }) => act(() => {
     root.render(
       <MemoryRouter
-        initialEntries={[{ pathname: '/result', state: { selectedCard } }]}
+        initialEntries={[{ pathname: '/result', state }]}
         future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
       >
         <Routes>
@@ -68,15 +68,18 @@ describe('Result navigation', () => {
       .toContain('"pathname":"/home"');
   });
 
-  it('replays from gamePage with the same selection, resetSession flag, and cleared cache', () => {
+  it('replays with the same chapter and duration, resetSession flag, and cleared cache', () => {
     window.localStorage.setItem('gamukis_anonymous_game_session', JSON.stringify({ sessionId: 'old-anon' }));
-    renderResult();
+    const selectedChapter = { id: 'chapter-lho', title: 'Teks Laporan Hasil Observasi' };
+    renderResult({ selectedCard, subject: 'Biologi', selectedChapter, gameDurationSeconds: 10800 });
 
     act(() => container.querySelector('.result-action-replay').click());
 
     const destination = JSON.parse(container.querySelector('[data-testid="destination"]').textContent);
     expect(destination.pathname).toBe('/gamePage');
     expect(destination.state.selectedCard).toEqual(selectedCard);
+    expect(destination.state.selectedChapter).toEqual(selectedChapter);
+    expect(destination.state.gameDurationSeconds).toBe(10800);
     expect(destination.state.resetSession).toBe(true);
     expect(window.sessionStorage.getItem('gamukis_game_session_id')).toBeNull();
     expect(window.localStorage.getItem('gamukis_anonymous_game_session')).toBeNull();

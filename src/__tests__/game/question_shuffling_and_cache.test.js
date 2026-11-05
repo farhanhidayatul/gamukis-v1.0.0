@@ -102,6 +102,69 @@ describe('Question Shuffling, Option Randomization & Anonymous Device Cache', ()
         false
       );
     });
+
+    it('correctly parses long reading passage and allows minimizing/expanding the story', () => {
+      const onRequestClose = jest.fn();
+      const longPassage = 'Pada tahun 2024 terjadi fenomena cuaca yang memengaruhi hasil panen padi di berbagai wilayah Indonesia secara signifikan...';
+      const actualQuestion = 'Berdasarkan teks di atas, apakah faktor utama kegagalan panen?';
+      const questionData = {
+        question: `[BACAAN / SOAL CERITA]:\n${longPassage}\n\n[PERTANYAAN]:\n${actualQuestion}`,
+        options: ['Cuaca ekstrem', 'Hama wereng', 'Keterlambatan bibit', 'Harga pupuk tinggi', 'Kurangnya irigasi'],
+        correct: 'Cuaca ekstrem'
+      };
+
+      act(() => {
+        root.render(
+          <CoinModal
+            isOpen={true}
+            onRequestClose={onRequestClose}
+            playerId="test-player"
+            questionData={questionData}
+          />
+        );
+      });
+
+      // Story container should be rendered
+      const storyContainer = document.querySelector('.story-container');
+      expect(storyContainer).toBeTruthy();
+
+      // Heading should only show the actual question
+      const heading = document.querySelector('.modal-question-heading');
+      expect(heading.textContent).toBe(actualQuestion);
+
+      // 5 options should be rendered
+      const buttons = document.querySelectorAll('.option-button');
+      expect(buttons.length).toBe(5);
+
+      // Initially open, story-body is visible
+      const storyBody = document.querySelector('.story-body');
+      expect(storyBody).toBeTruthy();
+      expect(storyBody.textContent).toContain(longPassage);
+
+      // Click toggle button to minimize
+      const toggleBtn = document.querySelector('.story-toggle-btn');
+      expect(toggleBtn).toBeTruthy();
+      expect(toggleBtn.textContent).toContain('Minimize');
+
+      act(() => {
+        toggleBtn.click();
+      });
+
+      // Now minimized: story-body should no longer be present
+      expect(document.querySelector('.story-body')).toBeNull();
+      expect(document.querySelector('.story-container--minimized')).toBeTruthy();
+      expect(toggleBtn.textContent).toContain('Buka Bacaan');
+
+      // Options remain fully visible and clickable
+      const optButtons = document.querySelectorAll('.option-button');
+      expect(optButtons.length).toBe(5);
+
+      // Click again to expand
+      act(() => {
+        toggleBtn.click();
+      });
+      expect(document.querySelector('.story-body')).toBeTruthy();
+    });
   });
 
   describe('Anonymous Device Session Cache (getAnonymousSessionCache)', () => {

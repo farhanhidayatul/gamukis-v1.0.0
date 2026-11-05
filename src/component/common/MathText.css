@@ -1,0 +1,39 @@
+.math-text-container {
+  display: inline;
+  line-height: inherit;
+  word-break: break-word;
+}
+
+.math-text-container .math-inline {
+  display: inline-block;
+  vertical-align: -0.15em;
+  margin: 0 2px;
+  line-height: normal;
+}
+
+.math-text-container .math-block {
+  display: block;
+  margin: 0.75rem auto;
+  text-align: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.25rem 0;
+}
+
+.math-text-container .math-fallback {
+  font-family: monospace;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* Ensure KaTeX math formulas respect container colors and dark/light themes */
+.math-text-container .katex {
+  font-size: 1.05em;
+  text-rendering: auto;
+}
+
+.math-text-container .katex-display {
+  margin: 0.5em 0;
+}

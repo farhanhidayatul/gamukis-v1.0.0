@@ -1,68 +1,139 @@
 .timer {
-    position: absolute;
-    z-index: 30;
-    top: 12px;
-    right: max(12px, env(safe-area-inset-right));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 8px;
-    border: 1px solid rgba(255, 255, 255, 0.72);
-    border-radius: 12px;
-    background: rgba(10, 34, 42, 0.82);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
-    font-family: 'Arial', sans-serif;
-    font-size: 15px;
-    color: white;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  
-  .time-block {
-    background-color: #00bcd4;
-    min-width: 2ch;
-    padding: 5px 7px;
-    border-radius: 5px;
-    margin: 0 3px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    font-weight: bold;
-  }
-  
-  .colon {
-    background-color: #00bcd4;
-    padding: 5px 4px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    font-size: 15px;
-    margin: 0 2px;
-    font-weight: bold;
-  }
-  
-  .timer.almost-up .time-block {
-    background-color: #FFC107; /* Warna kuning */
-  }
-  
-  .timer.almost-up .colon {
-    background-color: #FFC107; /* Warna kuning */
-  }
+  position: fixed;
+  z-index: 95;
+  top: max(12px, env(safe-area-inset-top));
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 14px;
+  background: rgba(10, 34, 42, 0.86);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.38),
+    inset 0 1px 1px rgba(255, 255, 255, 0.16);
+  font-family: 'Source Sans Pro', 'Arial', sans-serif;
+  font-size: 16px;
+  color: #ffffff;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: transform 0.2s ease, top 0.2s ease, padding 0.2s ease;
+}
 
+.time-block {
+  background: linear-gradient(145deg, #06b6d4, #0284c7);
+  min-width: 2.2ch;
+  text-align: center;
+  padding: 5px 8px;
+  border-radius: 7px;
+  margin: 0 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.32), inset 0 1px rgba(255, 255, 255, 0.25);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.colon {
+  background: linear-gradient(145deg, #06b6d4, #0284c7);
+  padding: 5px 5px;
+  border-radius: 7px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.32);
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  margin: 0 2px;
+  font-weight: 800;
+}
+
+.timer.almost-up {
+  border-color: rgba(251, 191, 36, 0.7);
+  box-shadow: 0 6px 22px rgba(245, 158, 11, 0.28);
+}
+
+.timer.almost-up .time-block,
+.timer.almost-up .colon {
+  background: linear-gradient(145deg, #fbbf24, #d97706);
+  color: #1e293b;
+}
+
+/* Laptop (1025px - 1280px) */
+@media (max-width: 1280px) {
+  .timer {
+    top: max(10px, env(safe-area-inset-top));
+    padding: 5px 9px;
+    font-size: 15px;
+  }
+}
+
+/* Tablet Landscape & Tablet Portrait (<= 1024px) */
 @media (max-width: 1024px), (pointer: coarse) {
   .timer {
-    top: max(12px, env(safe-area-inset-top));
-    padding: 4px 7px;
+    top: max(10px, env(safe-area-inset-top));
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .time-block {
+    padding: 4px 6px;
+  }
+
+  .colon {
+    padding: 4px 4px;
     font-size: 14px;
   }
 }
 
-@media (max-width: 600px) {
+/* HP Portrait (<= 600px) */
+@media (max-width: 600px) and (orientation: portrait) {
   .timer {
-    right: max(8px, env(safe-area-inset-right));
-    top: max(52px, calc(46px + env(safe-area-inset-top)));
+    top: max(8px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 6px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+
+  .time-block {
+    padding: 3px 5px;
+    margin: 0 2px;
+    border-radius: 5px;
+  }
+
+  .colon {
+    padding: 3px 3px;
+    font-size: 12px;
+    margin: 0 1px;
+    border-radius: 5px;
   }
 }
-  
-  
-  
-  
+
+/* HP Landscape (short height viewport) */
+@media (max-height: 540px) and (orientation: landscape) {
+  .timer {
+    top: max(6px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 6px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+
+  .time-block {
+    padding: 2px 5px;
+    margin: 0 2px;
+    border-radius: 5px;
+  }
+
+  .colon {
+    padding: 2px 3px;
+    font-size: 12px;
+    margin: 0 1px;
+    border-radius: 5px;
+  }
+}

@@ -1,0 +1,197 @@
+.curriculum-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.curriculum-modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.curriculum-modal.curriculum-quiz-editor {
+  max-width: 1024px;
+}
+
+.curriculum-modal__header {
+  padding: 18px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+}
+
+.curriculum-modal__header h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
+
+.curriculum-modal__close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.curriculum-modal__tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 24px 0;
+  border-bottom: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.curriculum-modal__tab-btn {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.curriculum-modal__tab-btn.active {
+  color: var(--b, #1976D2);
+  border-bottom-color: var(--b, #1976D2);
+}
+
+.curriculum-modal__body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.curriculum-modal__form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.curriculum-modal__form-group {
+  margin-bottom: 14px;
+}
+
+.curriculum-modal__form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.curriculum-modal__input,
+.curriculum-modal__textarea,
+.curriculum-modal__select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+.curriculum-modal__input:focus,
+.curriculum-modal__textarea:focus,
+.curriculum-modal__select:focus {
+  outline: none;
+  border-color: var(--b, #1976D2);
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+}
+
+.curriculum-chapter-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.curriculum-lesson-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+  background: #ffffff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.curriculum-modal__footer {
+  padding: 14px 24px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #f8fafc;
+}
+
+@media (max-width: 640px) {
+  .curriculum-modal__form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .curriculum-modal__tabs {
+    flex-wrap: wrap;
+    padding: 8px 16px 0;
+  }
+
+  .curriculum-modal__header,
+  .curriculum-modal__body,
+  .curriculum-modal__footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.curriculum-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.curriculum-btn--primary {
+  background: var(--y, #FCD03E);
+  color: var(--on-primary, #292929);
+  box-shadow: 0 3px 0 var(--yd, #F5B900);
+}
+
+.curriculum-btn--primary:hover {
+  background: var(--yd, #F5B900);
+}
+
+.curriculum-btn--secondary {
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.curriculum-btn--secondary:hover {
+  background: #f1f5f9;
+}

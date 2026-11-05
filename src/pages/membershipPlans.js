@@ -218,6 +218,16 @@ const MembershipPlans = () => {
       const isPending = result.status === 'pending';
       const planName = selectedPlan.name;
       if (isPending && result.paymentUrl) {
+        if (String(result.paymentUrl).includes('payment=sandbox_checkout')) {
+          try {
+            const parsedUrl = new URL(result.paymentUrl, window.location.origin);
+            setSelectedPlan(null);
+            navigate(`${parsedUrl.pathname}${parsedUrl.search}`);
+            return;
+          } catch (_err) {
+            // Fall through to window.location.assign
+          }
+        }
         window.location.assign(result.paymentUrl);
         return;
       }

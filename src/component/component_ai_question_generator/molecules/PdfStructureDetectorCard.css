@@ -1,0 +1,270 @@
+.pdf-structure-detector-card {
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  transition: all 0.25s ease;
+}
+
+.pdf-structure-detector-card.scanning {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(25, 118, 210, 0.06);
+  border: 1px dashed rgba(25, 118, 210, 0.4);
+  color: #1976d2;
+}
+
+.pdf-scanner-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(25, 118, 210, 0.2);
+  border-top-color: #1976d2;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pdf-scanner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.86rem;
+}
+
+.pdf-scanner-text strong {
+  color: #1976d2;
+  font-size: 0.95rem;
+}
+
+.pdf-structure-detector-card.ready {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.pdf-detector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detector-icon {
+  font-size: 1.5rem;
+}
+
+.detector-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.detector-subtitle {
+  font-size: 0.78rem;
+  color: #64748b;
+  display: block;
+}
+
+.pdf-detector-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.detector-stat-box {
+  background: #f8fafc;
+  border: 1px solid #edf2f7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.03em;
+}
+
+.stat-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stat-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.stat-value.highlight-green {
+  color: #059669;
+}
+
+.stat-value.highlight-blue {
+  color: #1976d2;
+  font-size: 1.1rem;
+}
+
+.stat-value.highlight-purple {
+  color: #f5b900;
+  font-size: 1.05rem;
+}
+
+.stat-unit {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.stat-unit-note {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.custom-override-tag {
+  font-size: 0.7rem;
+  color: #d97706;
+  font-weight: 600;
+}
+
+.detector-features-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.feature-pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 4px;
+}
+
+.detector-sections-container {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #fafaf9;
+  border-radius: 8px;
+  border: 1px solid #f5f5f4;
+}
+
+.sections-heading {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #57534e;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.sections-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.section-distribution-chip {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #ffffff;
+  border: 1px solid #e7e5e4;
+  border-radius: 6px;
+  font-size: 0.76rem;
+}
+
+.section-name {
+  font-weight: 600;
+  color: #292524;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.section-range {
+  color: #78716c;
+}
+
+.detector-override-row {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.override-label {
+  font-size: 0.8rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.override-input-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.override-input {
+  width: 80px;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  text-align: center;
+  color: #0f172a;
+}
+
+.override-input:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.override-reset-btn {
+  background: none;
+  border: 1px solid #cbd5e1;
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #64748b;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.override-reset-btn:hover {
+  background: #f1f5f9;
+  color: #334155;
+}

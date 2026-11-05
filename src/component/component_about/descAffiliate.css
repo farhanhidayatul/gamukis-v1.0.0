@@ -181,9 +181,53 @@
   border-radius: 16px;
   background: linear-gradient(145deg, #fff, #f8fbff);
   box-shadow: 0 6px 18px rgba(54, 74, 118, 0.07);
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.bitdsul-member-card:hover {
+  transform: translateY(-4px);
+  border-color: #FCD03E;
+  box-shadow: 0 12px 28px rgba(252, 208, 62, 0.25);
+}
+
+.bitdsul-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.bitdsul-anime-tap-hint {
+  font-size: 10px;
+  font-weight: 800;
+  background: rgba(252, 208, 62, 0.2);
+  color: #B45309;
+  padding: 2px 8px;
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+  transition: background 0.2s;
+}
+
+.bitdsul-member-card:hover .bitdsul-anime-tap-hint {
+  background: #FCD03E;
+  color: #111;
+}
+
+.bitdsul-member-avatar-wrapper {
+  position: relative;
+  flex: 0 0 76px;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bitdsul-member-photo {
+  position: relative;
+  z-index: 1;
   flex: 0 0 76px;
   width: 76px;
   height: 76px;
@@ -193,6 +237,12 @@
   background-color: #eaf1fb;
   background-repeat: no-repeat;
   box-shadow: 0 0 0 2px #fbd249;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.bitdsul-member-card:hover .bitdsul-member-photo {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 3px #FCD03E, 0 6px 18px rgba(252, 208, 62, 0.4);
 }
 
 .bitdsul-member-details {

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import AnimeProfileCanvas from './atoms/AnimeProfileCanvas';
+import BitdsulAnimeModal from './molecules/BitdsulAnimeModal';
 import './descAffiliate.css';
 
 const bitdsulPhoto = require('../../images/documentation/bitdsul person.jpg');
@@ -35,48 +37,100 @@ const bitdsulMembers = [
   { id: 6, x: 3590, y: 1260, name: 'Petrus Padji Goran Lewogete', title: 'Koordinator Desainer', role: 'Desainer inti', linkedin: 'https://www.linkedin.com/in/petrus-padji-goran-lewogete-a91218325/', quote: '“Rancang dengan tujuan, ciptakan dengan hati, dan buat setiap karya memberi manfaat.”' }
 ];
 
-const BitdsulTeam = () => (
-  <section className="bitdsul-team" aria-labelledby="bitdsul-team-title">
-    <div className="bitdsul-team-heading">
-      <span className="affiliate-description-eyebrow">Kenali tim kami</span>
-      <h3 id="bitdsul-team-title">Biodata Tim BITDSUL</h3>
-      <p>Template biodata enam anggota tim. Nama, peran, dan deskripsi dapat dilengkapi nanti.</p>
-    </div>
-    <div className="bitdsul-team-grid">
-      {bitdsulMembers.map(({ id, x, y, title, name, role, linkedin, quote }) => {
-        const cropSize = 480;
-        const portraitSize = 76;
-        const scale = portraitSize / cropSize;
-        const backgroundWidth = 4032 * scale;
-        const backgroundHeight = 3024 * scale;
+const BitdsulMemberCard = ({ member, bitdsulPhoto, onSelect }) => {
+  const { id, x, y, title, name, role, linkedin, quote } = member;
+  const [isHovered, setIsHovered] = useState(false);
+  const cropSize = 480;
+  const portraitSize = 76;
+  const scale = portraitSize / cropSize;
+  const backgroundWidth = 4032 * scale;
+  const backgroundHeight = 3024 * scale;
 
-        return (
-          <article className="bitdsul-member-card" key={id}>
-            <div
-              className="bitdsul-member-photo"
-              role="img"
-              aria-label={`Foto wajah anggota BITDSUL ${id}`}
-              style={{
-                backgroundImage: `url("${bitdsulPhoto}")`,
-                backgroundSize: `${backgroundWidth}px ${backgroundHeight}px`,
-                backgroundPosition: `${portraitSize / 2 - x * scale}px ${portraitSize / 2 - y * scale}px`
-              }}
-            />
-            <div className="bitdsul-member-details">
-              <span className="bitdsul-member-number">{title || `Anggota ${id}`}</span>
-              <h4>{name}</h4>
-              <p>{role || 'Peran dalam tim'}</p>
-              <span className="bitdsul-member-bio">{quote}</span>
-              <a className="bitdsul-member-linkedin" href={linkedin} target="_blank" rel="noopener noreferrer" aria-label={`LinkedIn ${name}`}>
-                Lihat LinkedIn <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </article>
-        );
-      })}
-    </div>
-  </section>
-);
+  return (
+    <article
+      className="bitdsul-member-card is-clickable"
+      key={id}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onSelect(member)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect(member); }}
+      aria-label={`Buka kartu anime ${name}`}
+    >
+      <div className="bitdsul-member-avatar-wrapper">
+        <AnimeProfileCanvas
+          width={116}
+          height={116}
+          isHovered={isHovered}
+          memberId={id}
+        />
+        <div
+          className="bitdsul-member-photo"
+          role="img"
+          aria-label={`Foto wajah anggota BITDSUL ${id}`}
+          style={{
+            backgroundImage: `url("${bitdsulPhoto}")`,
+            backgroundSize: `${backgroundWidth}px ${backgroundHeight}px`,
+            backgroundPosition: `${portraitSize / 2 - x * scale}px ${portraitSize / 2 - y * scale}px`
+          }}
+        />
+      </div>
+      <div className="bitdsul-member-details">
+        <div className="bitdsul-card-top-row">
+          <span className="bitdsul-member-number">{title || `Anggota ${id}`}</span>
+          <span className="bitdsul-anime-tap-hint">⚡ Karakter Anime</span>
+        </div>
+        <h4>{name}</h4>
+        <p>{role || 'Peran dalam tim'}</p>
+        <span className="bitdsul-member-bio">{quote}</span>
+        <a
+          className="bitdsul-member-linkedin"
+          href={linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`LinkedIn ${name}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          Lihat LinkedIn <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </article>
+  );
+};
+
+const BitdsulTeam = () => {
+  const [selectedMember, setSelectedMember] = useState(null);
+
+  return (
+    <section className="bitdsul-team" aria-labelledby="bitdsul-team-title">
+      <div className="bitdsul-team-heading">
+        <span className="affiliate-description-eyebrow">Kenali tim kami</span>
+        <h3 id="bitdsul-team-title">Biodata Tim BITDSUL</h3>
+        <p>Klik kartu salah satu anggota tim untuk membuka Kartu Karakter Anime dan Ultimate Skill mereka!</p>
+      </div>
+      <div className="bitdsul-team-grid">
+        {bitdsulMembers.map((member) => (
+          <BitdsulMemberCard
+            key={member.id}
+            member={member}
+            bitdsulPhoto={bitdsulPhoto}
+            onSelect={setSelectedMember}
+          />
+        ))}
+      </div>
+
+      {/* Interactive Anime Character Modal */}
+      {selectedMember && (
+        <BitdsulAnimeModal
+          member={selectedMember}
+          bitdsulPhoto={bitdsulPhoto}
+          onClose={() => setSelectedMember(null)}
+        />
+      )}
+    </section>
+  );
+};
 
 const BitdsulActivityGallery = () => (
   <section className="bitdsul-activities" aria-labelledby="bitdsul-activities-title">

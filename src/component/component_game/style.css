@@ -11,32 +11,35 @@
 
 .game-wrapper .player-info {
   position: absolute;
-  top: 0;
-  left: 0;
-  padding: 1em;
+  top: max(10px, env(safe-area-inset-top));
+  left: max(10px, env(safe-area-inset-left));
+  padding: 8px 12px;
   display: flex;
-  gap: 0.5em;
+  flex-direction: column;
+  gap: 4px;
   align-items: flex-start;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid #CBD5E1;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
+  z-index: 85;
 }
 
 @media (min-width: 601px) {
   .game-wrapper .player-info__identity {
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
   .game-wrapper .player-info__main-row,
   .game-wrapper .player-info__actions {
     display: flex;
-    min-height: 44px;
     align-items: center;
-  }
-
-  .game-wrapper .player-info__main-row label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    white-space: nowrap;
   }
 }
 
@@ -83,7 +86,19 @@
 .game-wrapper .player-name-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.game-wrapper .player-name-wrapper label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #5A4512;
+  letter-spacing: 0.4px;
+  margin: 0 0 2px 0;
+  text-transform: uppercase;
 }
 
 .game-wrapper .player-name-action-row,
@@ -93,54 +108,111 @@
   gap: 6px;
 }
 
+.game-wrapper .player-name-input {
+  background: #F8FAFC;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 8px;
+  color: #0F172A;
+  font-weight: 700;
+  font-size: 12px;
+  height: 30px;
+  padding: 0 8px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.game-wrapper .player-name-input:focus {
+  border-color: #2563EB;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
 .game-wrapper .player-name-button {
-  font-size: 14px;
-  height: 40px;
-  padding: 0 12px;
-  background: #ffcc00;
-  border-bottom: 2px solid #b38f00;
-  color: #1a1a1a;
-  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  height: 30px;
+  padding: 0 10px;
+  background: #2563EB;
+  border: none;
+  color: #FFFFFF;
+  border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.game-wrapper .player-name-button:hover:not(:disabled) {
+  background: #1D4ED8;
+}
+
+.game-wrapper .player-name-button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .game-wrapper .player-name-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  background: #94A3B8;
 }
 
 .game-wrapper .player-name-display {
-  font-size: 16px;
-  font-weight: bold;
-  color: #ffffff;
-  padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1E293B;
+  padding: 4px 10px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
 }
 
 .game-wrapper .player-name-input--locked {
-  background: rgba(34, 32, 52, 0.8) !important;
-  color: #a0aec0 !important;
-  border-color: #4a5568 !important;
+  background: #F1F5F9 !important;
+  color: #64748B !important;
+  border-color: #CBD5E1 !important;
   cursor: default;
 }
 
 .game-wrapper .player-name-badge {
-  font-size: 11px;
-  font-weight: bold;
+  font-size: 10px;
+  font-weight: 800;
   padding: 3px 6px;
-  border-radius: 4px;
-  background: #4a5568;
-  color: #e2e8f0;
+  border-radius: 6px;
+  background: #E2E8F0;
+  color: #475569;
   text-transform: uppercase;
 }
 
 .game-wrapper .player-info__sub-row {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
   margin-top: 4px;
+}
+
+.game-wrapper .player-health {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #FEF2F2;
+  padding: 3px 6px;
+  border-radius: 999px;
+  border: 1px solid #FECACA;
+}
+
+.game-wrapper .player-health .heart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-wrapper .player-health .heart-image {
+  width: 16px;
+  height: 16px;
 }
 
 /* Change Color Button: HIDDEN on Desktop (>900px), VISIBLE on Tablet and Mobile (<=900px) */
@@ -148,10 +220,34 @@
   display: none;
 }
 
+.game-wrapper .player-info button#player-color {
+  height: 24px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 8px;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  border-radius: 999px;
+  color: #334155;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.15s ease;
+}
+
+.game-wrapper .player-info button#player-color:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+.game-wrapper .player-info button#player-color:active {
+  transform: translateY(1px);
+}
+
 @media (max-width: 900px) {
   .game-wrapper .player-info__color-action {
     display: block;
-    margin-top: 4px;
+    margin-top: 0;
   }
 }
 
@@ -305,25 +401,25 @@
   50%, 100% { opacity: 1; }
 }
 
-.game-wrapper .player-health--blinking .heart-in {
+.game-wrapper .player-health--blinking .heart-full .heart-in {
   animation: hpBlinkIn 700ms steps(1, end) infinite;
 }
 
-.game-wrapper .player-health--blinking .heart-out {
+.game-wrapper .player-health--blinking .heart-full .heart-out {
   animation: hpBlinkOut 700ms steps(1, end) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .game-wrapper .player-health--blinking .heart-in,
-  .game-wrapper .player-health--blinking .heart-out {
+  .game-wrapper .player-health--blinking .heart-full .heart-in,
+  .game-wrapper .player-health--blinking .heart-full .heart-out {
     animation: none;
   }
 
-  .game-wrapper .player-health--blinking .heart-in {
+  .game-wrapper .player-health--blinking .heart-full .heart-in {
     opacity: 1;
   }
 
-  .game-wrapper .player-health--blinking .heart-out {
+  .game-wrapper .player-health--blinking .heart-full .heart-out {
     opacity: 0;
   }
 }
@@ -668,6 +764,7 @@
 }
 
 .game-wrapper .Character[data-color="man"] .Character_name-container,
+.game-wrapper .Character[data-color="girl"] .Character_name-container,
 .game-wrapper .Character.has-svg-character .Character_name-container {
   top: -38px;
   left: 9.5px;
@@ -675,9 +772,10 @@
 }
 
 .game-wrapper .Character[data-color="man"] .Character_you-arrow,
+.game-wrapper .Character[data-color="girl"] .Character_you-arrow,
 .game-wrapper .Character.has-svg-character .Character_you-arrow {
   top: -26px;
-  left: 14px;
+  left: 9.5px;
   transform: translateX(-50%);
 }
 
@@ -744,6 +842,288 @@
   animation: walk-man-right 0.44s step-end infinite;
 }
 
+/* ========================================================================= */
+/* 🛡️ RESPAWN COOLDOWN (15s) & POST-RESPAWN INVULNERABILITY (3s) HUD CARDS   */
+/* ========================================================================= */
+.gamukis-respawn-card {
+  position: fixed;
+  top: max(68px, calc(58px + env(safe-area-inset-top)));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 950;
+  width: min(90vw, 320px);
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(28, 12, 18, 0.92), rgba(69, 10, 10, 0.88));
+  border: 1.5px solid rgba(248, 113, 113, 0.55);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 0 22px rgba(239, 68, 68, 0.28),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #ffffff;
+  pointer-events: none;
+  box-sizing: border-box;
+  animation: respawnCardAppear 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes respawnCardAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.gamukis-respawn-card__main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gamukis-respawn-ring-wrap {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gamukis-respawn-ring {
+  width: 54px;
+  height: 54px;
+  transform: rotate(-90deg);
+}
+
+.gamukis-respawn-ring__bg {
+  fill: rgba(15, 23, 42, 0.55);
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 4.5;
+}
+
+.gamukis-respawn-ring__fg {
+  fill: none;
+  stroke: #fbbf24;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.35s ease;
+  filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.65));
+}
+
+.gamukis-respawn-ring__number {
+  position: absolute;
+  font-size: 19px;
+  font-weight: 900;
+  color: #fde68a;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.gamukis-respawn-card__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gamukis-respawn-card__badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.32);
+  border: 1px solid rgba(252, 165, 165, 0.45);
+  color: #fecaca;
+}
+
+.gamukis-respawn-card__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.gamukis-respawn-card__subtitle {
+  font-size: 12.5px;
+  color: #fca5a5;
+  line-height: 1.25;
+}
+
+.gamukis-respawn-card__subtitle b {
+  color: #fde68a;
+  font-weight: 800;
+}
+
+.gamukis-respawn-progress-track {
+  margin-top: 10px;
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.gamukis-respawn-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ef4444, #fbbf24);
+  transition: width 0.35s linear;
+}
+
+/* 3-Second Post-Respawn Invulnerability Shield Card */
+.gamukis-invuln-card {
+  position: fixed;
+  top: max(68px, calc(58px + env(safe-area-inset-top)));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 950;
+  width: min(88vw, 296px);
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(6, 48, 38, 0.92), rgba(11, 68, 58, 0.88));
+  border: 1.5px solid rgba(52, 211, 153, 0.65);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.45),
+    0 0 18px rgba(16, 185, 129, 0.32),
+    inset 0 1px 1px rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff;
+  pointer-events: none;
+  box-sizing: border-box;
+  animation: respawnCardAppear 0.22s ease-out;
+}
+
+.gamukis-invuln-card__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gamukis-invuln-card__icon {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.7));
+}
+
+.gamukis-invuln-card__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.gamukis-invuln-card__title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ecfdf5;
+}
+
+.gamukis-invuln-card__sub {
+  font-size: 11.5px;
+  color: #a7f3d0;
+}
+
+.gamukis-invuln-card__pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.35);
+  border: 1px solid rgba(110, 231, 183, 0.55);
+  font-size: 12px;
+  font-weight: 800;
+  color: #d1fae5;
+}
+
+.gamukis-invuln-progress-track {
+  margin-top: 8px;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.gamukis-invuln-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #34d399, #38bdf8);
+  transition: width 0.35s linear;
+}
+
+/* ========================================================================= */
+/* 📌 6-DEVICE RESPONSIVE HUD LAYOUT (PC, LAPTOP, TABLET, HP PORTRAIT/LAND)  */
+/* ========================================================================= */
+
+/* Tablet Portrait & Landscape (<= 1024px) */
+@media (max-width: 1024px) {
+  .game-wrapper .player-info {
+    top: max(8px, env(safe-area-inset-top));
+    left: max(10px, env(safe-area-inset-left));
+    padding: 7px 10px;
+    max-width: clamp(200px, 32vw, 250px);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid #CBD5E1;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    z-index: 85;
+  }
+
+  .game-wrapper .player-info .player-name-wrapper {
+    gap: 2px;
+  }
+
+  .game-wrapper .player-info label {
+    font-size: 10.5px;
+    margin-bottom: 2px;
+    color: #5A4512;
+    font-weight: 800;
+  }
+
+  .game-wrapper .player-info input[type="text"] {
+    width: clamp(85px, 16vw, 115px);
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .game-wrapper .player-info button.player-name-button {
+    height: 30px;
+    font-size: 11px;
+    padding: 0 9px;
+  }
+
+  .game-wrapper .player-info button#player-color {
+    height: 24px;
+    font-size: 10px;
+    padding: 0 8px;
+  }
+
+  .game-wrapper .player-info .heart,
+  .game-wrapper .player-info .heart-image {
+    width: 17px;
+    height: 17px;
+  }
+
+  .gamukis-respawn-card,
+  .gamukis-invuln-card {
+    top: max(60px, calc(52px + env(safe-area-inset-top)));
+    width: min(84vw, 290px);
+    padding: 10px 14px;
+  }
+}
+
+/* HP Portrait (<= 600px) */
 @media (max-width: 600px) {
   .game-wrapper {
     height: 100svh;
@@ -752,130 +1132,246 @@
   }
 
   .game-wrapper .player-info {
-    top: 0;
-    right: 0;
-    left: 0;
-    justify-content: space-between;
+    top: max(8px, env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    right: auto;
+    max-width: clamp(170px, 48vw, 220px);
+    flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-    padding: 8px;
-    background: rgba(10, 34, 42, 0.78);
+    gap: 3px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1.5px solid #CBD5E1;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    z-index: 85;
+  }
+
+  .game-wrapper .player-info .player-name-wrapper {
+    gap: 2px;
   }
 
   .game-wrapper .player-info label {
-    font-size: 11px;
+    font-size: 9.5px;
+    margin-bottom: 2px;
+    color: #5A4512;
+    font-weight: 800;
   }
 
   .game-wrapper .player-info input[type="text"] {
-    width: clamp(100px, 36vw, 140px);
-    height: 36px;
+    width: clamp(75px, 20vw, 100px);
+    height: 26px;
+    font-size: 11px;
+    padding: 0 6px;
+  }
+
+  .game-wrapper .player-info button.player-name-button {
+    height: 26px;
+    font-size: 10px;
+    padding: 0 8px;
+  }
+
+  .game-wrapper .player-info button#player-color {
+    height: 22px;
+    font-size: 9.5px;
+    padding: 0 7px;
+  }
+
+  .game-wrapper .player-info .heart,
+  .game-wrapper .player-info .heart-image {
+    width: 15px;
+    height: 15px;
+  }
+
+  .gamukis-respawn-card {
+    top: max(48px, calc(44px + env(safe-area-inset-top)));
+    width: min(86vw, 260px);
+    padding: 9px 12px;
+    border-radius: 13px;
+  }
+
+  .gamukis-respawn-ring-wrap,
+  .gamukis-respawn-ring {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+  }
+
+  .gamukis-respawn-ring__number {
+    font-size: 16px;
+  }
+
+  .gamukis-respawn-card__title {
     font-size: 14px;
   }
 
-  .game-wrapper .player-info button {
-    height: 36px;
-    font-size: 12px;
+  .gamukis-respawn-card__subtitle {
+    font-size: 11px;
   }
 
-  .game-wrapper .leaderboard-inGame {
-    top: 124px;
-    right: 8px;
-    width: min(48vw, 190px);
-    max-height: 34vh;
-    overflow: auto;
-    padding: 8px;
-    border-radius: 12px;
-  }
-
-  .game-wrapper .leaderboard-inGame .leaderboard-container-text {
-    gap: 4px;
-    margin: 0 0 4px;
-    padding: 3px;
-    font-size: 9px;
-  }
-
-  .game-wrapper .leaderboard-inGame .leaderboard-decs-text-1 {
-    width: auto;
-  }
-
-  .game-wrapper .leaderboard-inGame .leaderboard-item {
-    gap: 3px;
-    padding: 2px;
-  }
-
-  .game-wrapper .leaderboard-inGame .rank-leaderboard {
-    width: 16px;
-    min-width: 16px;
-    margin-right: 2px;
-  }
-
-  .game-wrapper .leaderboard-inGame .medal {
-    width: 18px;
-    height: 18px;
-  }
-
-  .game-wrapper .leaderboard-inGame .player-name,
-  .game-wrapper .leaderboard-inGame .top-three .player-name,
-  .game-wrapper .leaderboard-inGame .top-ten .player-name,
-  .game-wrapper .leaderboard-inGame .regular .player-name {
-    width: auto;
-    min-width: 0;
-    height: 22px;
-    flex: 1 1 auto;
-    font-size: 9px;
-  }
-
-  .game-wrapper .leaderboard-inGame .player-name .player-name-text {
-    min-width: 0;
-    margin-left: 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .game-wrapper .leaderboard-inGame .player-name .player-coins-text {
-    margin-right: 4px;
-  }
-
-  .game-wrapper .leaderboard-inGame .profile-container {
-    gap: 4px;
-  }
-
-  .game-wrapper .leaderboard-inGame .profile-out-color {
-    width: 22px;
-    height: 22px;
-  }
-
-  .game-wrapper .leaderboard-inGame .profile-pic {
-    width: 18px;
-    height: 20px;
-  }
-
-  .game-wrapper .leaderboard-inGame .player-self {
-    padding: 4px;
-    border-width: 2px;
-  }
-
-  .game-wrapper .leaderboard-inGame .player-self .player-name {
-    min-width: 0;
-    max-width: none;
+  .gamukis-invuln-card {
+    top: max(48px, calc(44px + env(safe-area-inset-top)));
+    width: min(84vw, 250px);
+    padding: 8px 12px;
   }
 
   .game-wrapper .controls {
-    bottom: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
   }
 
   .game-wrapper .controls button {
-    width: 44px;
-    height: 44px;
-    margin: 4px;
+    width: 42px;
+    height: 42px;
+    margin: 3px;
     font-size: 16px;
   }
 
   .game-wrapper .controls .skill-button {
-    width: 104px;
+    width: 98px;
+    height: 36px;
+    margin-top: 6px;
+    font-size: 11px;
+  }
+}
+
+/* HP Landscape (short height viewport, e.g. 360px - 540px height) */
+@media (max-height: 540px) and (orientation: landscape), (max-height: 540px) {
+  .game-wrapper {
+    height: 100svh;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .game-wrapper .player-info {
+    top: max(6px, env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    right: auto;
+    max-width: clamp(150px, 25vw, 190px);
+    padding: 4px 6px;
+    gap: 2px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid #CBD5E1;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    z-index: 85;
+  }
+
+  .game-wrapper .player-info .player-name-wrapper {
+    gap: 2px;
+    background: transparent !important;
+  }
+
+  .game-wrapper .player-info label {
+    font-size: 8.5px;
+    margin-bottom: 1px;
+    color: #5A4512;
+    font-weight: 800;
+  }
+
+  .game-wrapper .player-info input[type="text"] {
+    width: clamp(70px, 14vw, 95px);
+    height: 24px;
+    font-size: 10px;
+    padding: 0 4px;
+  }
+
+  .game-wrapper .player-info button {
+    height: 24px;
+    font-size: 9.5px;
+    padding: 0 6px;
+  }
+
+  .game-wrapper .player-info__sub-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1px;
+  }
+
+  .game-wrapper .player-info__sub-row .player-info__color-action {
+    margin-top: 0;
+  }
+
+  .game-wrapper .player-info button#player-color {
+    height: 22px;
+    font-size: 9px;
+    padding: 0 6px;
+  }
+
+  .game-wrapper .player-info .heart {
+    width: 14px;
+    height: 14px;
+  }
+
+  .game-wrapper .player-info .heart-image {
+    width: 14px;
+    height: 14px;
+  }
+
+  .gamukis-respawn-card {
+    top: max(42px, calc(38px + env(safe-area-inset-top)));
+    width: min(56vw, 255px);
+    padding: 7px 11px;
+    border-radius: 12px;
+  }
+
+  .gamukis-respawn-ring-wrap,
+  .gamukis-respawn-ring {
+    width: 38px;
     height: 38px;
-    margin-top: 8px;
-    font-size: 12px;
+    flex: 0 0 38px;
+  }
+
+  .gamukis-respawn-ring__number {
+    font-size: 14px;
+  }
+
+  .gamukis-respawn-card__title {
+    font-size: 13px;
+  }
+
+  .gamukis-respawn-card__subtitle {
+    font-size: 10.5px;
+  }
+
+  .gamukis-respawn-progress-track {
+    margin-top: 6px;
+    height: 4px;
+  }
+
+  .gamukis-invuln-card {
+    top: max(42px, calc(38px + env(safe-area-inset-top)));
+    width: min(54vw, 240px);
+    padding: 6px 10px;
+    border-radius: 11px;
+  }
+
+  .game-wrapper .controls {
+    bottom: max(6px, env(safe-area-inset-bottom));
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+  }
+
+  .game-wrapper .controls .row button,
+  .game-wrapper .controls .row button:nth-child(2) {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    margin: 1.5px;
+  }
+
+  .game-wrapper .movement-pad,
+  .game-wrapper .mobile-skill-grid {
+    padding: 5px;
+    border-radius: 14px;
+  }
+
+  .game-wrapper .controls .mobile-skill-button {
+    min-width: 42px;
+    height: 34px;
+    font-size: 8px;
   }
 }

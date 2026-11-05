@@ -1,0 +1,464 @@
+/* CandidateEditModal.css - Gamukis AI Candidate Parameter Editor */
+
+.candidate-edit-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  animation: candidateEditFadeIn 0.2s ease-out;
+}
+
+@keyframes candidateEditFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.candidate-edit-modal-container {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 780px;
+  max-height: min(90vh, calc(100dvh - 24px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.candidate-edit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.candidate-edit-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.candidate-edit-header-icon {
+  font-size: 24px;
+}
+
+.candidate-edit-header-title h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.candidate-edit-header-title p {
+  margin: 2px 0 0;
+  font-size: 0.825rem;
+  color: #64748b;
+}
+
+.candidate-edit-close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.candidate-edit-close-btn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.candidate-edit-alert-error {
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  color: #991b1b;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  margin: 12px 24px 0;
+  border-radius: 6px;
+}
+
+.candidate-edit-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.candidate-edit-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.candidate-edit-row-meta {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .candidate-edit-row-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+.candidate-edit-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.candidate-edit-form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.candidate-edit-field-hint {
+  font-size: 0.775rem;
+  font-weight: normal;
+  color: #94a3b8;
+}
+
+.candidate-edit-input,
+.candidate-edit-select,
+.candidate-edit-textarea {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: inherit;
+}
+
+.candidate-edit-input:focus,
+.candidate-edit-select:focus,
+.candidate-edit-textarea:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.12);
+}
+
+.candidate-edit-textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.candidate-edit-options-section {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.candidate-edit-options-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.candidate-edit-options-header label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.candidate-edit-add-option-btn {
+  background: #ebf3fc;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.candidate-edit-add-option-btn:hover {
+  background: #dbeafe;
+}
+
+.candidate-edit-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.candidate-edit-option-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.15s ease;
+}
+
+.candidate-edit-option-item.is-correct {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.candidate-edit-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.candidate-edit-opt-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.candidate-edit-option-item.is-correct .candidate-edit-opt-letter {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.candidate-edit-option-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.candidate-edit-option-input:focus {
+  outline: none;
+}
+
+.candidate-edit-remove-option-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.candidate-edit-remove-option-btn:hover {
+  opacity: 1;
+}
+
+.candidate-edit-matrix-section {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.candidate-edit-matrix-header {
+  margin-bottom: 12px;
+}
+
+.candidate-edit-matrix-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.candidate-edit-matrix-header p {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.candidate-edit-modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+@media (max-width: 640px) {
+  .candidate-edit-modal-backdrop {
+    padding: 10px;
+  }
+
+  .candidate-edit-modal-header,
+  .candidate-edit-body,
+  .candidate-edit-modal-footer {
+    padding: 14px 16px;
+  }
+}
+
+.candidate-edit-btn-cancel {
+  background: #ffffff;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.candidate-edit-btn-cancel:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.candidate-edit-btn-save {
+  background: #fcd03e;
+  color: #292929;
+  border: 1px solid #f5b900;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(245, 185, 0, 0.25);
+  transition: all 0.15s ease;
+}
+
+.candidate-edit-btn-save:hover {
+  background: #f5b900;
+}
+
+.candidate-edit-btn-save:disabled,
+.candidate-edit-btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* Candidate Diagram Photo Dropzone & Preview Styles */
+.candidate-photo-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  position: relative;
+}
+
+.candidate-photo-dropzone:hover,
+.candidate-photo-dropzone:focus-within {
+  border-color: #1976d2;
+  background-color: #f0f7ff;
+}
+
+.candidate-photo-dropzone--dragging {
+  border-color: #1976d2;
+  background-color: #ebf3fc;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+}
+
+.candidate-photo-upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.candidate-photo-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.candidate-photo-preview-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.candidate-photo-thumb {
+  max-width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+}
+
+.candidate-photo-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.candidate-photo-replace-btn {
+  background: #1976d2;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-block;
+  transition: background 0.15s ease;
+}
+
+.candidate-photo-replace-btn:hover {
+  background: #1565c0;
+}
+
+.candidate-photo-remove-btn {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.candidate-photo-remove-btn:hover {
+  background: #dc2626;
+}

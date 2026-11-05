@@ -139,16 +139,22 @@ const Leaderboard = ({
     };
   }, []);
 
-  // Fetch all-time top players from MySQL leaderboard
+  // Fetch all-time top players from MySQL leaderboard.
+  // Polling pauses while the tab is hidden and backs off exponentially after failures (BUG-TRF-003).
   useEffect(() => {
     let isMounted = true;
+    let timer = null;
+    let failures = 0;
+    const BASE_DELAY_MS = 15000;
+    const MAX_DELAY_MS = 60000;
+
     const loadGlobal = () => {
-      if (typeof fetchLeaderboard !== 'function') return;
+      if (typeof fetchLeaderboard !== 'function') return Promise.resolve(true);
       const promise = fetchLeaderboard('alltime', 10);
-      if (!promise || typeof promise.then !== 'function') return;
-      promise
+      if (!promise || typeof promise.then !== 'function') return Promise.resolve(true);
+      return promise
         .then((data) => {
-          if (!isMounted || !Array.isArray(data?.leaderboard)) return;
+          if (!isMounted || !Array.isArray(data?.leaderboard)) return true;
           const mapped = data.leaderboard.map((item, idx) => ({
             id: item.userId ? String(item.userId) : `top_${idx}`,
             name: item.username || item.name || 'Player',
@@ -158,15 +164,46 @@ const Leaderboard = ({
             isGuest: false
           }));
           setGlobalTopPlayers(mapped);
+          return true;
         })
-        .catch(() => {});
+        .catch(() => false);
     };
 
-    loadGlobal();
-    const timer = window.setInterval(loadGlobal, 15000);
+    const isTabHidden = () => typeof document !== 'undefined' && document.hidden === true;
+
+    const scheduleNext = () => {
+      if (!isMounted) return;
+      const delay = Math.min(MAX_DELAY_MS, BASE_DELAY_MS * (2 ** failures));
+      timer = window.setTimeout(poll, delay);
+    };
+
+    const poll = async () => {
+      if (!isMounted) return;
+      if (isTabHidden()) {
+        scheduleNext();
+        return;
+      }
+      const ok = await loadGlobal();
+      failures = ok ? 0 : Math.min(failures + 1, 2);
+      scheduleNext();
+    };
+
+    const handleVisibilityChange = () => {
+      if (!isMounted || isTabHidden()) return;
+      window.clearTimeout(timer);
+      poll();
+    };
+
+    poll();
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
     return () => {
       isMounted = false;
-      window.clearInterval(timer);
+      window.clearTimeout(timer);
+      if (typeof document !== 'undefined') {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      }
     };
   }, []);
 

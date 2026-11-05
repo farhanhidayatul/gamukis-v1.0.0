@@ -1,405 +1,685 @@
-/* ================================ */
-/* 🎯 LEADERBOARD DEFAULT STYLES */
-/* ================================ */
+/* ================================================= */
+/* 🎯 GAMUKIS INGAME LEADERBOARD (MOCKUP COMPLIANT)   */
+/* ================================================= */
+
 .leaderboard {
-  background: rgba(255, 255, 255, 0.6); /* Lebih transparan agar lebih modern */
-  border-radius: 40px;
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 20px;
+  padding: 16px 14px;
   width: 300px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  border: 1px solid #E2E8F0;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
+}
+
+.leaderboard-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.leaderboard h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #5A4512;
+  letter-spacing: -0.3px;
+}
+
+.leaderboard-collapse-toggle {
+  font-size: 11px;
+  color: #475569;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  transition: background 0.15s ease;
+}
+
+.leaderboard-collapse-toggle:hover {
+  background: #E2E8F0;
 }
 
 .leaderboard-container-text {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  padding: 10px;
-  margin: 0 0 20px 0;
+  margin-bottom: 12px;
 }
 
 .leaderboard-decs-text-1 {
-  width: 180px;
+  margin: 0;
+  font-size: 11px;
+  color: #64748B;
+  line-height: 1.35;
+}
+
+/* ================================================= */
+/* 📋 LEADERBOARD LIST & ROWS                        */
+/* ================================================= */
+
+.leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .leaderboard-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 5px 10px;
-  border-bottom: 1px solid #ccc;
+  gap: 8px;
+  width: 100%;
 }
+
+/* ================================================= */
+/* 🏅 RANK COLUMN (MEDALS & NUMBERS)                 */
+/* ================================================= */
 
 .rank-leaderboard {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25px;  /* Ukuran tetap agar medal & nomor sejajar */
-  min-width: 25px;
-  font-weight: bold;
-  margin-right: 10px;
-  color: #6C6C6C;
+  width: 30px;
+  min-width: 30px;
+  height: 32px;
+}
+
+.medal-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .medal {
-  width: 30px;  /* Ukuran medal tetap */
+  width: 30px;
   height: 30px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 }
 
-.player-name {
-  display: flex;
-  font-size: 12px;
-  flex-direction: row;
-  text-align: left;
-  justify-content: space-between;
-  align-items: center;
+.rank-number {
+  font-size: 18px;
+  font-weight: 800;
+  color: #64748B;
 }
 
-.player-name .player-name-text{
-  margin-left: 20px;
+.self-rank .rank-number {
+  font-size: 18px;
+  font-weight: 800;
+  color: #334155;
 }
 
-.player-name .player-coins-text, .player-self .player-name .player-coins-text {
-  margin-right: 20px;
-}
-
-
-.player-coins-text{
-  font-weight: bold;
-}
+/* ================================================= */
+/* 👤 AVATAR CONTAINER (SOFT WARM CREAM BOX)         */
+/* ================================================= */
 
 .profile-container {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-grow: 1;
-}
-.profile-out-color {
-  display: flex;
-  justify-content: center; /* Tengah secara horizontal */
-  align-items: center; /* Tengah secara vertikal */
-  width: 100%; /* Pastikan elemen mengisi ruang */
-  height: 100%; /* Sesuaikan tinggi */
-}
-
-.profile-out-color .profile-pic {
-  display: block;
-  max-width: 100%; /* Pastikan tidak melebihi container */
-  max-height: 100%;
-}
-
-.profile-pic{
-  width: 22px;
-  height: 28px;
-  border-radius: 25%;
-  object-fit: cover;
   justify-content: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+}
+
+.profile-out-color {
+  width: 34px;
+  height: 34px;
+  background-color: #FEF3C7;
+  border-radius: 8px;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.2);
 }
 
-/* Warna untuk posisi 1-3 */
-.top-three .player-name, .top-three .player-self .player-name {
-  background-color: #FFC624;
-  color: #584A00;
-  font-weight: bold;
-  width: 225px;
-  height: 30px;
-  border-radius: 10px;
+.profile-pic {
+  width: 26px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
-/* Warna untuk posisi 4-9 */
-.top-ten .player-name, .top-ten .player-self .player-name {
-  background-color: #5DA8FF;
-  color: #ffffff;
-  font-weight: bold;
-  width: 225px;
-  height: 30px;
-  border-radius: 10px;
-}
+/* ================================================= */
+/* 💊 PILL CAPSULE (BLUE, NAVY & GRAY)               */
+/* ================================================= */
 
-/* Warna default untuk posisi di luar top 10 */
-.regular .player-name, .regular .player-self .player-name {
-  background-color: white;
-  color: #584A00;
-  width: 225px;
-  height: 30px;
-  border-radius: 10px;
-}
-
-.top-three .profile-out-color, .player-self .top-three .profile-out-color{
-  background-color: #FFC624;
-  width: 30px;
-  height: 30px;
-  border-radius: 25%;
-}
-
-/* Warna untuk posisi 4-9 */
-.top-ten .profile-out-color, .player-self .top-ten .profile-out-color{
-  background-color: #5DA8FF;
-  width: 30px;
-  height: 30px;
-  border-radius: 25%;
-}
-
-/* Warna default untuk posisi di luar top 10 */
-.regular .profile-out-color, .player-self .regular .profile-out-color {
-  background-color: white;
-  width: 30px;
-  height: 30px;
-  border-radius: 25%;
-}
-
-
-
-/* ✅ Leaderboard di gamePage (Desktop) */
-.leaderboard-gamePage {
-  position: fixed;
-  right: 1180px;
-  width: 300px;
-}
-
-/* ✅ Leaderboard di dalam game */
-.leaderboard-inGame {
-  position: fixed;
-  top: 60px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.4); /* Lebih gelap agar lebih kontras */
-  color: black;
-  padding: 30px;
-  width: 300px;
-  border-radius: 40px;
-}
-
-.leaderboard-inGame .leaderboard-decs-text-1 {
-  width: 250px;
-}
-
-.leaderboard-inGame .leaderboard-decs-text-2 {
-  color: transparent;
-  cursor: not-allowed;
-}
-
-/* Garis pemisah antara top 10 dan pemain sendiri */
-.divider {
-  margin: 10px 0;
-  border: none;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-/* Tampilan pemain sendiri jika di luar top 10 */
-.player-self {
-  background: rgba(0, 0, 0, 0);
+.leaderboard-capsule {
   display: flex;
-  flex-direction: row;
-  background-clip: padding-box;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  border: 5px solid #FCD03E;
-  text-align: center;
-  font-weight: bold;
-  width: auto; /* Sesuaikan lebar dengan isi */
-  max-width: 100%; /* Batasi agar tidak terlalu besar */
-}
-
-/* 🔹 Menyesuaikan ukuran teks dalam .player-self */
-.player-self .player-name {
-  display: flex;
-  flex-wrap: wrap; /* Biarkan teks turun jika panjang */
   align-items: center;
   justify-content: space-between;
-  padding: 5px 10px;
-  width: fit-content; /* Ukuran menyesuaikan isi */
-  min-width: 180px; /* Beri batas minimum */
-  max-width: 100%;
-  height: auto; /* Biarkan tinggi menyesuaikan */
-}
-
-/* 🔹 Variasi ukuran untuk ranking pemain di .player-self */
-.player-self.top-three .player-name {
-  background-color: #FFC624;
-  color: #584A00;
-}
-
-.player-self.top-ten .player-name {
-  background-color: #5DA8FF;
-  color: #ffffff;
-}
-
-.player-self.regular .player-name {
-  background-color: white;
-  color: #584A00;
-}
-
-.leaderboard ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.leaderboard li {
-  padding: 5px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.leaderboard li:last-child {
-  border-bottom: none;
-}
-
-/* ================================ */
-/* 📌 RESPONSIVE DESIGN */
-/* ================================ */
-
-/* ✅ Tablet (Lebar max 1024px) */
-@media (max-width: 1904px) {
-  .leaderboard-gamePage {
-    right: 20px; 
-    top: 40px;
-    width: 280px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .leaderboard-gamePage {
-    right: 20px; 
-    top: 40px;
-    width: 280px;
-  }
-}
-
-/* ✅ Mobile (Lebar max 768px) */
-@media (max-width: 768px) {
-  .leaderboard-gamePage {
-    position: fixed;
-    top: 20px;
-    right: 10px;
-    width: 250px;
-    padding: 15px;
-  }
-}
-
-.game-page .leaderboard-gamePage {
-  position: static;
-  width: 100%;
-  max-width: none;
-  padding: 22px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  border-radius: 24px;
-  background: rgba(255, 248, 226, 0.84);
-  box-shadow: 0 10px 24px rgba(158, 103, 0, 0.08);
-  box-sizing: border-box;
-}
-
-.game-page .leaderboard-gamePage h2 {
-  margin: 0 0 8px;
-  color: #5a4d05;
-  font-size: 18px;
-}
-
-.game-page .leaderboard-gamePage .leaderboard-container-text {
-  gap: 12px;
-  margin: 0 0 14px;
-  padding: 0;
-  color: #766e60;
-  font-size: 10px;
-}
-
-.game-page .leaderboard-gamePage .leaderboard-decs-text-1 {
+  flex: 1;
   min-width: 0;
-  width: auto;
-  line-height: 1.35;
+  height: 32px;
+  border-radius: 7px;
+  padding: 0 10px;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.game-page .leaderboard-gamePage .leaderboard-decs-text-2 {
-  flex: 0 0 auto;
-  color: #ef9e12;
+/* Rank 1-3: Vibrant Blue */
+.capsule-top-three {
+  background-color: #2B8EEA;
+}
+
+/* Rank 4-5: Dark Navy Blue */
+.capsule-four-five {
+  background-color: #1E3A5F;
+}
+
+/* Player Self: Neutral Slate Gray */
+.capsule-self {
+  background-color: #718096;
+}
+
+.player-name-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 72px;
 }
 
-.game-page .leaderboard-gamePage ul {
-  display: grid;
+/* ================================================= */
+/* ⭐ 5-STAR ACCURACY RATING SYSTEM                  */
+/* ================================================= */
+
+.leaderboard-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.leaderboard-star {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.star-filled {
+  color: #FBBF24;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.star-empty {
+  color: #60A5FA;
+  opacity: 0.65;
+}
+
+.star-empty-dark {
+  color: #334155;
+  opacity: 0.85;
+}
+
+.capsule-self .star-empty {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.player-coins-text {
+  font-size: 12px;
+  font-weight: 800;
+  color: #FCD03E;
+  white-space: nowrap;
+  margin-left: auto;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.capsule-self .player-coins-text {
+  color: #FCD03E;
+}
+
+/* ================================================= */
+/* 🌟 PLAYER SELF CARD (YELLOW THICK BORDER MOCKUP)  */
+/* ================================================= */
+
+.self-card-wrapper {
+  margin-top: 14px;
+  border: 3px solid #FCD03E;
+  border-radius: 14px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
   gap: 8px;
-  margin: 0;
+  background: rgba(254, 249, 195, 0.4);
+  box-shadow: 0 4px 12px rgba(252, 208, 62, 0.15);
 }
 
-.game-page .leaderboard-gamePage li {
-  min-width: 0;
-  padding: 0;
-  border: 0;
+/* ================================================= */
+/* 📱 DOCKING & COMPACT INGAME RESPONSIVENESS       */
+/* ================================================= */
+
+.leaderboard-inGame {
+  position: fixed;
+  top: max(164px, calc(154px + env(safe-area-inset-top)));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 90;
+  width: 240px;
+  padding: 10px 10px;
+  border-radius: 16px;
+  max-height: calc(100svh - 220px);
+  overflow-y: auto;
+  transition: width 0.25s ease, max-height 0.25s ease, opacity 0.2s ease;
 }
 
-.game-page .leaderboard-gamePage .leaderboard-item {
-  gap: 8px;
+/* Sembunyikan subtitle verbose pada inGame agar hemat layar */
+.leaderboard-inGame .leaderboard-container-text {
+  display: none;
 }
 
-.game-page .leaderboard-gamePage .profile-container {
-  min-width: 0;
+.leaderboard-inGame .leaderboard-header-row {
+  margin-bottom: 6px;
+}
+
+.leaderboard-inGame h2 {
+  font-size: 16px;
+}
+
+.leaderboard-inGame .leaderboard-list {
   gap: 6px;
 }
 
-.game-page .leaderboard-gamePage .profile-out-color {
-  flex: 0 0 30px;
+.leaderboard-inGame .leaderboard-item {
+  gap: 6px;
 }
 
-.game-page .leaderboard-gamePage .player-name {
-  width: auto;
-  min-width: 0;
-  flex: 1;
-  height: 30px;
-  padding: 0 10px;
+.leaderboard-inGame .rank-leaderboard {
+  width: 24px;
+  min-width: 24px;
+  height: 26px;
+}
+
+.leaderboard-inGame .medal {
+  width: 24px;
+  height: 24px;
+}
+
+.leaderboard-inGame .rank-number {
+  font-size: 15px;
+}
+
+.leaderboard-inGame .profile-container {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+}
+
+.leaderboard-inGame .profile-out-color {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+
+.leaderboard-inGame .profile-pic {
+  width: 22px;
+  height: 24px;
+}
+
+.leaderboard-inGame .leaderboard-capsule {
+  height: 26px;
+  border-radius: 6px;
+  padding: 0 8px;
+  gap: 4px;
+}
+
+.leaderboard-inGame .player-name-text {
+  font-size: 10px;
+  max-width: 62px;
+}
+
+.leaderboard-inGame .leaderboard-star {
+  font-size: 11px;
+}
+
+.leaderboard-inGame .player-coins-text {
+  font-size: 11px;
+}
+
+.leaderboard-inGame .self-card-wrapper {
+  margin-top: 8px;
+  padding: 6px 8px;
   border-radius: 10px;
-  box-sizing: border-box;
+  gap: 6px;
+  border-width: 2px;
 }
 
-.game-page .leaderboard-gamePage .player-name .player-name-text {
-  min-width: 0;
-  margin: 0;
+.leaderboard-inGame.is-collapsed {
+  max-height: 38px !important;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.game-page .leaderboard-gamePage .player-name .player-coins-text {
-  flex: 0 0 auto;
-  margin: 0 0 0 8px;
-}
-
-@media (max-width: 760px) {
-  .game-page .leaderboard-gamePage {
-    padding: 18px 16px;
-  }
-}
-
-/* ✅ Mobile Kecil (max 480px) */
-@media (max-width: 480px) {
-  .leaderboard-gamePage {
-    width: 90%;
-    max-width: 250px;
-    right: 5%;
-    left: 5%;
-    top: 10px;
-    padding: 10px;
-    text-align: center;
-  }
+  padding: 6px 8px !important;
+  width: auto !important;
+  min-width: 110px;
 }
 
 .leaderboard-gamePage {
   position: static;
   inset: auto;
   width: 100%;
-  max-width: 360px;
-  box-sizing: border-box;
+  max-width: 340px;
 }
 
+/* Tier 2: Laptop / Small Desktop (769px - 1024px) */
+@media (max-width: 1024px) {
+  .leaderboard-inGame {
+    width: 220px;
+    padding: 8px 8px;
+  }
+  .leaderboard-inGame .player-name-text {
+    max-width: 56px;
+  }
+}
+
+/* Tier 3: Tablet (601px - 768px) */
 @media (max-width: 768px) {
-  .leaderboard-gamePage {
-    position: static;
-    inset: auto;
-    width: 100%;
-    max-width: none;
-    padding: 16px;
-    border-radius: 16px;
+  .leaderboard-inGame {
+    width: 200px;
+    padding: 8px 6px;
+    top: max(148px, calc(138px + env(safe-area-inset-top)));
+  }
+
+  .leaderboard-inGame h2 {
+    font-size: 14px;
+  }
+
+  .leaderboard-inGame .rank-leaderboard {
+    width: 22px;
+    min-width: 22px;
+    height: 24px;
+  }
+
+  .leaderboard-inGame .medal {
+    width: 22px;
+    height: 22px;
+  }
+
+  .leaderboard-inGame .rank-number {
+    font-size: 13px;
+  }
+
+  .leaderboard-inGame .profile-container,
+  .leaderboard-inGame .profile-out-color {
+    width: 26px;
+    min-width: 26px;
+    height: 26px;
+  }
+
+  .leaderboard-inGame .profile-pic {
+    width: 20px;
+    height: 22px;
+  }
+
+  .leaderboard-inGame .leaderboard-capsule {
+    height: 24px;
+    padding: 0 6px;
+  }
+
+  .leaderboard-inGame .player-name-text {
+    font-size: 9.5px;
+    max-width: 48px;
+  }
+
+  .leaderboard-inGame .leaderboard-star {
+    font-size: 10px;
+  }
+
+  .leaderboard-inGame .player-coins-text {
+    font-size: 10px;
+  }
+
+  .leaderboard-inGame .self-card-wrapper {
+    padding: 5px 6px;
+    margin-top: 6px;
+  }
+}
+
+/* Tier 4: Mobile Large (421px - 600px) */
+@media (max-width: 600px) {
+  .leaderboard-inGame {
+    width: 175px;
+    padding: 6px 5px;
+    border-radius: 12px;
+    top: max(136px, calc(126px + env(safe-area-inset-top)));
+  }
+
+  .leaderboard-inGame h2 {
+    font-size: 13px;
+  }
+
+  .leaderboard-inGame .leaderboard-collapse-toggle {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+
+  .leaderboard-inGame .rank-leaderboard {
+    width: 18px;
+    min-width: 18px;
+    height: 22px;
+  }
+
+  .leaderboard-inGame .medal {
+    width: 18px;
+    height: 18px;
+  }
+
+  .leaderboard-inGame .rank-number {
+    font-size: 12px;
+  }
+
+  .leaderboard-inGame .profile-container,
+  .leaderboard-inGame .profile-out-color {
+    width: 22px;
+    min-width: 22px;
+    height: 22px;
+  }
+
+  .leaderboard-inGame .profile-pic {
+    width: 17px;
+    height: 19px;
+  }
+
+  .leaderboard-inGame .leaderboard-capsule {
+    height: 22px;
+    padding: 0 4px;
+    gap: 3px;
+    border-radius: 5px;
+  }
+
+  .leaderboard-inGame .player-name-text {
+    font-size: 8.5px;
+    max-width: 40px;
+  }
+
+  .leaderboard-inGame .leaderboard-star {
+    font-size: 8.5px;
+  }
+
+  .leaderboard-inGame .player-coins-text {
+    font-size: 9px;
+  }
+
+  .leaderboard-inGame .self-card-wrapper {
+    padding: 4px 5px;
+    margin-top: 5px;
+    border-width: 2px;
+    border-radius: 8px;
+  }
+}
+
+/* Tier 5: Mobile Small (<=420px) */
+@media (max-width: 420px) {
+  .leaderboard-inGame {
+    width: 155px;
+    padding: 5px 4px;
+    border-radius: 10px;
+    top: max(124px, calc(114px + env(safe-area-inset-top)));
+    right: max(8px, env(safe-area-inset-right));
+  }
+
+  .leaderboard-inGame h2 {
+    font-size: 12px;
+  }
+
+  .leaderboard-inGame .leaderboard-collapse-toggle {
+    font-size: 9px;
+    padding: 1px 3px;
+  }
+
+  .leaderboard-inGame .rank-leaderboard {
+    width: 16px;
+    min-width: 16px;
+    height: 20px;
+  }
+
+  .leaderboard-inGame .medal {
+    width: 16px;
+    height: 16px;
+  }
+
+  .leaderboard-inGame .rank-number {
+    font-size: 11px;
+  }
+
+  .leaderboard-inGame .profile-container,
+  .leaderboard-inGame .profile-out-color {
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+  }
+
+  .leaderboard-inGame .profile-pic {
+    width: 15px;
+    height: 17px;
+  }
+
+  .leaderboard-inGame .leaderboard-capsule {
+    height: 20px;
+    padding: 0 3px;
+    gap: 2px;
+    border-radius: 4px;
+  }
+
+  .leaderboard-inGame .player-name-text {
+    font-size: 8px;
+    max-width: 34px;
+  }
+
+  .leaderboard-inGame .leaderboard-star {
+    font-size: 7.5px;
+  }
+
+  .leaderboard-inGame .player-coins-text {
+    font-size: 8.5px;
+  }
+
+  .leaderboard-inGame .self-card-wrapper {
+    padding: 3px 4px;
+    margin-top: 4px;
+    border-width: 1.5px;
+    border-radius: 7px;
+  }
+}
+
+/* ========================================================================= */
+/* 📱 HP LANDSCAPE & SHORT VIEWPORT COLLISION PREVENTION (HEIGHT <= 540PX)   */
+/* Ensures Leaderboard docks directly below Map and never overlaps skills    */
+/* ========================================================================= */
+
+@media (max-height: 540px) {
+  .leaderboard-inGame {
+    top: max(78px, calc(74px + env(safe-area-inset-top))) !important;
+    right: max(8px, env(safe-area-inset-right));
+    width: clamp(140px, 18vw, 165px) !important;
+    padding: 5px 6px !important;
+    border-radius: 10px !important;
+    /* Strict vertical bound: leaves safety clearance above bottom skill grid */
+    max-height: calc(100svh - 180px) !important;
+    overflow-y: auto;
+    z-index: 85;
+  }
+
+  .leaderboard-inGame h2 {
+    font-size: 12px;
+  }
+
+  .leaderboard-inGame .leaderboard-collapse-toggle {
+    font-size: 8.5px;
+    padding: 1px 3px;
+  }
+
+  .leaderboard-inGame .leaderboard-list {
+    gap: 3px;
+  }
+
+  .leaderboard-inGame .leaderboard-item {
+    gap: 4px;
+  }
+
+  .leaderboard-inGame .rank-leaderboard {
+    width: 16px;
+    min-width: 16px;
+    height: 18px;
+  }
+
+  .leaderboard-inGame .medal {
+    width: 16px;
+    height: 16px;
+  }
+
+  .leaderboard-inGame .rank-number {
+    font-size: 10.5px;
+  }
+
+  .leaderboard-inGame .profile-container,
+  .leaderboard-inGame .profile-out-color {
+    width: 18px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+
+  .leaderboard-inGame .profile-pic {
+    width: 14px;
+    height: 15px;
+  }
+
+  .leaderboard-inGame .leaderboard-capsule {
+    height: 18px;
+    padding: 0 4px;
+    gap: 2px;
+    border-radius: 4px;
+  }
+
+  .leaderboard-inGame .player-name-text {
+    font-size: 7.5px;
+    max-width: 34px;
+  }
+
+  .leaderboard-inGame .leaderboard-star {
+    font-size: 7px;
+  }
+
+  .leaderboard-inGame .player-coins-text {
+    font-size: 8px;
+  }
+
+  .leaderboard-inGame .self-card-wrapper {
+    padding: 3px 4px;
+    margin-top: 3px;
+    border-width: 1.5px;
+    border-radius: 6px;
+    gap: 4px;
+  }
+
+  .leaderboard-inGame.is-collapsed {
+    max-height: 28px !important;
+    padding: 3px 6px !important;
+    width: auto !important;
+    min-width: 95px;
   }
 }
