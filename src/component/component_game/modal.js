@@ -453,7 +453,7 @@ const CoinModal = ({ isOpen, onRequestClose, onQuestionAnswered, onServerAnswer,
                 }
                 const raw = questionData.imageUrl || (questionData.imagePath ? `/uploads/ai-question-generator/images/${questionData.imagePath}` : "");
                 if (raw.startsWith("http") || raw.startsWith("data:")) return raw;
-                const backendBase = (process.env.REACT_APP_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
+                const backendBase = (process.env.REACT_APP_API_URL || "https://api.gamukis.site/api").replace(/\/api\/?$/, "");
                 return `${backendBase}${raw.startsWith("/") ? "" : "/"}${raw}`;
               })()}
               alt="Diagram Soal"

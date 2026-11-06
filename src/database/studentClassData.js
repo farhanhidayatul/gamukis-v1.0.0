@@ -1,7 +1,7 @@
 // Frontend/src/database/studentClassData.js
 // Sesuai aturan arsitektur PRD: Seluruh data fetching diletakkan di Frontend/src/database/
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://api.gamukis.site/api';
 
 export const parseDurationToMinutes = (duration) => {
   if (typeof duration === 'number') {

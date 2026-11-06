@@ -1,6 +1,6 @@
 import { auth, waitForAuth } from "./firebaseAuth";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+const API_URL = process.env.REACT_APP_API_URL || "https://api.gamukis.site/api";
 const MANUAL_TOKEN_KEY = "gamukis_manual_token";
 
 /**

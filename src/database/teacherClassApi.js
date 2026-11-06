@@ -6,7 +6,7 @@ import {
 import { auth, waitForAuth } from "./firebaseAuth";
 import { getEffectiveToken } from "./firebaseDatabase";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+const API_URL = process.env.REACT_APP_API_URL || "https://api.gamukis.site/api";
 
 const fetchWithToken = async (path, token, options = {}) => {
   const response = await fetch(`${API_URL}${path}`, {

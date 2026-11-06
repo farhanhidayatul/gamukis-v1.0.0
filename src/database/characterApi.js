@@ -2,7 +2,7 @@ import { getEffectiveToken } from './firebaseDatabase';
 
 const API_BASE_URL = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL)
   ? process.env.REACT_APP_API_URL
-  : 'http://localhost:5000/api';
+  : 'https://api.gamukis.site/api';
 
 const CLEAN_API_URL = API_BASE_URL.replace(/\/+$/, '');
 const CHARACTERS_URL = `${CLEAN_API_URL}/characters`;

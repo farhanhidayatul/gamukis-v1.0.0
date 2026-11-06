@@ -4,7 +4,7 @@ import { getEffectiveToken } from './firebaseDatabase';
 
 const API_URL = process.env.REACT_APP_API_URL
   ? process.env.REACT_APP_API_URL.replace(/\/api\/?$/, '')
-  : 'http://localhost:5000';
+  : 'https://api.gamukis.site';
 
 const COLYSEUS_WS_URL = API_URL.replace(/^http/, 'ws');
 

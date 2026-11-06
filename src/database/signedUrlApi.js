@@ -2,7 +2,7 @@
  * API client helper for HMAC Signed URLs in Gamukis
  */
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://api.gamukis.site/api';
 
 /**
  * Requests backend to generate a signed URL with HMAC-SHA256 signature and TTL

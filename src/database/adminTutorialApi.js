@@ -1,7 +1,7 @@
 import { getEffectiveToken } from './firebaseDatabase';
 import { request as manualAuthRequest } from './manualAuth';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://api.gamukis.site/api';
 
 const getAuthHeaders = async () => {
   const token = await getEffectiveToken();

@@ -4,7 +4,7 @@ import { observeAuthState } from '../../database/firebaseAuth';
 import { getEffectiveToken } from '../../database/firebaseDatabase';
 import NF from '../../pages/notfound';
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+const API_URL = process.env.REACT_APP_API_URL || "https://api.gamukis.site/api";
 
 /**
  * Helper to safely decode JWT payload on the client without external dependencies.

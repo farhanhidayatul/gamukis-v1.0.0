@@ -4,7 +4,7 @@
  */
 const BASE_URL = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL)
   ? process.env.REACT_APP_API_URL.replace(/\/api\/?$/, '')
-  : 'http://localhost:5000';
+  : 'https://api.gamukis.site';
 
 let lastReportTimestamp = 0;
 const REPORT_THROTTLE_MS = 10000;
