@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithGoogle } from '../../database/firebaseAuth';
+import { promptGoogleSignIn, authenticateWithBackendGoogle } from '../../database/googleCloudAuth';
 import { clearManualSession, getManualAccount, manualLogin } from '../../database/manualAuth';
 import { createBackendSession } from '../../database/firebaseDatabase';
 import ButtonLoginGoogle from './component_login_asset/buttonLoginGoogle';
@@ -69,8 +70,20 @@ const BackgroundKiri = ({ onLoginError }) => {
             if (typeof clearManualSession === 'function') {
                 clearManualSession();
             }
-            await signInWithGoogle();
-            const session = await createBackendSession();
+
+            let session = null;
+            try {
+                // Primary: Direct Google Cloud Console OAuth 2.0 (Zero MAU cost)
+                const idToken = await promptGoogleSignIn();
+                const res = await authenticateWithBackendGoogle(idToken);
+                session = res;
+            } catch (gsiError) {
+                // Fallback to legacy Firebase popup only if GSI is uninitialized
+                console.warn('[GoogleAuth] GSI prompt error, attempting fallback:', gsiError.message);
+                await signInWithGoogle();
+                session = await createBackendSession();
+            }
+
             if (session?.user && typeof window !== 'undefined') {
                 const storage = rememberMe ? window.localStorage : window.sessionStorage;
                 storage?.setItem('gamukis_manual_user', JSON.stringify(session.user));

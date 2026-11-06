@@ -1,0 +1,122 @@
+/**
+ * googleCloudAuth.js
+ * 
+ * Direct Google Identity Services (GSI) OAuth 2.0 Integration for Gamukis.
+ * Eliminates Firebase Auth MAU billing and dependency.
+ */
+
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '257611845379-hpqrv564tfrkk1210epc73ulobnka4lf.apps.googleusercontent.com';
+
+let gsiScriptLoadedPromise = null;
+
+export const loadGoogleIdentityScript = () => {
+  if (typeof window === 'undefined') return Promise.reject(new Error('Window not available'));
+  if (window.google?.accounts?.id) return Promise.resolve(window.google.accounts.id);
+  if (gsiScriptLoadedPromise) return gsiScriptLoadedPromise;
+
+  gsiScriptLoadedPromise = new Promise((resolve, reject) => {
+    const existing = document.getElementById('google-identity-services-script');
+    if (existing) {
+      existing.addEventListener('load', () => resolve(window.google?.accounts?.id));
+      existing.addEventListener('error', reject);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = 'google-identity-services-script';
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      if (window.google?.accounts?.id) {
+        resolve(window.google.accounts.id);
+      } else {
+        reject(new Error('Google Identity Services SDK gagal diinisialisasi.'));
+      }
+    };
+    script.onerror = () => reject(new Error('Gagal memuat Google Identity Services script.'));
+    document.head.appendChild(script);
+  });
+
+  return gsiScriptLoadedPromise;
+};
+
+/**
+ * Prompts user with native Google Sign-In One-Tap or Popup and resolves with the ID Token (credential).
+ */
+export const promptGoogleSignIn = async () => {
+  const gsi = await loadGoogleIdentityScript();
+
+  return new Promise((resolve, reject) => {
+    let settled = false;
+
+    try {
+      gsi.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: (response) => {
+          if (settled) return;
+          settled = true;
+          if (response?.credential) {
+            resolve(response.credential);
+          } else {
+            reject(new Error('Kredensial Google tidak ditemukan dalam respon.'));
+          }
+        },
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+
+      // Prefer OAuth2 Code/Token client popup for reliable cross-browser button interaction
+      const client = window.google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: 'openid email profile',
+        callback: async (tokenResponse) => {
+          if (settled) return;
+          if (tokenResponse?.error) {
+            settled = true;
+            return reject(new Error(tokenResponse.error_description || tokenResponse.error));
+          }
+        }
+      });
+
+      // Try native One-Tap prompt first; fall back to token client if needed
+      gsi.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // If One-tap is dismissed or suppressed, open standard Google consent popup
+          if (!settled && client) {
+            client.requestAccessToken();
+          }
+        }
+      });
+    } catch (err) {
+      if (!settled) {
+        settled = true;
+        reject(err);
+      }
+    }
+  });
+};
+
+/**
+ * Sends Google credential (ID Token) to Gamukis Backend to exchange for native session JWT.
+ */
+export const authenticateWithBackendGoogle = async (idToken) => {
+  const apiUrl = (process.env.REACT_APP_API_URL || 'https://api.gamukis.site/api').replace(/\/+$/, '');
+  const targetEndpoint = `${apiUrl}/auth/google`;
+
+  const response = await fetch(targetEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({ idToken })
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || 'Verifikasi login Google di server gagal.');
+  }
+
+  return data;
+};
