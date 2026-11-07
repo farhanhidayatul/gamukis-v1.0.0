@@ -97,6 +97,9 @@ const RegisterPage = () => {
 
       if (session?.user && typeof window !== "undefined") {
         window.localStorage?.setItem("gamukis_manual_user", JSON.stringify(session.user));
+        if (session.token) {
+          window.localStorage?.setItem("gamukis_manual_token", session.token);
+        }
         window.dispatchEvent(new Event("gamukis-manual-auth-change"));
       }
       return session;

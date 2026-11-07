@@ -76,6 +76,9 @@ const BackgroundKiri = ({ onLoginError }) => {
             if (session?.user && typeof window !== 'undefined') {
                 const storage = rememberMe ? window.localStorage : window.sessionStorage;
                 storage?.setItem('gamukis_manual_user', JSON.stringify(session.user));
+                if (session.token) {
+                    storage?.setItem('gamukis_manual_token', session.token);
+                }
                 window.dispatchEvent(new Event('gamukis-manual-auth-change'));
             }
             return session;
