@@ -65,24 +65,13 @@ const BackgroundKiri = ({ onLoginError }) => {
         completeLogin(() => manualLogin(emailOrUsername, password, rememberMe), 'manual');
     };
 
-    const handleGoogleLogin = () => {
+    const handleGoogleCredential = (idToken) => {
         completeLogin(async () => {
             if (typeof clearManualSession === 'function') {
                 clearManualSession();
             }
 
-            let session = null;
-            try {
-                // Primary: Direct Google Cloud Console OAuth 2.0 (Zero MAU cost)
-                const idToken = await promptGoogleSignIn();
-                const res = await authenticateWithBackendGoogle(idToken);
-                session = res;
-            } catch (gsiError) {
-                // Fallback to legacy Firebase popup only if GSI is uninitialized
-                console.warn('[GoogleAuth] GSI prompt error, attempting fallback:', gsiError.message);
-                await signInWithGoogle();
-                session = await createBackendSession();
-            }
+            const session = await authenticateWithBackendGoogle(idToken);
 
             if (session?.user && typeof window !== 'undefined') {
                 const storage = rememberMe ? window.localStorage : window.sessionStorage;
@@ -91,6 +80,13 @@ const BackgroundKiri = ({ onLoginError }) => {
             }
             return session;
         }, 'google');
+    };
+
+    const handleGoogleError = (err) => {
+        onLoginError({
+            source: 'google',
+            message: err?.message || 'Login Google gagal. Silakan coba kembali.'
+        });
     };
 
     return (
@@ -111,7 +107,11 @@ const BackgroundKiri = ({ onLoginError }) => {
                     </a>
                 </div>
                 <ButtonLogin inputEmailUsername={emailOrUsername} inputPassword={password} disabled={isSubmitting} />
-                <ButtonLoginGoogle onClick={handleGoogleLogin} disabled={isSubmitting} />
+                <ButtonLoginGoogle 
+                    onCredentialSuccess={handleGoogleCredential}
+                    onCredentialError={handleGoogleError}
+                    disabled={isSubmitting} 
+                />
                 <p className='font-nohaveaccount'>
                 Belum punya akun? 
                 <a href="/register"> Daftar</a> sekarang!!

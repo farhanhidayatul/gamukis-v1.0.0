@@ -1,30 +1,20 @@
-.google-login-button {
-    box-sizing: border-box;
+.google-login-wrapper {
     width: 100%;
     max-width: 529px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    background-color: #1268C6; /* Warna biru khas Google */
-    color: white; /* Warna teks putih */
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
+    align-items: center;
     margin: 20px 0 0 0;
-    padding: 15px 24px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
 }
 
-/* Hover effect */
-.google-login-button:hover {
-    background-color: #357ae8; /* Warna biru lebih gelap saat hover */
+.google-official-btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 44px;
 }
 
-/* Ikon Google */
-.google-login-button img {
-    width: 20px; /* Ukuran ikon */
-    height: 20px;
-    margin-right: 10px; /* Beri jarak antara ikon dan teks */
+.google-official-btn-container iframe {
+    margin: 0 auto !important;
 }
