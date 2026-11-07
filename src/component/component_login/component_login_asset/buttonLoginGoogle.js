@@ -32,7 +32,10 @@ const ButtonLoginGoogle = ({ onCredentialSuccess, onCredentialError, disabled = 
           cancel_on_tap_outside: true
         });
 
-        // Render official Google button into the container with customized width & theme
+        // Render official Google button into the container with full responsive width & theme
+        const containerWidth = googleBtnContainerRef.current?.offsetWidth || 400;
+        const targetWidth = Math.min(Math.max(containerWidth, 200), 400);
+
         gsi.renderButton(googleBtnContainerRef.current, {
           type: 'standard',
           theme: 'filled_blue',
@@ -40,7 +43,7 @@ const ButtonLoginGoogle = ({ onCredentialSuccess, onCredentialError, disabled = 
           text: 'continue_with',
           shape: 'rectangular',
           logo_alignment: 'left',
-          width: 320
+          width: targetWidth
         });
       })
       .catch((err) => {
