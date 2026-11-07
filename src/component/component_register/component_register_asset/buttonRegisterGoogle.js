@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import './buttonRegisterGoogle.css';
-import googleIcon from '../../../images/google-icon.png';
 import { loadGoogleIdentityScript } from '../../../database/googleCloudAuth';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '257611845379-hpqrv564tfrkk1210epc73ulobnka4lf.apps.googleusercontent.com';
@@ -32,13 +31,17 @@ const ButtonRegisterGoogle = ({ onCredentialSuccess, onCredentialError, disabled
           cancel_on_tap_outside: true
         });
 
+        const containerWidth = googleBtnMountRef.current?.offsetWidth || 340;
+        const targetWidth = Math.min(Math.max(containerWidth, 240), 400);
+
         gsi.renderButton(googleBtnMountRef.current, {
           type: 'standard',
           theme: 'outline',
           size: 'large',
-          text: 'continue_with',
+          text: 'signup_with',
           shape: 'rectangular',
-          width: 400
+          logo_alignment: 'left',
+          width: targetWidth
         });
       })
       .catch((err) => {
@@ -53,15 +56,10 @@ const ButtonRegisterGoogle = ({ onCredentialSuccess, onCredentialError, disabled
   return (
     <div className="google-register-wrapper">
       <div 
+        ref={googleBtnMountRef}
         className="google-official-register-btn-container"
         style={{ pointerEvents: disabled ? 'none' : 'auto', opacity: disabled ? 0.6 : 1 }}
-      >
-        <div className="google-custom-register-btn-visual">
-          <img src={googleIcon} alt="Google Icon" />
-          <span>Lanjutkan dengan Google</span>
-        </div>
-        <div ref={googleBtnMountRef} className="google-hidden-register-mount" />
-      </div>
+      />
     </div>
   );
 };

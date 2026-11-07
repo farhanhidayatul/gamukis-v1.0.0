@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import '../component_login_asset/buttonLoginGoogle.css';
-import googleIcon from '../../../images/google-icon.png';
 import { loadGoogleIdentityScript } from '../../../database/googleCloudAuth';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '257611845379-hpqrv564tfrkk1210epc73ulobnka4lf.apps.googleusercontent.com';
@@ -32,14 +31,20 @@ const ButtonLoginGoogle = ({ onCredentialSuccess, onCredentialError, disabled = 
           cancel_on_tap_outside: true
         });
 
-        // Mount official button at maximum width
+        // Hitung lebar kontainer agar tombol Google proporsional dan tidak terpotong
+        const containerWidth = googleBtnMountRef.current?.offsetWidth || 340;
+        const targetWidth = Math.min(Math.max(containerWidth, 240), 400);
+
+        // Render tombol Google resmi standar (putih bersih outline atau filled blue)
+        // Opsi shape 'rectangular', logo_alignment 'center' atau 'left'
         gsi.renderButton(googleBtnMountRef.current, {
           type: 'standard',
           theme: 'outline',
           size: 'large',
-          text: 'continue_with',
+          text: 'signin_with',
           shape: 'rectangular',
-          width: 400
+          logo_alignment: 'left',
+          width: targetWidth
         });
       })
       .catch((err) => {
@@ -54,18 +59,10 @@ const ButtonLoginGoogle = ({ onCredentialSuccess, onCredentialError, disabled = 
   return (
     <div className="google-login-wrapper">
       <div 
+        ref={googleBtnMountRef}
         className="google-official-btn-container"
         style={{ pointerEvents: disabled ? 'none' : 'auto', opacity: disabled ? 0.6 : 1 }}
-      >
-        {/* Tombol visual asli Gamukis yang 100% konsisten dengan desain lama */}
-        <div className="google-custom-btn-visual">
-          <img src={googleIcon} alt="Google Icon" />
-          <span>Lanjutkan dengan Google</span>
-        </div>
-
-        {/* Iframe resmi Google di lapisan transparan atasnya untuk menangkap klik native */}
-        <div ref={googleBtnMountRef} className="google-hidden-mount" />
-      </div>
+      />
     </div>
   );
 };
