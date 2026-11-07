@@ -74,10 +74,10 @@ const BackgroundKiri = ({ onLoginError }) => {
             const session = await authenticateWithBackendGoogle(idToken);
 
             if (session?.user && typeof window !== 'undefined') {
-                const storage = rememberMe ? window.localStorage : window.sessionStorage;
-                storage?.setItem('gamukis_manual_user', JSON.stringify(session.user));
+                // Always persist Google login in localStorage to prevent session dropping
+                window.localStorage?.setItem('gamukis_manual_user', JSON.stringify(session.user));
                 if (session.token) {
-                    storage?.setItem('gamukis_manual_token', session.token);
+                    window.localStorage?.setItem('gamukis_manual_token', session.token);
                 }
                 window.dispatchEvent(new Event('gamukis-manual-auth-change'));
             }

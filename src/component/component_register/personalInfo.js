@@ -1,9 +1,9 @@
 import React from "react";
-import "./personalInfo.css"
+import "./personalInfo.css";
 import ProgressBar from "./progressBar";
 import { ButtonBack, ButtonNext, ButtonRegisterGoogle, CheckboxJenisKelamin, InputAlamat, InputNamaSekolah, InputTanggalLahir } from "./atoms";
 
-const PersonalInfo = ({ profile, updateProfile, nextStep, prevStep, onGoogle, disabled }) => {
+const PersonalInfo = ({ profile, updateProfile, nextStep, prevStep, onCredentialSuccess, onCredentialError, disabled }) => {
   return (
     <div className="personalInfo-form">
       <ProgressBar step={2} />
@@ -28,7 +28,11 @@ const PersonalInfo = ({ profile, updateProfile, nextStep, prevStep, onGoogle, di
           disabled={disabled || profile.birthDate.length !== 8}
         />
       </div>
-      <ButtonRegisterGoogle onClick={onGoogle} disabled={disabled} />
+      <ButtonRegisterGoogle 
+        onCredentialSuccess={onCredentialSuccess} 
+        onCredentialError={onCredentialError} 
+        disabled={disabled} 
+      />
     </div>
   );
 };

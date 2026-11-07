@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithGoogle } from "../database/firebaseAuth";
-import { promptGoogleSignIn, authenticateWithBackendGoogle } from "../database/googleCloudAuth";
+import { authenticateWithBackendGoogle } from "../database/googleCloudAuth";
 import {
   clearManualSession,
   requestRegistrationOtp,
   verifyRegistrationOtp
 } from "../database/manualAuth";
-import { createBackendSession } from "../database/firebaseDatabase";
 import "./register.css";
 import IntroductionRegistration from "../component/component_register/introductionRegistration";
 import RegistrationAccount from "../component/component_register/registrationAccount";
 import OTPVerification from "../component/component_register/otpVerification";
 import PersonalInfo from "../component/component_register/personalInfo";
-import GamukisLogo from "../images/gamukis_vector.png"
-import AssetGamukis from "../images/gamukis-regist-1.png"
+import GamukisLogo from "../images/gamukis_vector.png";
+import AssetGamukis from "../images/gamukis-regist-1.png";
 
 const RegisterPage = () => {
   const [step, setStep] = useState(1);
@@ -76,24 +74,13 @@ const RegisterPage = () => {
     }
   };
 
-  const handleGoogleRegistration = () => {
+  const handleGoogleCredential = (idToken) => {
     finishRegistration(async () => {
       if (typeof clearManualSession === "function") {
         clearManualSession();
       }
 
-      let session = null;
-      try {
-        // Primary: Direct Google Cloud Console OAuth 2.0 (Zero MAU cost)
-        const idToken = await promptGoogleSignIn();
-        const res = await authenticateWithBackendGoogle(idToken);
-        session = res;
-      } catch (gsiError) {
-        // Fallback to legacy Firebase popup only if GSI is uninitialized
-        console.warn('[GoogleAuth] GSI prompt error, attempting fallback:', gsiError.message);
-        await signInWithGoogle();
-        session = await createBackendSession();
-      }
+      const session = await authenticateWithBackendGoogle(idToken);
 
       if (session?.user && typeof window !== "undefined") {
         window.localStorage?.setItem("gamukis_manual_user", JSON.stringify(session.user));
@@ -104,6 +91,10 @@ const RegisterPage = () => {
       }
       return session;
     });
+  };
+
+  const handleGoogleError = (err) => {
+    setError(err?.message || "Login Google gagal. Silakan coba kembali.");
   };
 
   return (
@@ -118,8 +109,27 @@ const RegisterPage = () => {
 
         <div className="register-right">
           {step === 1 && <IntroductionRegistration nextStep={nextStep} />}
-          {step === 2 && <RegistrationAccount account={account} updateAccount={updateAccount} nextStep={() => setStep(3)} onGoogle={handleGoogleRegistration} disabled={isSubmitting} />}
-          {step === 3 && <PersonalInfo profile={profile} updateProfile={updateProfile} nextStep={handleRequestOtp} prevStep={() => setStep(2)} onGoogle={handleGoogleRegistration} disabled={isSubmitting} />}
+          {step === 2 && (
+            <RegistrationAccount 
+              account={account} 
+              updateAccount={updateAccount} 
+              nextStep={() => setStep(3)} 
+              onCredentialSuccess={handleGoogleCredential}
+              onCredentialError={handleGoogleError}
+              disabled={isSubmitting} 
+            />
+          )}
+          {step === 3 && (
+            <PersonalInfo 
+              profile={profile} 
+              updateProfile={updateProfile} 
+              nextStep={handleRequestOtp} 
+              prevStep={() => setStep(2)} 
+              onCredentialSuccess={handleGoogleCredential}
+              onCredentialError={handleGoogleError}
+              disabled={isSubmitting} 
+            />
+          )}
           {step === 4 && <OTPVerification email={account.email} onVerify={handleVerifyOtp} onResend={handleRequestOtp} disabled={isSubmitting} />}
           {error && (
             <div className="register-error-overlay" role="presentation" onClick={() => setError("")}>

@@ -1,75 +1,31 @@
-.google-register-button {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    background-color: #1268C6; /* Warna biru khas Google */
-    color: white; /* Warna teks putih */
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    margin: 20px 0 0 0;
-    padding: 15px 154px;
+.google-register-wrapper {
+    box-sizing: border-box;
     width: 100%;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
+    max-width: 529px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 0 0;
 }
 
-/* Hover effect */
-.google-login-button:hover {
-    background-color: #357ae8; /* Warna biru lebih gelap saat hover */
+.google-official-register-btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 48px;
 }
 
-/* Ikon Google */
-.google-icon-regist {
-    width: 20px; /* Ukuran ikon */
-    height: 20px;
+.google-official-register-btn-container > div,
+.google-official-register-btn-container iframe {
+    width: 100% !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+    border-radius: 10px !important;
 }
 
-/* Responsive Design */
-@media (max-width: 1920px) and (max-height: 1080px) { /* Laptop */
-    .google-register-button {
-        display: flex;
-        align-items: center;
-        justify-content:space-around;
-        background-color: #1268C6; /* Warna biru khas Google */
-        color: white; /* Warna teks putih */
-        font-size: 12px;
-        font-weight: bold;
-        border: none;
-        border-radius: 10px;
-        margin: 12px 0 0 0;
-        padding: 10px 100px;
-        width: 100%;
-        cursor: pointer;
-        width: 100%;
-        text-align: right;
-        transition: background-color 0.3s ease-in-out;
-    }
-    .google-icon-regist {
-        width: 15px; /* Ukuran ikon */
-        height: 15px;
+@media (max-width: 768px) {
+    .google-register-wrapper {
+        margin: 15px 0 0 0;
     }
 }
-
-@media (max-width: 1024px) { /* Laptop */
-    .google-register-button {
-        font-size: 14px;
-        padding: 12px 120px;
-    }
-}
-
-@media (max-width: 768px) { /* Tablet */
-    .google-register-button {
-        font-size: 14px;
-        padding: 12px 80px;
-    }
-}
-
-@media (max-width: 480px) { /* Mobile */
-    .google-register-button {
-        font-size: 12px;
-        padding: 10px 40px;
-    }
-}
-

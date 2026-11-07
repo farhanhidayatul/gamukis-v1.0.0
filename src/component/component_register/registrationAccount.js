@@ -3,7 +3,7 @@ import ProgressBar from "./progressBar";
 import "./registrationAccount.css"; 
 import { ButtonNext, ButtonRegisterGoogle, InputConfirmPassword, InputEmail, InputPassword, InputUsername } from "./atoms";
 
-const RegistrationAccount = ({ account, updateAccount, nextStep, onGoogle, disabled }) => {
+const RegistrationAccount = ({ account, updateAccount, nextStep, onCredentialSuccess, onCredentialError, disabled }) => {
 
   return (
     <div className="register-form">
@@ -16,7 +16,11 @@ const RegistrationAccount = ({ account, updateAccount, nextStep, onGoogle, disab
         disabled={disabled}
         onClick={() => account.email && account.username && account.password === account.confirmPassword && nextStep()}
       />
-      <ButtonRegisterGoogle onClick={onGoogle} disabled={disabled} />
+      <ButtonRegisterGoogle 
+        onCredentialSuccess={onCredentialSuccess} 
+        onCredentialError={onCredentialError} 
+        disabled={disabled} 
+      />
     </div>
   );
 };
