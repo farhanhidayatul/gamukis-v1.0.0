@@ -25,6 +25,7 @@ import StudentDashboard from "./pages/studentDashboard";
 import TeacherClassroom from "./pages/teacherClassroom";
 import TeacherAiQuestionGenerator from "./pages/teacherAiQuestionGenerator";
 import RoleProtectedRoute from "./component/common/RoleProtectedRoute";
+import UniversalCryptoGate from "./pages/UniversalCryptoGate";
 
 const TRACKING_ID = "G-FLNMFT2FES"; // Your Google Analytics tracking ID
 ReactGA.initialize(TRACKING_ID);
@@ -84,6 +85,8 @@ const App = () => {
         <Route path="/siswa/classes/:classId" element={<RoleProtectedRoute allowedRoles={["siswa"]}><TeacherClassroom /></RoleProtectedRoute>} />
         {/* Admin Dashboard: Dynamic Crypto Hash Slugs (Jurus 2 URL Obfuscation) */}
         <Route path="/admin/s/:hashSlug" element={<RoleProtectedRoute allowedRoles={["admin", "administrator"]}><AdminDashboard /></RoleProtectedRoute>} />
+        {/* Universal Dynamic Cryptographic Route Obfuscation */}
+        <Route path="/s/:cryptoSlug" element={<UniversalCryptoGate />} />
         <Route path="/admin/dashboard" element={<RoleProtectedRoute allowedRoles={["admin", "administrator"]}><AdminDashboard section="overview" /></RoleProtectedRoute>} />
         <Route path="/admin/bug-detector" element={<RoleProtectedRoute allowedRoles={["admin", "administrator"]}><AdminDashboard section="bug-detector" /></RoleProtectedRoute>} />
         <Route path="/admin/rooms" element={<RoleProtectedRoute allowedRoles={["admin", "administrator"]}><AdminDashboard section="rooms" /></RoleProtectedRoute>} />
