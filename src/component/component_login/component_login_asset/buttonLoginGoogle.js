@@ -35,7 +35,7 @@ const ButtonLoginGoogle = ({ onCredentialSuccess, onCredentialError, disabled = 
         // Render official Google button into the container with customized width & theme
         gsi.renderButton(googleBtnContainerRef.current, {
           type: 'standard',
-          theme: 'outline',
+          theme: 'filled_blue',
           size: 'large',
           text: 'continue_with',
           shape: 'rectangular',
