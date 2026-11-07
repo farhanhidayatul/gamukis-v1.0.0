@@ -42,7 +42,8 @@ export const loadGoogleIdentityScript = () => {
 };
 
 /**
- * Prompts user with native Google Sign-In One-Tap or Popup and resolves with the ID Token (credential).
+ * Prompts user with native Google Sign-In Popup and resolves with the ID Token (credential).
+ * Uses window.google.accounts.id.prompt with explicit fallback to renderButton trigger.
  */
 export const promptGoogleSignIn = async () => {
   const gsi = await loadGoogleIdentityScript();
@@ -63,31 +64,49 @@ export const promptGoogleSignIn = async () => {
           }
         },
         auto_select: false,
-        cancel_on_tap_outside: true
+        cancel_on_tap_outside: true,
+        use_fedcm_for_prompt: false
       });
 
-      // Prefer OAuth2 Code/Token client popup for reliable cross-browser button interaction
-      const client = window.google.accounts.oauth2.initTokenClient({
-        client_id: GOOGLE_CLIENT_ID,
-        scope: 'openid email profile',
-        callback: async (tokenResponse) => {
-          if (settled) return;
-          if (tokenResponse?.error) {
-            settled = true;
-            return reject(new Error(tokenResponse.error_description || tokenResponse.error));
-          }
-        }
+      // Directly create an offscreen Google official button and click it to bypass browser pop-up blockers
+      let hiddenContainer = document.getElementById('gsi-hidden-trigger-container');
+      if (!hiddenContainer) {
+        hiddenContainer = document.createElement('div');
+        hiddenContainer.id = 'gsi-hidden-trigger-container';
+        hiddenContainer.style.position = 'fixed';
+        hiddenContainer.style.top = '-9999px';
+        hiddenContainer.style.left = '-9999px';
+        hiddenContainer.style.opacity = '0';
+        hiddenContainer.style.pointerEvents = 'none';
+        document.body.appendChild(hiddenContainer);
+      }
+
+      hiddenContainer.innerHTML = '';
+      gsi.renderButton(hiddenContainer, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+        click_listener: () => {}
       });
 
-      // Try native One-Tap prompt first; fall back to token client if needed
-      gsi.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // If One-tap is dismissed or suppressed, open standard Google consent popup
-          if (!settled && client) {
-            client.requestAccessToken();
-          }
+      // Find the inner button rendered by Google and trigger click programmatically
+      setTimeout(() => {
+        const googleBtn = hiddenContainer.querySelector('div[role="button"]') || hiddenContainer.querySelector('button');
+        if (googleBtn) {
+          googleBtn.click();
+        } else {
+          // Fallback to gsi.prompt if button wasn't rendered
+          gsi.prompt((notification) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+              if (!settled) {
+                settled = true;
+                reject(new Error('Jendela login Google tidak dapat ditampilkan. Izinkan pop-up pada browser Anda.'));
+              }
+            }
+          });
         }
-      });
+      }, 50);
+
     } catch (err) {
       if (!settled) {
         settled = true;
