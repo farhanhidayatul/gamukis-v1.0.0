@@ -1,18 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import './buttonRegisterGoogle.css';
+import googleIcon from '../../../images/google-icon.png';
 import { loadGoogleIdentityScript } from '../../../database/googleCloudAuth';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '257611845379-hpqrv564tfrkk1210epc73ulobnka4lf.apps.googleusercontent.com';
 
 const ButtonRegisterGoogle = ({ onCredentialSuccess, onCredentialError, disabled = false }) => {
-  const googleBtnContainerRef = useRef(null);
+  const googleBtnMountRef = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
 
     loadGoogleIdentityScript()
       .then((gsi) => {
-        if (!isMounted || !googleBtnContainerRef.current) return;
+        if (!isMounted || !googleBtnMountRef.current) return;
 
         gsi.initialize({
           client_id: GOOGLE_CLIENT_ID,
@@ -31,17 +32,13 @@ const ButtonRegisterGoogle = ({ onCredentialSuccess, onCredentialError, disabled
           cancel_on_tap_outside: true
         });
 
-        const containerWidth = googleBtnContainerRef.current?.offsetWidth || 400;
-        const targetWidth = Math.min(Math.max(containerWidth, 200), 400);
-
-        gsi.renderButton(googleBtnContainerRef.current, {
+        gsi.renderButton(googleBtnMountRef.current, {
           type: 'standard',
-          theme: 'filled_blue',
+          theme: 'outline',
           size: 'large',
           text: 'continue_with',
           shape: 'rectangular',
-          logo_alignment: 'left',
-          width: targetWidth
+          width: 400
         });
       })
       .catch((err) => {
@@ -56,10 +53,15 @@ const ButtonRegisterGoogle = ({ onCredentialSuccess, onCredentialError, disabled
   return (
     <div className="google-register-wrapper">
       <div 
-        ref={googleBtnContainerRef} 
         className="google-official-register-btn-container"
         style={{ pointerEvents: disabled ? 'none' : 'auto', opacity: disabled ? 0.6 : 1 }}
-      />
+      >
+        <div className="google-custom-register-btn-visual">
+          <img src={googleIcon} alt="Google Icon" />
+          <span>Lanjutkan dengan Google</span>
+        </div>
+        <div ref={googleBtnMountRef} className="google-hidden-register-mount" />
+      </div>
     </div>
   );
 };

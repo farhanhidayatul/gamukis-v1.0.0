@@ -6,14 +6,14 @@ import { loadGoogleIdentityScript } from '../../../database/googleCloudAuth';
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '257611845379-hpqrv564tfrkk1210epc73ulobnka4lf.apps.googleusercontent.com';
 
 const ButtonLoginGoogle = ({ onCredentialSuccess, onCredentialError, disabled = false }) => {
-  const googleBtnContainerRef = useRef(null);
+  const googleBtnMountRef = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
 
     loadGoogleIdentityScript()
       .then((gsi) => {
-        if (!isMounted || !googleBtnContainerRef.current) return;
+        if (!isMounted || !googleBtnMountRef.current) return;
 
         gsi.initialize({
           client_id: GOOGLE_CLIENT_ID,
@@ -32,18 +32,14 @@ const ButtonLoginGoogle = ({ onCredentialSuccess, onCredentialError, disabled = 
           cancel_on_tap_outside: true
         });
 
-        // Render official Google button into the container with full responsive width & theme
-        const containerWidth = googleBtnContainerRef.current?.offsetWidth || 400;
-        const targetWidth = Math.min(Math.max(containerWidth, 200), 400);
-
-        gsi.renderButton(googleBtnContainerRef.current, {
+        // Mount official button at maximum width
+        gsi.renderButton(googleBtnMountRef.current, {
           type: 'standard',
-          theme: 'filled_blue',
+          theme: 'outline',
           size: 'large',
           text: 'continue_with',
           shape: 'rectangular',
-          logo_alignment: 'left',
-          width: targetWidth
+          width: 400
         });
       })
       .catch((err) => {
@@ -58,10 +54,18 @@ const ButtonLoginGoogle = ({ onCredentialSuccess, onCredentialError, disabled = 
   return (
     <div className="google-login-wrapper">
       <div 
-        ref={googleBtnContainerRef} 
         className="google-official-btn-container"
         style={{ pointerEvents: disabled ? 'none' : 'auto', opacity: disabled ? 0.6 : 1 }}
-      />
+      >
+        {/* Tombol visual asli Gamukis yang 100% konsisten dengan desain lama */}
+        <div className="google-custom-btn-visual">
+          <img src={googleIcon} alt="Google Icon" />
+          <span>Lanjutkan dengan Google</span>
+        </div>
+
+        {/* Iframe resmi Google di lapisan transparan atasnya untuk menangkap klik native */}
+        <div ref={googleBtnMountRef} className="google-hidden-mount" />
+      </div>
     </div>
   );
 };
