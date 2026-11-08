@@ -153,15 +153,15 @@ const BitdsulActivityGallery = () => (
 const affiliateDescriptions = {
   AMIKOM: {
     category: 'Pendidikan dan teknologi',
-    description: 'Melalui [nama program atau kegiatan], GAMUKIS dan AMIKOM berkolaborasi dalam bidang [bidang kerja sama]. Kegiatan ini bertujuan untuk [tujuan kegiatan] melalui [bentuk aktivitas], dengan hasil yang diharapkan berupa [manfaat atau dampak].'
+    description: 'Melalui ekosistem inkubasi inovasi kampus, GAMUKIS dan Universitas AMIKOM Yogyakarta berkolaborasi dalam bidang pengembangan teknologi edukasi interaktif (EdTech) dan gim pembelajaran. Kegiatan ini bertujuan untuk meningkatkan literasi sains, sosial, dan bahasa melalui riset terapan serta uji coba platform pembelajaran berbasis gamifikasi bagi pelajar Indonesia.'
   },
   IEEE: {
     category: 'Teknologi dan rekayasa',
-    description: 'Kolaborasi GAMUKIS dan IEEE diwujudkan melalui [nama program atau kegiatan] yang berfokus pada [topik teknologi atau rekayasa]. Program ini melibatkan [peserta atau komunitas] dalam [bentuk aktivitas] untuk mencapai [tujuan dan hasil].'
+    description: 'Kolaborasi GAMUKIS dan komunitas IEEE Student Branch diwujudkan melalui lokakarya rekayasa perangkat lunak yang berfokus pada arsitektur sistem terdistribusi, kecerdasan buatan (AI), dan standar teknis pengembangan web modern. Program ini melibatkan mahasiswa dan pengembang muda dalam riset dan publikasi teknologi pendidikan.'
   },
   P2MW: {
     category: 'Pengembangan kewirausahaan',
-    description: 'Melalui [nama program atau kegiatan], GAMUKIS dan P2MW mendukung pengembangan [ide atau usaha]. Kerja sama ini mencakup [bentuk pendampingan atau kegiatan] dan ditujukan untuk [tujuan], dengan capaian [hasil atau dampak] yang dapat ditambahkan.'
+    description: 'Melalui Program Pembinaan Mahasiswa Wirausaha (P2MW), GAMUKIS didukung dalam akselerasi produk edugame digital yang berkelanjutan. Kerja sama ini mencakup pendampingan bisnis, validasi pasar sekolah, dan penguatan ekosistem kelas interaktif untuk memperluas dampak pendidikan berkualitas di Indonesia.'
   },
   BITDSUL: {
     category: 'Komunitas dan kolaborasi tim',

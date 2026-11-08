@@ -57,7 +57,8 @@ const GamePage = () => {
     setCurriculum([]);
     setSelectedChapter(location.state?.selectedChapter || null);
 
-    if (!selectedCard?.title) {
+    const targetTitle = selectedCard?.title || 'Biologi';
+    if (!targetTitle) {
       setIsCurriculumLoading(false);
       return () => { isCurrentRequest = false; };
     }
@@ -67,7 +68,7 @@ const GamePage = () => {
       try {
         const classes = await fetchClassesByCategory();
         const matchingClass = classes.find((classItem) => (
-          normalizeClassTitle(classItem.title) === normalizeClassTitle(selectedCard.title)
+          normalizeClassTitle(classItem.title) === normalizeClassTitle(targetTitle)
         ));
         if (!matchingClass) return;
 
@@ -102,23 +103,24 @@ const GamePage = () => {
     navigate(-1); // Navigate back to the previous page
   };
 
-  const hasSelectedCard = Boolean(selectedCard);
   const defaultCardData = {
-    logo: '',
-    title: 'Pilih Mapel',
-    subtitle: 'Buka dari kategori untuk melihat detail mapel',
-    description: 'Halaman ini dibuka langsung tanpa pilihan mapel. Pilih mapel terlebih dahulu dari halaman utama agar game dapat berjalan optimal.',
-    features: ['Tidak ada data mapel']
+    logo: 'logo_saintek',
+    title: 'Biologi',
+    subtitle: 'Sains Biologi',
+    description: 'Eksplorasi biologi sel, genetika molekuler, fisiologi, dan ekosistem melalui kuis interaktif.',
+    features: ['Kritis', 'Kreatif', 'Kolaborasi', 'Teknologi dan informasi']
   };
+  const activeCard = selectedCard || defaultCardData;
+  const hasSelectedCard = Boolean(activeCard?.title);
 
   const handleStart = () => {
     if (!hasSelectedCard) return;
     const runtimeGameDurationSeconds = getCurriculumGameDurationSeconds(curriculum, selectedChapter)
-      ?? getRuntimeGameDurationSeconds(selectedCard);
+      ?? getRuntimeGameDurationSeconds(activeCard);
     navigate('/inGame', {
       state: {
-        selectedCard,
-        subject: selectedCard.title,
+        selectedCard: activeCard,
+        subject: activeCard.title,
         selectedChapter,
         resetSession: location.state?.resetSession !== undefined ? location.state.resetSession : true,
         ...(runtimeGameDurationSeconds !== null ? { gameDurationSeconds: runtimeGameDurationSeconds } : {})

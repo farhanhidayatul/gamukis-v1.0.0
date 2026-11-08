@@ -26,6 +26,27 @@ const getQuizOptionLabel = (option) => typeof option === 'string' ? option : opt
 
 const getStudentOfferings = (classDetail) => classDetail?.offerings || [];
 
+const enrichClassWithSeedFallback = (cls) => {
+  if (!cls) return cls;
+  const fallbackMatch = FALLBACK_CLASSES.find(
+    (f) => f.id === cls.id || f.slug === cls.slug
+  );
+  const syllabus = Array.isArray(cls.syllabus) && cls.syllabus.length > 0
+    ? cls.syllabus
+    : (Array.isArray(fallbackMatch?.syllabus) ? fallbackMatch.syllabus : []);
+  const rawQuiz = Array.isArray(cls.miniQuiz)
+    ? cls.miniQuiz.filter((q) => !(cls.slug === 'bahasa-indonesia' && String(q?.question || '').includes('Hukum II Newton')))
+    : [];
+  const miniQuiz = rawQuiz.length > 0
+    ? rawQuiz
+    : (Array.isArray(fallbackMatch?.miniQuiz) ? fallbackMatch.miniQuiz : []);
+  return {
+    ...cls,
+    syllabus,
+    miniQuiz
+  };
+};
+
 const normalizeTextAnswer = (value) => String(value || '').trim().toLocaleLowerCase('id-ID');
 
 const isCurriculumQuestionCorrect = (question, answer) => {
@@ -112,8 +133,15 @@ const StudentClass = () => {
     const loadClasses = async () => {
       const items = await fetchClassesByCategory(selectedCategory);
       if (isMounted && items && items.length > 0) {
-        setClassesList(items);
-        setActiveClassDetail(items[0]);
+        const enrichedItems = items.map(enrichClassWithSeedFallback);
+        setClassesList(enrichedItems);
+        setActiveClassDetail(enrichedItems[0]);
+        if (enrichedItems[0]?.slug) {
+          const detail = await fetchClassDetail(enrichedItems[0].slug);
+          if (isMounted && detail) {
+            setActiveClassDetail(enrichClassWithSeedFallback(detail));
+          }
+        }
       }
     };
     loadClasses();
@@ -159,7 +187,7 @@ const StudentClass = () => {
       setIsChoosingOffering(true);
     } else {
       const fullDetail = await fetchClassDetail(cls.slug);
-      setActiveClassDetail(fullDetail || cls);
+      setActiveClassDetail(enrichClassWithSeedFallback(fullDetail || cls));
       setIsChoosingOffering(false);
     }
     setActiveDetailTab('overview');

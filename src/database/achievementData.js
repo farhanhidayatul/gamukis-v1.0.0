@@ -40,6 +40,10 @@ export const fetchMyAchievements = async (userId = null) => {
     // Abaikan
   }
 
+  if (!token && !userId) {
+    return [];
+  }
+
   const headers = {
     'Content-Type': 'application/json'
   };

@@ -40,7 +40,7 @@ export const CardSaintek = [
     ),
     title: "SAINTEK",
     subtitle: "Sains & Teknologi",
-    description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+    description: "Matematika, Fisika, Kimia, Biologi, dan Informatika dengan pendekatan analitis dan eksperimental.",
     features: ["Computational Thinking", "Algorithmic Problem Solving", "System Design", "Technology Integration"]
   }
 ];
@@ -57,7 +57,7 @@ export const CardSoshum = [
     ),
     title: "SOSHUM",
     subtitle: "Sosial & Hukum",
-    description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+    description: "Matematika, Fisika, Kimia, Biologi, dan Informatika dengan pendekatan analitis dan eksperimental.",
     features: ["Computational Thinking", "Algorithmic Problem Solving", "System Design", "Technology Integration"]
   }
 ];

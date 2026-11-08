@@ -20,9 +20,9 @@ const KategoriMateri = () => {
           draggable="false"
         />
       ),
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.8,
+      reviews: 135,
+      description: "Eksplorasi biologi sel, genetika molekuler, fisiologi, dan ekosistem melalui kuis interaktif.",
       subtitle: "Sains Biologi",
       features: ["Kritis", "Kreatif", "Kolaborasi", "Teknologi dan informasi"]
     },
@@ -36,9 +36,9 @@ const KategoriMateri = () => {
           draggable="false"
         />
       ),
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.6,
+      reviews: 95,
+      description: "Pelajari struktur atom, ikatan kimia, stoikiometri, termokimia, dan reaksi organik secara terstruktur.",
       subtitle: "Sains Kimia",
       features: ["Analitis", "Empatik", "Kolaboratif", "Inovatif"]
     },
@@ -52,9 +52,9 @@ const KategoriMateri = () => {
           draggable="false"
         />
       ),
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.7,
+      reviews: 118,
+      description: "Kuasai mekanika klasik, kinematika, dinamika hukum Newton, gelombang, optik, dan elektromagnetisme.",
       subtitle: "Sains Fisika",
       features: ["Problem Solving", "Logical", "Scientific Thinking", "Innovative"]
     },
@@ -68,9 +68,9 @@ const KategoriMateri = () => {
           draggable="false"
         />
       ),
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.8,
+      reviews: 142,
+      description: "Asah penalaran aljabar, kalkulus, trigonometri, geometri analitik, dan pemecahan masalah kuantitatif.",
       subtitle: "Sains Matematika",
       features: ["Analytical Thinking", "Quantitative Reasoning", "Problem Solving", "Abstract Thinking"]
     },
@@ -84,9 +84,9 @@ const KategoriMateri = () => {
           draggable="false"
         />
       ),
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.9,
+      reviews: 168,
+      description: "Bangun logika berpikir komputasional, algoritma, struktur data, dan arsitektur sistem digital.",
       subtitle: "Sains Informatika",
       features: ["Computational Thinking", "Algorithmic Problem Solving", "System Design", "Technology Integration"]
     },
@@ -96,45 +96,45 @@ const KategoriMateri = () => {
     {
       title: "Sejarah",
       icon: <FaBook />,
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.7,
+      reviews: 89,
+      description: "Telusuri jejak peradaban nusantara dan dunia, historiografi kritis, serta dinamika sosial-politik.",
       subtitle: "Ilmu Sejarah",
       features: ["Historical Analysis", "Critical Thinking", "Research Skills", "Contextual Understanding"]
     },
     {
       title: "Geografi",
       icon: <FaBook />,
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.6,
+      reviews: 78,
+      description: "Pahami fenomena geosfer, pemetaan spasial, interaksi lingkungan hidup, dan dinamika kependudukan.",
       subtitle: "Ilmu Geografi",
       features: ["Spatial Awareness", "Environmental Understanding", "Map Reading", "Data Analysis"]
     },
     {
       title: "Ekonomi",
       icon: <FaBook />,
-      rating: 4.3,
+      rating: 4.8,
       reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      description: "Pelajari prinsip ekonomi mikro dan makro, keseimbangan pasar, kebijakan fiskal-moneter, serta literasi keuangan.",
       subtitle: "Ilmu Ekonomi",
       features: ["Economic Analysis", "Financial Literacy", "Market Understanding", "Data Interpretation"]
     },
     {
       title: "Sosiologi",
       icon: <FaBook />,
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.7,
+      reviews: 86,
+      description: "Analisis struktur sosial, interaksi masyarakat, stratifikasi, mobilitas, dan perubahan sosial modern.",
       subtitle: "Ilmu Sosiologi",
       features: ["Societal Analysis", "Critical Thinking", "Research Skills", "Contextual Understanding"]
     },
     {
       title: "Matematika",
       icon: <FaBook />,
-      rating: 4.3,
-      reviews: 112,
-      description: "Placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+      rating: 4.8,
+      reviews: 110,
+      description: "Penguasaan statistika terapan, peluang, matriks, dan barisan deret untuk analisis sosial-humaniora.",
       subtitle: "Ilmu Matematika",
       features: ["Analytical Thinking", "Quantitative Reasoning", "Problem Solving", "Abstract Thinking"]
     },

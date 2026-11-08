@@ -348,7 +348,7 @@ const Leaderboard = ({
         <>
           <div className="leaderboard-container-text">
             <p className="leaderboard-decs-text-1">
-              Lorem Ipsum is simply dummy text of the printing and typesetting .
+              Peringkat pemain terbaik berdasarkan skor koin dan akurasi kuis di arena GAMUKIS.
             </p>
           </div>
 

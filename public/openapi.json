@@ -1,0 +1,125 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "GAMUKIS Public API",
+    "version": "1.4.0",
+    "description": "Public REST API for GAMUKIS interactive classrooms, curriculum syllabus, quiz questions, and multiplayer leaderboards."
+  },
+  "servers": [
+    {
+      "url": "https://api.gamukis.site/api",
+      "description": "Production API Server"
+    }
+  ],
+  "paths": {
+    "/classes/categories": {
+      "get": {
+        "operationId": "getClassCategories",
+        "summary": "List curriculum categories (SAINTEK, SOSHUM, BAHASA)",
+        "responses": {
+          "200": {
+            "description": "Category list returned successfully"
+          }
+        }
+      }
+    },
+    "/classes": {
+      "get": {
+        "operationId": "listClasses",
+        "summary": "List student curriculum classes filtered by category",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["SAINTEK", "SOSHUM", "BAHASA"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Classes returned successfully"
+          }
+        }
+      }
+    },
+    "/classes/subject/{slug}": {
+      "get": {
+        "operationId": "getClassDetailBySlug",
+        "summary": "Retrieve syllabus chapters and mini-quiz for a subject",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subject class detail returned successfully"
+          },
+          "404": {
+            "description": "Subject not found"
+          }
+        }
+      }
+    },
+    "/questions": {
+      "get": {
+        "operationId": "getQuestionsBySubject",
+        "summary": "Retrieve in-game quiz questions by subject",
+        "parameters": [
+          {
+            "name": "subject",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questions returned successfully"
+          }
+        }
+      }
+    },
+    "/leaderboard": {
+      "get": {
+        "operationId": "getLeaderboard",
+        "summary": "Retrieve top player scores",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["alltime", "weekly", "daily"]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leaderboard returned successfully"
+          }
+        }
+      }
+    }
+  }
+}

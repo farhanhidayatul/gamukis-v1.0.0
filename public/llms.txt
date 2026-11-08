@@ -1,0 +1,20 @@
+# GAMUKIS — Interactive Edugame & Classroom Platform
+
+> GAMUKIS (`https://gamukis.site`) is an interactive educational platform and real-time multiplayer edugame covering SAINTEK (Science & Technology), SOSHUM (Social & Humanities), and 8 Languages (Indonesian, English, Javanese, French, German, Mandarin, Spanish, Malay).
+
+## Core Public Routes
+- [Home](https://gamukis.site/home): Browse SAINTEK, SOSHUM, and Language categories and launch interactive game sessions.
+- [Student Classrooms](https://gamukis.site/kelas): Curriculum syllabus, structured chapters, and mini-quizzes across SD, SMP, SMA, and University levels.
+- [Game Patch Notes & Arena Entry](https://gamukis.site/game): Release history and direct entry to the multiplayer quiz arena (`/gamePage` -> `/inGame`).
+- [Membership Plans](https://gamukis.site/membership/plans): Student and Teacher subscription tiers.
+- [Interactive Tutorial](https://gamukis.site/tutorial): Step-by-step walkthrough of Gamukis features.
+- [About & Collaborators](https://gamukis.site/about): BITDSUL development team, AMIKOM, IEEE, and P2MW partnership overview.
+
+## Public API Endpoints (`https://api.gamukis.site/api`)
+- `GET /api/classes/categories`: List curriculum categories and subject summaries.
+- `GET /api/classes?category={SAINTEK|SOSHUM|BAHASA}`: List curriculum classes by category.
+- `GET /api/classes/subject/{slug}`: Retrieve full class detail, syllabus chapters, and mini-quiz items.
+- `GET /api/questions?subject={subject}`: Retrieve in-game multiple-choice quiz questions.
+- `GET /api/leaderboard?period={alltime|weekly|daily}&limit=10`: Retrieve top player rankings.
+- `GET /api/tutorial/content`: Retrieve public tutorial steps and metadata.
+- [OpenAPI 3.1 Specification](https://gamukis.site/openapi.json)

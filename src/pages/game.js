@@ -125,7 +125,20 @@ const Game = () => {
               Pantau seluruh evolusi fitur, optimalisasi performa netcode arena multiplayer,
               serta peningkatan sistem keamanan pembelajaran interaktif di web GAMUKIS.
             </p>
-            <Link to="/gamePage" className="game-patch-play-cta" aria-label="Masuk ke arena permainan">
+            <Link
+              to="/gamePage"
+              state={{
+                selectedCard: {
+                  logo: "logo_saintek",
+                  title: "Biologi",
+                  subtitle: "Sains Biologi",
+                  description: "Eksplorasi biologi sel, genetika molekuler, fisiologi, dan ekosistem melalui kuis interaktif.",
+                  features: ["Kritis", "Kreatif", "Kolaborasi", "Teknologi dan informasi"]
+                }
+              }}
+              className="game-patch-play-cta"
+              aria-label="Masuk ke arena permainan"
+            >
               <svg viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
