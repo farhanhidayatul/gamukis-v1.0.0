@@ -440,4 +440,23 @@ const EnemyBot = ({ bot, onDeathComplete }) => {
   );
 };
 
-export default EnemyBot;
+const areEnemyBotPropsEqual = (prevProps, nextProps) => {
+  if (prevProps.onDeathComplete !== nextProps.onDeathComplete) return false;
+  const prevBot = prevProps.bot;
+  const nextBot = nextProps.bot;
+  if (prevBot === nextBot) return true;
+  if (!prevBot || !nextBot) return false;
+  return (
+    prevBot.id === nextBot.id &&
+    prevBot.x === nextBot.x &&
+    prevBot.y === nextBot.y &&
+    prevBot.direction === nextBot.direction &&
+    prevBot.state === nextBot.state &&
+    prevBot.health === nextBot.health &&
+    prevBot.maxHealth === nextBot.maxHealth &&
+    prevBot.isDying === nextBot.isDying &&
+    prevBot.isTelegraphing === nextBot.isTelegraphing
+  );
+};
+
+export default React.memo(EnemyBot, areEnemyBotPropsEqual);

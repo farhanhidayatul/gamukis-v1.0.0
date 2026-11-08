@@ -12,6 +12,8 @@ import PerformanceSummary from '../component/component_result/molecules/Performa
 import LeaderboardSection from '../component/component_result/LeaderboardSection';
 import { fetchUserGameStats, recordGameScore } from '../database/leaderboardData';
 import { calculateMatchExp } from '../utils/expRankSystem';
+import { getOrCreateCryptoRoute } from '../utils/universalCryptoRouter';
+import { decryptPayload } from '../utils/secureStorageCipher';
 import './result.css';
 
 const Result = () => {
@@ -21,7 +23,8 @@ const Result = () => {
   const backupData = (() => {
     if (typeof window === 'undefined') return {};
     try {
-      return JSON.parse(window.sessionStorage.getItem('gamukis_last_game_result') || '{}');
+      const raw = window.sessionStorage.getItem('gamukis_last_game_result');
+      return raw ? (decryptPayload(raw) || {}) : {};
     } catch (e) {
       return {};
     }
@@ -368,7 +371,8 @@ const Result = () => {
       return;
     }
 
-    navigate('/gamePage', {
+    const cryptoGamePageUrl = getOrCreateCryptoRoute('gamePage');
+    navigate(cryptoGamePageUrl || '/gamePage', {
       replace: true,
       state: {
         resetSession: true,
@@ -391,7 +395,8 @@ const Result = () => {
         window.localStorage.removeItem('gamukis_registered_game_session');
       } catch (e) {}
     }
-    navigate('/home', { replace: true });
+    const cryptoHomeUrl = getOrCreateCryptoRoute('home');
+    navigate(cryptoHomeUrl || '/home', { replace: true });
   };
 
   return (

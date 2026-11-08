@@ -5,6 +5,7 @@ import Leaderboard from '../component/component_game/leaderboard';
 import Skills from '../component/component_game/skill';
 import Flashcards from '../component/component_game/flashCard';
 import CardMapel from '../component/component_game/cardSS';
+import { getOrCreateCryptoRoute } from '../utils/universalCryptoRouter';
 import {
   fetchClassesByCategory,
   fetchClassDetail,
@@ -117,14 +118,16 @@ const GamePage = () => {
     if (!hasSelectedCard) return;
     const runtimeGameDurationSeconds = getCurriculumGameDurationSeconds(curriculum, selectedChapter)
       ?? getRuntimeGameDurationSeconds(activeCard);
-    navigate('/inGame', {
-      state: {
-        selectedCard: activeCard,
-        subject: activeCard.title,
-        selectedChapter,
-        resetSession: location.state?.resetSession !== undefined ? location.state.resetSession : true,
-        ...(runtimeGameDurationSeconds !== null ? { gameDurationSeconds: runtimeGameDurationSeconds } : {})
-      }
+    const targetState = {
+      selectedCard: activeCard,
+      subject: activeCard.title,
+      selectedChapter,
+      resetSession: location.state?.resetSession !== undefined ? location.state.resetSession : true,
+      ...(runtimeGameDurationSeconds !== null ? { gameDurationSeconds: runtimeGameDurationSeconds } : {})
+    };
+    const cryptoUrl = getOrCreateCryptoRoute('inGame', { subject: activeCard.title });
+    navigate(cryptoUrl, {
+      state: targetState
     });
   };
 

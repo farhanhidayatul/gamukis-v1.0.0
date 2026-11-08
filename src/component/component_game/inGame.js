@@ -46,6 +46,8 @@ import {
   isSoundMuted,
   toggleSoundMuted
 } from './soundEffects';
+import { getOrCreateCryptoRoute } from '../../utils/universalCryptoRouter';
+import { encryptPayload, decryptPayload } from '../../utils/secureStorageCipher';
 
 const getCameraZoom = () => Math.max(
   2,
@@ -193,6 +195,19 @@ export const getLocalFallbackCoins = (baseX = 12, baseY = 12) => {
   return coins;
 };
 
+export const dedupeLeaderboardList = (list, activePid, selfReplacement = null) => {
+  const byId = new Map();
+  (list || []).forEach((entry) => {
+    if (!entry || !entry.id) return;
+    if (entry.historySavedAt || entry.disconnectedAt) return;
+    byId.set(entry.id, entry);
+  });
+  if (selfReplacement && activePid) {
+    byId.set(activePid, { ...(byId.get(activePid) || {}), ...selfReplacement, id: activePid });
+  }
+  return Array.from(byId.values());
+};
+
 /**
  * Safely parses cookie value by key.
  */
@@ -217,7 +232,7 @@ export const getAnonymousSessionCache = () => {
       || window.sessionStorage?.getItem(ANONYMOUS_SESSION_KEY)
       || getCookieValue(ANONYMOUS_SESSION_KEY);
     if (!raw) return null;
-    const cached = JSON.parse(raw);
+    const cached = decryptPayload(raw);
     if (!cached || !cached.gameStartedAt || !cached.sessionId) return null;
     const elapsed = Date.now() - Number(cached.gameStartedAt);
     if (elapsed < resolveGameDurationMs(cached.gameDurationMs) && Number(cached.health ?? 3) > 0) {
@@ -249,7 +264,7 @@ export const getActiveSessionCache = (isGuestUser) => {
         || window.sessionStorage?.getItem(fallbackKey)
         || getCookieValue(fallbackKey);
       if (fallbackRaw) {
-        const cachedFallback = JSON.parse(fallbackRaw);
+        const cachedFallback = decryptPayload(fallbackRaw);
         if (cachedFallback && cachedFallback.gameStartedAt && Number(cachedFallback.health ?? 3) > 0) {
           const elapsed = Date.now() - Number(cachedFallback.gameStartedAt);
           if (elapsed < resolveGameDurationMs(cachedFallback.gameDurationMs)) return cachedFallback;
@@ -257,7 +272,7 @@ export const getActiveSessionCache = (isGuestUser) => {
       }
       return null;
     }
-    const cached = JSON.parse(raw);
+    const cached = decryptPayload(raw);
     if (!cached || !cached.gameStartedAt || !cached.sessionId) return null;
     const elapsed = Date.now() - Number(cached.gameStartedAt);
     if (elapsed < resolveGameDurationMs(cached.gameDurationMs) && Number(cached.health ?? 3) > 0) {
@@ -429,6 +444,21 @@ const InGame = () => {
     if (typeof window !== 'undefined' && sessionIdRef.current) {
       window.sessionStorage.setItem('gamukis_game_session_id', sessionIdRef.current);
     }
+    // Transparently auto-negotiate cryptographic hashed URL if accessed via static /inGame route
+    if (location.pathname === '/inGame') {
+      try {
+        const cryptoPath = getOrCreateCryptoRoute('inGame', {
+          subject: location.state?.subject || location.state?.selectedCard?.title || 'Umum'
+        });
+        if (cryptoPath && cryptoPath !== location.pathname) {
+          navigate(cryptoPath, {
+            replace: true,
+            state: location.state
+          });
+          return;
+        }
+      } catch (_) {}
+    }
     // Clean up resetSession flag from browser history state immediately after initial mount
     // so refreshing (F5) will NOT wipe the active session or coins.
     if (location.state?.resetSession) {
@@ -568,6 +598,8 @@ const InGame = () => {
   const hasMovedOnceRef = useRef(false);
   const pendingRemoteBatchRef = useRef({});
   const remoteBatchTimerRef = useRef(null);
+  const pendingBotBatchRef = useRef({});
+  const botBatchTimerRef = useRef(null);
 
   useEffect(() => {
     const refreshManualUser = () => setManualUser(getManualUser());
@@ -703,16 +735,16 @@ const InGame = () => {
         savedAt: Date.now()
       };
       const cacheKey = isGuest ? ANONYMOUS_SESSION_KEY : REGISTERED_SESSION_KEY;
-      const serialized = JSON.stringify(payload);
-      window.localStorage.setItem(cacheKey, serialized);
-      window.sessionStorage?.setItem(cacheKey, serialized);
+      const obfuscated = encryptPayload(payload);
+      window.localStorage.setItem(cacheKey, obfuscated);
+      window.sessionStorage?.setItem(cacheKey, obfuscated);
       // Keep ANONYMOUS_SESSION_KEY updated as backward compatibility
       if (isGuest) {
-        window.localStorage.setItem(ANONYMOUS_SESSION_KEY, serialized);
-        window.sessionStorage?.setItem(ANONYMOUS_SESSION_KEY, serialized);
+        window.localStorage.setItem(ANONYMOUS_SESSION_KEY, obfuscated);
+        window.sessionStorage?.setItem(ANONYMOUS_SESSION_KEY, obfuscated);
       }
       try {
-        document.cookie = `${cacheKey}=${encodeURIComponent(serialized)}; path=/; max-age=${gameDurationSeconds}; SameSite=Lax`;
+        document.cookie = `${cacheKey}=${encodeURIComponent(obfuscated)}; path=/; max-age=${gameDurationSeconds}; SameSite=Lax`;
       } catch (ce) {}
     } catch (e) {}
   }, [activeSubject, currentPlayer?.coins, currentPlayer?.health, currentPlayer?.lastQuestionCoins, gameDurationSeconds, isGuest]);
@@ -795,7 +827,7 @@ const InGame = () => {
     };
     if (typeof window !== 'undefined') {
       try {
-        window.sessionStorage.setItem('gamukis_last_game_result', JSON.stringify(resultState));
+        window.sessionStorage.setItem('gamukis_last_game_result', encryptPayload(resultState));
       } catch (e) {}
     }
     try {
@@ -821,8 +853,9 @@ const InGame = () => {
       // Purge again after async work so late socket updates cannot leave a stale session cache.
       clearActiveSessionCaches();
 
-      // 3. Navigate to results page
-      navigate('/result', {
+      // 3. Navigate to results page using dynamic crypto route
+      const cryptoResultUrl = getOrCreateCryptoRoute('result', { sessionId: sessionIdRef.current });
+      navigate(cryptoResultUrl || '/result', {
         state: resultState
       });
     } catch (error) {
@@ -1041,6 +1074,7 @@ const InGame = () => {
         const nextCoinCount = (Number(player.coins) || 0) + 1;
         const playerWithCoin = { ...updatedPlayer, coins: nextCoinCount };
         setPlayers((prev) => ({ ...prev, [playerId]: playerWithCoin }));
+        setLeaderboardPlayers((prev) => dedupeLeaderboardList(prev, playerId, playerWithCoin));
         saveAnonymousCache(nextCoinCount);
         setCoins((prev) => {
           const nextCoins = { ...prev };
@@ -1060,7 +1094,9 @@ const InGame = () => {
             if (!currentP) return prev;
             const revertedCoins = Math.max(0, (Number(currentP.coins) || 0) - 1);
             saveAnonymousCache(revertedCoins);
-            return { ...prev, [playerId]: { ...currentP, coins: revertedCoins } };
+            const revertedPlayer = { ...currentP, coins: revertedCoins };
+            setLeaderboardPlayers((currLb) => dedupeLeaderboardList(currLb, playerId, revertedPlayer));
+            return { ...prev, [playerId]: revertedPlayer };
           });
         });
       }
@@ -1237,6 +1273,7 @@ const InGame = () => {
           const updated = { ...p, coins: nextCoins };
           checkCoinMilestoneRef.current(updated);
           saveAnonymousCache(nextCoins);
+          setLeaderboardPlayers((currLb) => dedupeLeaderboardList(currLb, currentLocalId, updated));
           return { ...prev, [currentLocalId]: updated };
         });
 
@@ -1244,6 +1281,7 @@ const InGame = () => {
           const claimResult = await claimCoinAction({ coinId: coinKey, x: gridX, y: gridY });
           if (claimResult?.player) {
             setPlayers((prev) => ({ ...prev, [claimResult.player.id]: claimResult.player }));
+            setLeaderboardPlayers((currLb) => dedupeLeaderboardList(currLb, claimResult.player.id, claimResult.player));
             checkCoinMilestoneRef.current(claimResult.player);
             saveAnonymousCache(claimResult.player.coins, claimResult.player.health, claimResult.player.lastQuestionCoins);
           }
@@ -1256,7 +1294,9 @@ const InGame = () => {
             const p = prev[currentLocalId];
             const revertedCoins = Math.max(0, (Number(p.coins) || 0) - 1);
             saveAnonymousCache(revertedCoins);
-            return { ...prev, [currentLocalId]: { ...p, coins: revertedCoins } };
+            const revertedPlayer = { ...p, coins: revertedCoins };
+            setLeaderboardPlayers((currLb) => dedupeLeaderboardList(currLb, currentLocalId, revertedPlayer));
+            return { ...prev, [currentLocalId]: revertedPlayer };
           });
           gameEventBridge.emit(GAME_BRIDGE_EVENTS.COIN_CLAIM_REJECTED, { coinKey, x: gridX, y: gridY });
         }
@@ -1297,6 +1337,7 @@ const InGame = () => {
       const nextCoinCount = (Number(player.coins) || 0) + 1;
       const playerWithCoin = { ...player, coins: nextCoinCount };
       setPlayers((prev) => ({ ...prev, [playerId]: playerWithCoin }));
+      setLeaderboardPlayers((prev) => dedupeLeaderboardList(prev, playerId, playerWithCoin));
       saveAnonymousCache(nextCoinCount);
       setCoins((prev) => {
         const next = { ...prev };
@@ -1316,7 +1357,9 @@ const InGame = () => {
           if (!currentP) return prev;
           const revertedCoins = Math.max(0, (Number(currentP.coins) || 0) - 1);
           saveAnonymousCache(revertedCoins);
-          return { ...prev, [playerId]: { ...currentP, coins: revertedCoins } };
+          const revertedPlayer = { ...currentP, coins: revertedCoins };
+          setLeaderboardPlayers((currLb) => dedupeLeaderboardList(currLb, playerId, revertedPlayer));
+          return { ...prev, [playerId]: revertedPlayer };
         });
       });
     }
@@ -1884,8 +1927,12 @@ const InGame = () => {
               });
               checkCoinMilestoneRef.current(updatedPlayer);
               if (updatedPlayer.id === activePid) {
-                if (optimisticCoinClaimsRef.current.has(coinId)) {
-                  optimisticCoinClaimsRef.current.delete(coinId);
+                // Check exact ID or coordinate prefix match to prevent duplicate SFX/toast
+                const matchedClaim = Array.from(optimisticCoinClaimsRef.current).find(
+                  (id) => id === coinId || id.startsWith(`${updatedPlayer.x}x${updatedPlayer.y}`)
+                );
+                if (matchedClaim) {
+                  optimisticCoinClaimsRef.current.delete(matchedClaim);
                 } else {
                   playCoinCollectSound();
                   emitToast('+1 Koin!', 'info', 1200);
@@ -1904,37 +1951,58 @@ const InGame = () => {
               setBots((prev) => ({ ...prev, [newBot.id]: newBot }));
             }
           },
-          onBotMoved: ({ botId, x, y, direction, state, health, maxHealth }) => {
-            setBots((prev) => {
-              if (!prev[botId]) return prev;
-              if (prev[botId].isDying || prev[botId].state === 'dead' || Number(prev[botId].health) <= 0) {
-                return prev;
-              }
-              const isNowDead = (typeof health === 'number' && health <= 0) || state === 'dead' || state === 'death';
-              if (isNowDead) {
-                window.setTimeout(() => {
-                  setBots((curr) => {
-                    if (!curr[botId]) return curr;
-                    const next = { ...curr };
-                    delete next[botId];
-                    return next;
+          onBotMoved: (botUpdate) => {
+            if (!botUpdate?.botId) return;
+            pendingBotBatchRef.current[botUpdate.botId] = botUpdate;
+            if (!botBatchTimerRef.current) {
+              botBatchTimerRef.current = requestAnimationFrame(() => {
+                botBatchTimerRef.current = null;
+                const batch = pendingBotBatchRef.current;
+                pendingBotBatchRef.current = {};
+                const batchIds = Object.keys(batch);
+                if (batchIds.length === 0) return;
+
+                setBots((prev) => {
+                  let hasChanges = false;
+                  const nextBots = { ...prev };
+
+                  batchIds.forEach((bId) => {
+                    const update = batch[bId];
+                    const existing = prev[bId];
+                    if (!existing) return;
+                    if (existing.isDying || existing.state === 'dead' || Number(existing.health) <= 0) {
+                      return;
+                    }
+
+                    const isNowDead = (typeof update.health === 'number' && update.health <= 0) || update.state === 'dead' || update.state === 'death';
+                    if (isNowDead) {
+                      window.setTimeout(() => {
+                        setBots((curr) => {
+                          if (!curr[bId]) return curr;
+                          const next = { ...curr };
+                          delete next[bId];
+                          return next;
+                        });
+                      }, 1000);
+                    }
+
+                    hasChanges = true;
+                    nextBots[bId] = {
+                      ...existing,
+                      x: typeof update.x === 'number' ? update.x : existing.x,
+                      y: typeof update.y === 'number' ? update.y : existing.y,
+                      direction: update.direction || existing.direction,
+                      state: isNowDead ? 'dead' : (update.state || existing.state),
+                      health: typeof update.health === 'number' ? update.health : existing.health,
+                      maxHealth: typeof update.maxHealth === 'number' ? update.maxHealth : existing.maxHealth,
+                      ...(isNowDead ? { isDying: true } : {})
+                    };
                   });
-                }, 1000);
-              }
-              return {
-                ...prev,
-                [botId]: {
-                  ...prev[botId],
-                  x: typeof x === 'number' ? x : prev[botId].x,
-                  y: typeof y === 'number' ? y : prev[botId].y,
-                  direction: direction || prev[botId].direction,
-                  state: isNowDead ? 'dead' : (state || prev[botId].state),
-                  health: typeof health === 'number' ? health : prev[botId].health,
-                  maxHealth: typeof maxHealth === 'number' ? maxHealth : prev[botId].maxHealth,
-                  ...(isNowDead ? { isDying: true } : {})
-                }
-              };
-            });
+
+                  return hasChanges ? nextBots : prev;
+                });
+              });
+            }
           },
           onBotAttackWarning: (data) => {
             const { botId, targetPlayerId } = data || {};
@@ -2131,6 +2199,10 @@ const InGame = () => {
       if (remoteBatchTimerRef.current) {
         cancelAnimationFrame(remoteBatchTimerRef.current);
         remoteBatchTimerRef.current = null;
+      }
+      if (botBatchTimerRef.current) {
+        cancelAnimationFrame(botBatchTimerRef.current);
+        botBatchTimerRef.current = null;
       }
       if (respawnTimerRef.current) {
         clearInterval(respawnTimerRef.current);

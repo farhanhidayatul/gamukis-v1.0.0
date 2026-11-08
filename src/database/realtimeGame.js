@@ -116,21 +116,9 @@ const subscribeToGame = async ({
   const handlePlayerLeft = ({ playerId }) => onPlayerLeft(playerId);
   const handleCoinAdded = ({ coinId, coin }) => onCoinAdded(coinId, coin);
   const handleCoinClaimed = ({ coinId, player: updatedPlayer }) => onCoinClaimed(coinId, updatedPlayer);
-  let leaderboardBatch = {};
-  let leaderboardDebounceTimer = null;
   const handleLeaderboardUpdated = (updatedPlayer) => {
     if (!onLeaderboardUpdated || !updatedPlayer?.id) return;
-    leaderboardBatch[updatedPlayer.id] = updatedPlayer;
-    if (!leaderboardDebounceTimer) {
-      leaderboardDebounceTimer = setTimeout(() => {
-        leaderboardDebounceTimer = null;
-        const currentBatch = leaderboardBatch;
-        leaderboardBatch = {};
-        Object.values(currentBatch).forEach((p) => {
-          onLeaderboardUpdated(p);
-        });
-      }, 500);
-    }
+    onLeaderboardUpdated(updatedPlayer);
   };
   const handleBotSpawned = (data) => onBotSpawned?.(data?.bot || data);
   const handleBotMoved = (data) => onBotMoved?.(data);
@@ -220,11 +208,6 @@ const subscribeToGame = async ({
   }
 
   return () => {
-    if (leaderboardDebounceTimer) {
-      clearTimeout(leaderboardDebounceTimer);
-      leaderboardDebounceTimer = null;
-    }
-    leaderboardBatch = {};
     gameSocket.off('connect', performJoin);
     gameSocket.off('game:snapshot', handleSnapshot);
     gameSocket.off('player:updated', handlePlayerUpdated);

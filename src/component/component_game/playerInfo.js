@@ -282,7 +282,7 @@ const VIEW_DIRECTIONS = {
  * Renders the 8 layered components (legs, body, pants, hands, shoes, shirt, head, hair)
  * exactly mapped to character appearance customization, direction, and walk/idle animation.
  */
-export const CustomCharacterRenderer = ({ appearance, direction = 'down', isMoving = false, isSkillActive = false, skillIndex = 0, style }) => {
+const CustomCharacterRendererBase = ({ appearance, direction = 'down', isMoving = false, isSkillActive = false, skillIndex = 0, style }) => {
   if (!appearance || typeof appearance !== 'object') return null;
 
   const gender = appearance.gender === 'Perempuan' ? 'Perempuan' : 'Laki-laki';
@@ -493,6 +493,26 @@ export const CustomCharacterRenderer = ({ appearance, direction = 'down', isMovi
     </div>
   );
 };
+
+const areCustomCharacterPropsEqual = (prevProps, nextProps) => {
+  if (
+    prevProps.direction !== nextProps.direction ||
+    prevProps.isMoving !== nextProps.isMoving ||
+    prevProps.isSkillActive !== nextProps.isSkillActive ||
+    prevProps.skillIndex !== nextProps.skillIndex
+  ) {
+    return false;
+  }
+  const prevApp = prevProps.appearance;
+  const nextApp = nextProps.appearance;
+  if (prevApp !== nextApp) {
+    if (!prevApp || !nextApp) return false;
+    if (JSON.stringify(prevApp) !== JSON.stringify(nextApp)) return false;
+  }
+  return true;
+};
+
+export const CustomCharacterRenderer = React.memo(CustomCharacterRendererBase, areCustomCharacterPropsEqual);
 
 const characterAnimationStyles = `
 .game-wrapper .Character {
@@ -750,4 +770,49 @@ const Player = ({
   );
 };
 
-export default Player;
+const arePlayerPropsEqual = (prevProps, nextProps) => {
+  if (
+    prevProps.isCurrentPlayer !== nextProps.isCurrentPlayer ||
+    prevProps.isButtonMoving !== nextProps.isButtonMoving ||
+    prevProps.skillActive !== nextProps.skillActive ||
+    prevProps.skillIndex !== nextProps.skillIndex ||
+    prevProps.isGuest !== nextProps.isGuest ||
+    prevProps.isDead !== nextProps.isDead
+  ) {
+    return false;
+  }
+
+  const prevP = prevProps.player;
+  const nextP = nextProps.player;
+  if (prevP !== nextP) {
+    if (!prevP || !nextP) return false;
+    if (
+      prevP.id !== nextP.id ||
+      prevP.x !== nextP.x ||
+      prevP.y !== nextP.y ||
+      prevP.direction !== nextP.direction ||
+      prevP.health !== nextP.health ||
+      prevP.coins !== nextP.coins ||
+      prevP.name !== nextP.name ||
+      prevP.color !== nextP.color ||
+      prevP.isDead !== nextP.isDead ||
+      prevP.skillActive !== nextP.skillActive ||
+      prevP.skillIndex !== nextP.skillIndex
+    ) {
+      return false;
+    }
+  }
+
+  const prevApp = prevProps.appearance;
+  const nextApp = nextProps.appearance;
+  if (prevApp !== nextApp) {
+    if (!prevApp || !nextApp) return false;
+    if (JSON.stringify(prevApp) !== JSON.stringify(nextApp)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export default React.memo(Player, arePlayerPropsEqual);
