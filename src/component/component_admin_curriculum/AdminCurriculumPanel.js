@@ -82,6 +82,12 @@ const AdminCurriculumPanel = () => {
   const selectedSubject = classes.find((subject) => subject.id === subjectActionId) || null;
 
   const handleOpenCreate = () => {
+    // Mode tambah mapel/kelas baru lengkap
+    setEditingClass(null);
+    setIsEditorOpen(true);
+  };
+
+  const handleOpenOfferingCreate = () => {
     setOfferingSubjectId(classes[0]?.id || '');
     setIsOfferingFormOpen(true);
   };
@@ -218,10 +224,19 @@ const AdminCurriculumPanel = () => {
           />
           <button
             type="button"
+            className="curriculum-btn curriculum-btn--secondary"
+            onClick={handleOpenOfferingCreate}
+            title="Tambah tingkatan kelas pada mata pelajaran yang sudah ada"
+          >
+            + Jenjang Kelas
+          </button>
+          <button
+            type="button"
             className="curriculum-btn curriculum-btn--primary"
             onClick={handleOpenCreate}
+            title="Tambah mata pelajaran dan kelas baru"
           >
-            Tambah Kelas
+            + Tambah Mapel/Kelas Baru
           </button>
         </div>
       </div>

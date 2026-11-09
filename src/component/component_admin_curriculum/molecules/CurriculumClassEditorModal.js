@@ -27,6 +27,8 @@ const CurriculumClassEditorModal = ({ isOpen, classData, onClose, onSave }) => {
     slug: classData?.slug || '',
     category: classData?.category || 'BAHASA',
     categoryLabel: classData?.categoryLabel || 'Bahasa & Literasi',
+    educationStage: classData?.offering?.educationStage || classData?.educationStage || 'SMA',
+    schoolGrade: classData?.offering?.schoolGrade || classData?.schoolGrade || '10',
     level: classData?.level || 'Dasar - Mahir',
     totalDuration: classData?.totalDuration || '10 Jam',
     badge: classData?.badge || '',
@@ -123,6 +125,8 @@ const CurriculumClassEditorModal = ({ isOpen, classData, onClose, onSave }) => {
       onSave({
         title: formData.title,
         description: formData.description,
+        educationStage: formData.educationStage,
+        schoolGrade: formData.schoolGrade,
         learningObjectives: formData.learningObjectivesText.split('\n').map((objective) => objective.trim()).filter(Boolean),
         syllabus: formData.syllabus
       });
@@ -133,6 +137,8 @@ const CurriculumClassEditorModal = ({ isOpen, classData, onClose, onSave }) => {
       slug: formData.slug || formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       category: formData.category,
       categoryLabel: formData.category === 'SAINTEK' ? 'Sains & Teknologi' : formData.category === 'SOSHUM' ? 'Sosial & Humaniora' : 'Bahasa & Literasi',
+      educationStage: formData.educationStage,
+      schoolGrade: formData.schoolGrade,
       level: formData.level,
       totalDuration: formData.totalDuration,
       badge: formData.badge || null,
@@ -178,7 +184,56 @@ const CurriculumClassEditorModal = ({ isOpen, classData, onClose, onSave }) => {
           <div className="curriculum-modal__body">
             {activeTab === 'meta' ? (
               <>
-                {classData?.offering && <div className="curriculum-modal__form-row"><div className="curriculum-modal__form-group"><label>Jenjang dan tingkat</label><strong>{classData.offering.educationStage} · {classData.offering.educationStage === 'KULIAH' ? classData.offering.schoolGrade : `Kelas ${classData.offering.schoolGrade}`}</strong></div><div className="curriculum-modal__form-group"><label>Status konten</label><strong>{classData.offering.contentStatus === 'approved' ? 'Disetujui' : 'Draf · perlu ditinjau'}</strong></div></div>}
+                <div className="curriculum-modal__form-row">
+                  <div className="curriculum-modal__form-group">
+                    <label>Jenjang Pendidikan</label>
+                    <select
+                      className="curriculum-modal__select"
+                      value={formData.educationStage}
+                      onChange={(e) => {
+                        const stage = e.target.value;
+                        const defaultGrade = stage === 'SD' ? '1' : stage === 'SMP' ? '7' : stage === 'SMA' ? '10' : 'Semester 1';
+                        setFormData((prev) => ({ ...prev, educationStage: stage, schoolGrade: defaultGrade }));
+                      }}
+                    >
+                      <option value="SD">SD (Sekolah Dasar)</option>
+                      <option value="SMP">SMP (Sekolah Menengah Pertama)</option>
+                      <option value="SMA">SMA (Sekolah Menengah Atas)</option>
+                      <option value="KULIAH">Perguruan Tinggi / Kuliah</option>
+                    </select>
+                  </div>
+                  <div className="curriculum-modal__form-group">
+                    <label>{formData.educationStage === 'KULIAH' ? 'Semester' : 'Tingkat Kelas'}</label>
+                    <select
+                      className="curriculum-modal__select"
+                      value={formData.schoolGrade}
+                      onChange={(e) => handleFieldChange('schoolGrade', e.target.value)}
+                    >
+                      {(formData.educationStage === 'SD'
+                        ? ['1', '2', '3', '4', '5', '6']
+                        : formData.educationStage === 'SMP'
+                        ? ['7', '8', '9']
+                        : formData.educationStage === 'SMA'
+                        ? ['10', '11', '12']
+                        : ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8']
+                      ).map((g) => (
+                        <option key={g} value={g}>
+                          {formData.educationStage === 'KULIAH' ? g : `Kelas ${g}`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {classData?.offering && (
+                  <div className="curriculum-modal__form-row" style={{ marginTop: '-8px', marginBottom: '8px' }}>
+                    <div className="curriculum-modal__form-group">
+                      <small style={{ color: 'var(--mut, #64748b)' }}>
+                        Status Konten: <strong>{classData.offering.contentStatus === 'approved' ? 'Disetujui' : 'Draf · perlu ditinjau'}</strong>
+                      </small>
+                    </div>
+                  </div>
+                )}
 
                 <div className="curriculum-modal__form-row">
                   <div className="curriculum-modal__form-group">
