@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import '../component_login_asset/buttonLogin.css';
 
 const ButtonLogin = ({ inputEmailUsername = '', inputPassword = '', disabled = false }) => {

@@ -15,7 +15,7 @@ import BotEntity from '../entities/BotEntity';
 import CoinManager from '../managers/CoinManager';
 import { gameEventBridge, GAME_BRIDGE_EVENTS } from '../bridge/GameEventBridge';
 import { mapWidth, mapHeight } from '../../tiledMapData';
-import { canMoveTo, TILE_SIZE } from '../../utils';
+import { TILE_SIZE } from "../../utils";
 
 export const LOCAL_PLAYER_SPEED = 180;
 export const DEFAULT_MAP_WIDTH = mapWidth || 2400;

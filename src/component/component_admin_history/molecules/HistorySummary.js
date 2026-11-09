@@ -1,4 +1,3 @@
-import React from "react";
 import "./HistorySummary.css";
 import HistoryAggCard from "../atoms/HistoryAggCard";
 

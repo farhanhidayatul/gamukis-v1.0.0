@@ -1,4 +1,3 @@
-import React from 'react';
 import './cardSS.css';
 import { ReactComponent as YourSvgIcon } from '../../images/Checkbox.svg';
 

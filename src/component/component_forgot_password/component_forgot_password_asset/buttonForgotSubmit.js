@@ -1,4 +1,3 @@
-import React from 'react';
 import './buttonForgotSubmit.css';
 
 const ButtonForgotSubmit = ({ label = 'Kirim', disabled = false, loading = false }) => {

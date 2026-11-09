@@ -1,4 +1,3 @@
-import React from 'react';
 import PlayerColorButton from '../atoms/PlayerColorButton';
 import PlayerHealth from '../atoms/PlayerHealth';
 import PlayerNameInput from '../atoms/PlayerNameInput';

@@ -1,4 +1,3 @@
-import React from "react";
 import "./buttonBack.css";
 
 const ButtonBack = ({ onClick, text = "Kembali" }) => {

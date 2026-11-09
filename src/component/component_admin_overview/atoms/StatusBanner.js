@@ -1,4 +1,3 @@
-import React from "react";
 import "./StatusBanner.css";
 
 const StatusBanner = ({ message }) => (

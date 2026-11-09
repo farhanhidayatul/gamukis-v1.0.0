@@ -284,9 +284,7 @@ export const downloadMembershipInvoice = async (membershipId) => {
   const url = `${MEMBERSHIP_API_URL}/${encodeURIComponent(id)}/invoice`;
   const response = await fetch(url, {
     method: 'GET',
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {})
-    }
+    headers: (token ? { Authorization: `Bearer ${token}` } : {})
   });
 
   if (!response.ok) {

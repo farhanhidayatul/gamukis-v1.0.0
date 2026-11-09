@@ -1,4 +1,3 @@
-import React from "react";
 import "./AiJobStatusBadge.css";
 
 const STATUS_LABELS = {

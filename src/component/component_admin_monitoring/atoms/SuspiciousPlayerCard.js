@@ -1,4 +1,3 @@
-import React from "react";
 import "./SuspiciousPlayerCard.css";
 
 const SuspiciousPlayerCard = ({ playerName, roomName, cheatFlags }) => (

@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TeamBannerCopy = () => (
   <div className="promo-text-2">
     <h3>BITDSUL</h3>

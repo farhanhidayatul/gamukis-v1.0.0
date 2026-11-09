@@ -1,5 +1,3 @@
-import React from 'react';
-
 const LogoOptionButton = ({ label, src, isActive, onSelect }) => (
   <button
     type="button"

@@ -1,4 +1,3 @@
-import React from "react";
 import DefaultProfile from "../../images/people-profile.png";
 
 const ProfileHero = ({ user, onEdit, onCustomize }) => {

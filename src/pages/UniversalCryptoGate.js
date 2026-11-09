@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { resolveCryptoSlug } from '../utils/universalCryptoRouter';
 

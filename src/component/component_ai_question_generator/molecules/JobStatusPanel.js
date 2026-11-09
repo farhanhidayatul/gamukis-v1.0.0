@@ -1,4 +1,3 @@
-import React from "react";
 import "./JobStatusPanel.css";
 
 const STATUS_LABELS = {

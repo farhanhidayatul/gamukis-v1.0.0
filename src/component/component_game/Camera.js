@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 import './camera.css';
 
 const Camera = ({ player, mapWidth, mapHeight, tileSize, zoom = 2, children }) => {

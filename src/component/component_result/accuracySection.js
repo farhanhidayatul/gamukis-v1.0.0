@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../pages/result.css';
 
 const AccuracySection = ({ accuracy, badgePosition }) => (

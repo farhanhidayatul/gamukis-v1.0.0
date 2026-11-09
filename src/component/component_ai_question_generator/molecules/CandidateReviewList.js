@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import CoinModal, { parseQuestionPrompt, renderStructuredStory } from "../../component_game/modal";
 import MathText from "../../common/MathText";
 import TableStructureBadge from "../atoms/TableStructureBadge";

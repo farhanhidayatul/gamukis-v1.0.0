@@ -1,4 +1,3 @@
-import React from 'react';
 import hpIn from '../../../images/HP_in.png';
 import hpOut from '../../../images/HP_out.png';
 

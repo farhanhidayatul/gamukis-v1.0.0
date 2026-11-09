@@ -7,7 +7,6 @@ import {
 import { fetchCharacters } from '../../database/characterApi';
 import { recordGameScore } from '../../database/leaderboardData';
 import { castSkillAction, claimCoinAction, finishPlayerAction, movePlayer, resetPlayer, respawnPlayerAction, subscribeToGame, updatePlayer } from '../../database/realtimeGame';
-import PhaserGameContainer from './phaser/PhaserGameContainer';
 import { gameEventBridge, GAME_BRIDGE_EVENTS } from './phaser/bridge/GameEventBridge';
 import {
   randomFromArray, createName, canMoveTo, getRandomSafeSpot, getKeyString, TILE_SIZE, generateSecureGuestId

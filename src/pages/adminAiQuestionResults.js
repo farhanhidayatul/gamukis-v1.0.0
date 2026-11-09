@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getManualUser } from "../database/manualAuth";
 import { getAdminAiCandidates, listAdminAiJobs } from "../database/aiQuestionGeneratorApi";
 import AiJobResultsTable from "../component/component_ai_question_results/molecules/AiJobResultsTable";

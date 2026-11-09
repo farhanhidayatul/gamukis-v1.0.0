@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../pages/result.css';
 import { questions } from '../component_game/questions';
 import AnswerCard from './molecules/AnswerCard';

@@ -1,4 +1,3 @@
-import React from "react";
 import { StatusBadge } from "../../component_admin_shared";
 import "./TeacherRow.css";
 

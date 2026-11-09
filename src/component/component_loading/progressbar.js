@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Loading from "./loading.js";
 import "../component_loading/progressbar.css";
 import ProgressFill from "./atoms/ProgressFill";

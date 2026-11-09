@@ -1,4 +1,3 @@
-import React from 'react';
 import './radioRecoveryMethod.css';
 
 const RadioRecoveryMethod = ({ method, setMethod }) => {

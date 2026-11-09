@@ -1,5 +1,3 @@
-import React from 'react';
-
 function MyComponent() {
   const text = "Loading";
 

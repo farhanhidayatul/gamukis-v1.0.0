@@ -1,5 +1,3 @@
-import React from 'react';
-
 const checkIcon = require('../../../images/Checkbox.svg').default;
 
 const ChecklistItem = ({ label }) => (

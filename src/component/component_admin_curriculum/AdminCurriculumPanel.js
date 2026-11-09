@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from "react";
 import CurriculumBadge from './atoms/CurriculumBadge';
 import CurriculumClassEditorModal from './molecules/CurriculumClassEditorModal';
 import CurriculumQuizEditor from './molecules/CurriculumQuizEditor';

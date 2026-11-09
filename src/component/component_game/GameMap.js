@@ -1,4 +1,3 @@
-import React from 'react';
 import './gameMap.css';
 import TiledMapCanvas from './TiledMapCanvas';
 import { mapWidth, mapHeight } from './tiledMapData';

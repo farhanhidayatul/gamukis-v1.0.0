@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import { useState } from "react";
 import '../component_register_asset/inputPassword.css';
 
 const InputPassword = ({ password = '', setInputPassword }) => {

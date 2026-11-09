@@ -1,4 +1,3 @@
-import React from "react";
 import "./leaderboard.css";
 import FeatureChecklist from "./molecules/FeatureChecklist";
 import ShareButton from "./atoms/ShareButton";

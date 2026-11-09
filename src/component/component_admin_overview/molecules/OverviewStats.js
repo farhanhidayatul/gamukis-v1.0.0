@@ -1,4 +1,3 @@
-import React from "react";
 import "./OverviewStats.css";
 import StatCard from "../atoms/StatCard";
 

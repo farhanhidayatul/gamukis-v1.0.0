@@ -1,5 +1,3 @@
-import React from 'react';
-
 const ViewDirectionButton = ({ label, symbol, isSelected, onClick }) => (
   <button
     type="button"

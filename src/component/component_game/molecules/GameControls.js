@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 import SkillButton from '../atoms/SkillButton';
 import { skillTypes } from '../skill';
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getManualUser } from "../database/manualAuth";
 import { createTeacherAiJob, listTeacherAiJobs } from "../database/aiQuestionGeneratorApi";

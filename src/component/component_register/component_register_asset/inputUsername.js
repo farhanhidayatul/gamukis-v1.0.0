@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import '../component_register_asset/inputUsername.css';
 
 const InputUsername = ({ username = '', setUsername }) => {

@@ -1,4 +1,3 @@
-import React from "react";
 import "./RoomTable.css";
 import RoomRow from "../atoms/RoomRow";
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 const HairStyleButton = ({ option, isSelected, sprite, onSelect }) => (
   <button
     type="button"

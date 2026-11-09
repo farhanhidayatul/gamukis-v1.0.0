@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { auth, onAuthStateChanged } from "../../database/firebaseAuth";
 import { getManualUser } from "../../database/manualAuth";
 import { fetchLeaderboard } from "../../database/leaderboardData";

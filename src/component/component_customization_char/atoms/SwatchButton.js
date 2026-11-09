@@ -1,5 +1,3 @@
-import React from 'react';
-
 const SwatchButton = ({ label, color, isSelected, onClick }) => (
   <button
     type="button"

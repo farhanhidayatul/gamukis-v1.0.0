@@ -1,4 +1,3 @@
-import React from "react";
 import "./TeacherTable.css";
 import TeacherRow from "../atoms/TeacherRow";
 

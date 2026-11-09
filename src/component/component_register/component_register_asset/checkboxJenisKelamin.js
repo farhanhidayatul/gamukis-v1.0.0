@@ -1,4 +1,3 @@
-import React from "react";
 import "./checkboxJenisKelamin.css"; // Tambahkan file CSS untuk styling
 
 const CheckboxJenisKelamin = ({ value = '', onChange }) => {

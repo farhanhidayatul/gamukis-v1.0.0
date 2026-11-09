@@ -1,4 +1,3 @@
-import React from 'react';
 import '../photo.css';
 import photo from '../images/Gamukis.png';
 

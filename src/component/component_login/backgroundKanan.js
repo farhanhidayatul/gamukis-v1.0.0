@@ -1,4 +1,3 @@
-import React from 'react';
 import '../component_login/backgroundKanan.css';
 
 const BackgroundKanan = () => {

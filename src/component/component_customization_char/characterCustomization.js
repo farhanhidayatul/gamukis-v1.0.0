@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import characterArtwork from '../../images/man_and_woman.png';
 import CategoryTab from './atoms/CategoryTab';

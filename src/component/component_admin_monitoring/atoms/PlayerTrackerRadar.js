@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Camera from "../../component_game/Camera";
 import GameMap from "../../component_game/GameMap";
 import Player, { CustomCharacterRenderer } from "../../component_game/playerInfo";

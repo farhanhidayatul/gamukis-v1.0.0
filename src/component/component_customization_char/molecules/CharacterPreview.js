@@ -1,4 +1,3 @@
-import React from 'react';
 import { hairConfigs } from '../characterCustomization';
 const maleIdleSkinContext = require.context(
   '../../../images/asset_game/character/gender/male/idle',

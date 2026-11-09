@@ -1,4 +1,3 @@
-import React from "react";
 import "./RoomSummaryRow.css";
 
 const RoomSummaryRow = ({ roomName, playerCount, suspiciousCount }) => (

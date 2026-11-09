@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import '../component_register_asset/inputConfirmPassword.css';
 
 const InputConfirmPassword = ({ password, confirmPassword = '', setConfirmPassword }) => {

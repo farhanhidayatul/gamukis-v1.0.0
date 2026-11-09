@@ -1,4 +1,3 @@
-import React from 'react';
 import './flashCard.css';
 
 const Flashcards = ({

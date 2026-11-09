@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import '../component_login_asset/inputEmailUsername.css';
 
 const InputEmailUsername = ({ setInputEmailUsername }) => {

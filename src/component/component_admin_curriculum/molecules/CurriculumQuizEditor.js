@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import MathText from '../../common/MathText';
 import CurriculumBadge from '../atoms/CurriculumBadge';
 import { listAdminAiJobs, getAdminAiJob } from '../../../database/aiQuestionGeneratorApi';

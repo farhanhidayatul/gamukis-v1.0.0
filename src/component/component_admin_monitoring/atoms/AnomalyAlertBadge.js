@@ -1,4 +1,3 @@
-import React from 'react';
 import './AnomalyAlertBadge.css';
 
 export default function AnomalyAlertBadge({ count = 0, onClick }) {

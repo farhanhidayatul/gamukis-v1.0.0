@@ -1,5 +1,3 @@
-import React from "react";
-
 const NotFoundCard = ({ onGoHome, onGoBack }) => (
   <section className="notfound-card" aria-labelledby="notfound-title">
     <div className="notfound-code" aria-hidden="true">404</div>

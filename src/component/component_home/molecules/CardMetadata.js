@@ -1,5 +1,3 @@
-import React from 'react';
-
 const ratingIcon = require('../../../images/Rating icong.svg').default;
 const personIcon = require('../../../images/Icon Person.svg').default;
 

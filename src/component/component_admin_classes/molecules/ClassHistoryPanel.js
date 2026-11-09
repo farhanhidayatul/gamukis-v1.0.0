@@ -1,4 +1,3 @@
-import React from "react";
 import "./ClassHistoryPanel.css";
 
 const ClassHistoryPanel = ({ historyData = null, isLoading = false, onClose }) => {

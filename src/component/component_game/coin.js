@@ -1,4 +1,3 @@
-import React from 'react';
 import { getKeyString, TILE_SIZE } from './utils';
 
 const Coin = ({ coin }) => {

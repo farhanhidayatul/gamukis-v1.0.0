@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import BackgroundKanan from '../component/component_login/backgroundKanan';
 import './login.css';
 import BackgroundKiri from '../component/component_login/backgroundKiri';

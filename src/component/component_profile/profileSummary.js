@@ -1,5 +1,3 @@
-import React from "react";
-
 const roleLabel = (role) => {
   if (!role) return "Belum dipilih";
   if (role === "guru") return "Guru";

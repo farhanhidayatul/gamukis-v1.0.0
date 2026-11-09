@@ -1,4 +1,3 @@
-import React from "react";
 import "./MonitoringGrid.css";
 import SuspiciousPlayerCard from "../atoms/SuspiciousPlayerCard";
 import RoomSummaryRow from "../atoms/RoomSummaryRow";

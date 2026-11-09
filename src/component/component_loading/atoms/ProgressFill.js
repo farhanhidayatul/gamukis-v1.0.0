@@ -1,5 +1,3 @@
-import React from 'react';
-
 const ProgressFill = ({ value, background }) => (
   <div
     className="progressbar"

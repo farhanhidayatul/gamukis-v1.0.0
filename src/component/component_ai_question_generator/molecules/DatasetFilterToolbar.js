@@ -1,4 +1,3 @@
-import React from 'react';
 import './DatasetFilterToolbar.css';
 
 const MODALITY_OPTIONS = [

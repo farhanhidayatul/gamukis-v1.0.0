@@ -1,4 +1,3 @@
-import React from 'react';
 import { CustomCharacterRenderer } from '../../component_game/playerInfo';
 import './SavedCharacterItem.css';
 

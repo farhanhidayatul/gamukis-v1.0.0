@@ -1,4 +1,3 @@
-import React from "react";
 import "./RoomRow.css";
 
 const RoomRow = ({ room, onDelete, isProcessing }) => {

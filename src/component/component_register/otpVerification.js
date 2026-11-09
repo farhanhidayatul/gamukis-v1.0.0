@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./otpVerification.css";
 import ProgressBar from "./progressBar";
 import { ButtonNext } from "./atoms";

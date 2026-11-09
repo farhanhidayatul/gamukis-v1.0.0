@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 import '../component_login_asset/buttonLoginGoogle.css';
 import { loadGoogleIdentityScript } from '../../../database/googleCloudAuth';
 

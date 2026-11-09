@@ -1,4 +1,3 @@
-import React from "react";
 import "./inputNamaSekolah.css"; // Tambahkan file CSS untuk styling
 
 const InputNamaSekolah = ({ value = '', onChange }) => {

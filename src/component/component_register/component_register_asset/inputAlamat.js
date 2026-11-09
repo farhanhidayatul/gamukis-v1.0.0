@@ -1,4 +1,3 @@
-import React from "react";
 import "./inputAlamat.css"; // Tambahkan file CSS untuk styling
 
 const InputAlamat = ({ value = '', onChange }) => {

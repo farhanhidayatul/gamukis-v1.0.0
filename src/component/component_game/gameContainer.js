@@ -1,5 +1,3 @@
-import React from 'react';
-
 const GameContainer = ({ players, coins }) => {
   return (
     <div className="game-container">

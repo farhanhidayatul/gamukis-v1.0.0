@@ -1,5 +1,3 @@
-import React from 'react';
-
 const shareIcon = require('../../../images/icon_share.svg').default;
 
 const ShareButton = () => (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, FormField } from "../../component_admin_shared";
 import "./PlanModal.css";
 

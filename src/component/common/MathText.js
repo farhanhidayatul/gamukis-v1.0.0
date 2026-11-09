@@ -43,11 +43,6 @@ function sanitizeKaTeX(html) {
     .replace(/<\/?(?:iframe|object|embed|applet|meta|link|base)\b[^>]*>/gi, '');
 }
 
-/**
- * MathText Component
- * Tokenizes plain text containing LaTeX blocks ($...$ or $$...$$) and renders them using KaTeX.
- * Handles mixed content seamlessly and falls back to raw text on syntax error.
- */
 function MathText({ text = '', className = '' }) {
   const renderedElements = useMemo(() => {
     if (!text || typeof text !== 'string') {

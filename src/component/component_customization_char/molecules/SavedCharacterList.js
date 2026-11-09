@@ -1,4 +1,3 @@
-import React from 'react';
 import SavedCharacterItem from '../atoms/SavedCharacterItem';
 import CharacterSlotInfo from '../atoms/CharacterSlotInfo';
 import './SavedCharacterList.css';

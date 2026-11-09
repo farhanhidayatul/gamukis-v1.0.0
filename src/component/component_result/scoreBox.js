@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../pages/result.css';
 
 const ScoreBox = ({ score = 0, totalQuestions = 25, nValue = 4 }) => (

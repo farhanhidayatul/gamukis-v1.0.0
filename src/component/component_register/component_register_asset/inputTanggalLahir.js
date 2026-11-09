@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import "./inputTanggalLahir.css"; // Pastikan file CSS tersedia
 
 const InputTanggalLahir = ({ value = '', onChange }) => {

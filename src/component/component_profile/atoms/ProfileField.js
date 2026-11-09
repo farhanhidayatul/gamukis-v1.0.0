@@ -1,5 +1,3 @@
-import React from "react";
-
 const ProfileField = ({ name, label, value, onChange, placeholder, inputMode, maxLength, rows, required = false, pattern, title, disabled = false, isMultiline = false, className = "" }) => {
   const fieldProps = {
     id: name,

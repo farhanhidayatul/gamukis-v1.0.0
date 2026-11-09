@@ -1,4 +1,3 @@
-import React from "react";
 import ProfileForm from "./molecules/ProfileForm";
 import ProfileRoleSelector from "./molecules/ProfileRoleSelector";
 

@@ -1,5 +1,4 @@
 // src/component_home/Card.js
-import React from 'react';
 import '../component_home/category_materi.css';
 import CardActionButton from './atoms/CardActionButton';
 import CardMetadata from './molecules/CardMetadata';

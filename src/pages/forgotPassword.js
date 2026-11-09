@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import ForgotPasswordKanan from '../component/component_forgot_password/forgotPasswordKanan';
 import ForgotPasswordKiri from '../component/component_forgot_password/forgotPasswordKiri';
 import './forgotPassword.css';

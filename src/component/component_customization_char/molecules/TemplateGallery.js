@@ -1,4 +1,3 @@
-import React from 'react';
 import TemplateCard from '../atoms/TemplateCard';
 import './TemplateGallery.css';
 

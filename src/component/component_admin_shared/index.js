@@ -1,4 +1,4 @@
-import React, { cloneElement, isValidElement, useEffect, useId, useRef, useState } from 'react';
+import { cloneElement, isValidElement, useEffect, useId, useRef, useState } from "react";
 import './adminShared.css';
 
 const getRowActions = (actions, row) => (typeof actions === 'function' ? actions(row) : actions) || [];

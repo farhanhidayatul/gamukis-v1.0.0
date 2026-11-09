@@ -1,4 +1,3 @@
-import React from 'react';
 import '../component_about/banner.css';
 import TeamBannerCopy from './molecules/TeamBannerCopy';
 

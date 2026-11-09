@@ -1,4 +1,3 @@
-import React from "react";
 import "./HistoryTable.css";
 import HistoryRow from "../atoms/HistoryRow";
 

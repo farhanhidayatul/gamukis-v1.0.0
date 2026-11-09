@@ -1,4 +1,3 @@
-import React from "react";
 import "./AiCandidatePreviewList.css";
 
 const OPTION_LABELS = ["A", "B", "C", "D", "E"];

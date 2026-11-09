@@ -1,4 +1,3 @@
-import React from 'react';
 import AnswerOption from '../atoms/AnswerOption';
 
 const AnswerCard = ({ question, options, statusClass, getOptionClass }) => (

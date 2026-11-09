@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import { formatDurationMinutes, sumLessonDurationMinutes } from '../../../database/studentClassData';
 import './CurriculumClassEditorModal.css';
 

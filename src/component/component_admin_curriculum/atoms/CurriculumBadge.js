@@ -1,4 +1,3 @@
-import React from 'react';
 import './CurriculumBadge.css';
 
 const CurriculumBadge = ({ type = 'category', value = 'BAHASA' }) => {

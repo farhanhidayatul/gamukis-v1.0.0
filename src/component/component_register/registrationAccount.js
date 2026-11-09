@@ -1,4 +1,3 @@
-import React from "react";
 import ProgressBar from "./progressBar"; 
 import "./registrationAccount.css"; 
 import { ButtonNext, ButtonRegisterGoogle, InputConfirmPassword, InputEmail, InputPassword, InputUsername } from "./atoms";

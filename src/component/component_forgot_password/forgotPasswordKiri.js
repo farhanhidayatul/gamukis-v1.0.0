@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import { useNavigate, Link } from 'react-router-dom';
 import { requestForgotPasswordOtp, resetForgotPassword } from '../../database/manualAuth';
 import InputForgotEmail from './component_forgot_password_asset/inputForgotEmail';
@@ -20,7 +20,6 @@ const ForgotPasswordKiri = ({ onError }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successInfo, setSuccessInfo] = useState('');
 
-  // Step 1: Kirim OTP
   const handleRequestOtp = async (e) => {
     e.preventDefault();
     onError?.(null);
@@ -48,7 +47,6 @@ const ForgotPasswordKiri = ({ onError }) => {
     }
   };
 
-  // Step 2: Reset Password
   const handleResetPassword = async (e) => {
     e.preventDefault();
     onError?.(null);

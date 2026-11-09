@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAdminClasses, getAdminClassHistory } from "../../database/adminApi";
 import ClassHistoryPanel from "./molecules/ClassHistoryPanel";
 import "./AdminClasses.css";

@@ -1,4 +1,3 @@
-import React from 'react';
 import PdfStructureBadge from '../atoms/PdfStructureBadge';
 import './PdfStructureDetectorCard.css';
 

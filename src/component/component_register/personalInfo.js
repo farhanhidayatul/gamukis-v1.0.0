@@ -1,4 +1,3 @@
-import React from "react";
 import "./personalInfo.css";
 import ProgressBar from "./progressBar";
 import { ButtonBack, ButtonNext, ButtonRegisterGoogle, CheckboxJenisKelamin, InputAlamat, InputNamaSekolah, InputTanggalLahir } from "./atoms";

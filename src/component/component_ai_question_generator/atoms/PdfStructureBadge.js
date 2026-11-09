@@ -1,4 +1,3 @@
-import React from 'react';
 import './PdfStructureBadge.css';
 
 const PdfStructureBadge = ({ structure, className = '' }) => {

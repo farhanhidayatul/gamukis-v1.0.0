@@ -1,5 +1,3 @@
-import React from 'react';
-
 const SkillButton = ({ skill, isCoolingDown, onClick }) => (
   <button
     type="button"

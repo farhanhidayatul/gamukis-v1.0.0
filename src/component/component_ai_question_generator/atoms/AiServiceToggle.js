@@ -1,4 +1,3 @@
-import React from 'react';
 import './AiServiceToggle.css';
 
 const AiServiceToggle = ({

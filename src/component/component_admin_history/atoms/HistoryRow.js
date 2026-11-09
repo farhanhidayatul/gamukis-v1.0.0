@@ -1,4 +1,3 @@
-import React from "react";
 import "./HistoryRow.css";
 
 const HistoryRow = ({ history, formattedDate }) => (

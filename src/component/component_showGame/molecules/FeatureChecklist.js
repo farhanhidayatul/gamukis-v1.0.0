@@ -1,4 +1,3 @@
-import React from 'react';
 import ChecklistItem from '../atoms/ChecklistItem';
 
 const FeatureChecklist = ({ features }) => (

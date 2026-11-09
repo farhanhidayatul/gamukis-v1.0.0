@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./category_materi.css";
 import IsiMateri from "./category_materi_isi";
 import { FaBook, FaGlobe } from "react-icons/fa";

@@ -1,4 +1,3 @@
-import React from "react";
 import AiJobStatusBadge from "../atoms/AiJobStatusBadge";
 import "./AiJobResultsTable.css";
 

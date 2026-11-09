@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import '../component_about/shortcard_logo.css';
 import LogoOptionButton from './atoms/LogoOptionButton';
 import DescAffiliate from './descAffiliate';

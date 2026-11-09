@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../../pages/result.css';
 
 const PerformanceSummary = ({ correct = 0, incorrect = 0 }) => (

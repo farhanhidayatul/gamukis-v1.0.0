@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { signInWithGoogle } from '../../database/firebaseAuth';
-import { promptGoogleSignIn, authenticateWithBackendGoogle } from '../../database/googleCloudAuth';
+import { authenticateWithBackendGoogle } from "../../database/googleCloudAuth";
 import { clearManualSession, getManualAccount, manualLogin } from '../../database/manualAuth';
-import { createBackendSession } from '../../database/firebaseDatabase';
 import ButtonLoginGoogle from './component_login_asset/buttonLoginGoogle';
 import '../component_login/backgroundKiri.css';
 import InputPassword from './component_login_asset/inputPassword';

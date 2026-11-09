@@ -1,5 +1,3 @@
-import React from 'react';
-
 const CategoryOptionButton = ({ category, description, icon, isActive, onSelect }) => (
   <button
     type="button"

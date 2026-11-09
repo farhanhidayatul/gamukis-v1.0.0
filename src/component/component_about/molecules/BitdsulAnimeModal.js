@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 import { CustomCharacterRenderer } from '../../component_game/playerInfo';
 import AnimeKnightCanvas from '../atoms/AnimeKnightCanvas';
 import charHeinSvg from '../../../images/char_hein.svg';

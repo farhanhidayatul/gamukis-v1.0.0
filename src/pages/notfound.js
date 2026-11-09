@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import NotFoundCard from "../component/component_notfound/notFoundCard";
 import "./notfound.css";

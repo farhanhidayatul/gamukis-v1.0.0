@@ -1,4 +1,3 @@
-import React from "react";
 import "./HistoryAggCard.css";
 
 const HistoryAggCard = ({ label, value, color }) => (

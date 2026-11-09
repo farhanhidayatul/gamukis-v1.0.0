@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getManualUser } from "../database/manualAuth";
 import {
@@ -24,8 +24,7 @@ import {
   stopAiService,
   inspectPdfStructure,
   filterAdminAiJobWords,
-  getOllamaStatus,
-  pingOllama
+  pingOllama,
 } from "../database/aiQuestionGeneratorApi";
 import { getAdminClasses } from "../database/adminApi";
 import PdfUploader from "../component/component_ai_question_generator/atoms/PdfUploader";

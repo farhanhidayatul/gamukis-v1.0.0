@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { getQuestionTypeBadge } from "./QuestionEditor";
 import "./ClassPreview.css";
 

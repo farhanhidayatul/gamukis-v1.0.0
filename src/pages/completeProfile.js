@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, onAuthStateChanged } from "../database/firebaseAuth";
 import { getManualAccount, getManualUser, saveCompleteProfile } from "../database/manualAuth";
