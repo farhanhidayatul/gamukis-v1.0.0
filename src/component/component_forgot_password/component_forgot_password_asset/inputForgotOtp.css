@@ -1,0 +1,37 @@
+.label-forgot-otp {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0b2d6b;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.input-field-forgot-otp {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1.5px solid #d1d5db;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.input-field-forgot-otp:focus {
+  border-color: #0b2d6b;
+  box-shadow: 0 0 0 3px rgba(11, 45, 107, 0.15);
+}
+
+.input-field-forgot-otp.input-valid {
+  border-color: #10b981;
+}
+
+.input-field-forgot-otp.input-invalid {
+  border-color: #ef4444;
+}
+

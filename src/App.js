@@ -11,6 +11,7 @@ import InGame from "./component/component_game/inGame";
 import GamePage from "./pages/gamePage";
 import Login from "./pages/login"
 import Register from "./pages/register"
+import ForgotPassword from "./pages/forgotPassword";
 import Result from "./pages/result";
 import Profile from "./pages/profile";
 import CharacterCustomization from "./pages/characterCustomization";
@@ -67,6 +68,7 @@ const App = () => {
         <Route path="/result" element={<Result/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/membership/plans" element={<MembershipPlans />} />
         <Route path="/plans" element={<MembershipPlans />} />

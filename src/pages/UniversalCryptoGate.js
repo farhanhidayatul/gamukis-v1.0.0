@@ -12,6 +12,7 @@ import InGame from '../component/component_game/inGame';
 import Result from './result';
 import Login from './login';
 import Register from './register';
+import ForgotPassword from './forgotPassword';
 import Profile from './profile';
 import MembershipPlans from './membershipPlans';
 import MembershipDashboard from './membershipDashboard';
@@ -67,6 +68,8 @@ export default function UniversalCryptoGate() {
       return <Login />;
     case 'register':
       return <Register />;
+    case 'forgotPassword':
+      return <ForgotPassword />;
     case 'profile':
       return <Profile />;
     case 'membership':

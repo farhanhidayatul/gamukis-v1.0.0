@@ -23,6 +23,7 @@ export const ROUTE_REGISTRY = {
   result: { prefix: 'r', path: '/result', isPublic: true },
   login: { prefix: 'l', path: '/login', isPublic: true },
   register: { prefix: 'reg', path: '/register', isPublic: true },
+  forgotPassword: { prefix: 'fp', path: '/forgot-password', isPublic: true },
   profile: { prefix: 'p', path: '/profile', isPublic: true },
   membership: { prefix: 'm', path: '/membership', isPublic: true },
   membershipPlans: { prefix: 'mp', path: '/membership/plans', isPublic: true },

@@ -1,0 +1,28 @@
+.forgot-button-submit {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  box-sizing: border-box;
+}
+
+.forgot-button-submit.button-active {
+  background-color: #0b2d6b;
+  color: #ffffff;
+}
+
+.forgot-button-submit.button-active:hover {
+  background-color: #082150;
+}
+
+.forgot-button-submit.button-disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+

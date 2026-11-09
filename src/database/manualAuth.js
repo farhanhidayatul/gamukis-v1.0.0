@@ -138,11 +138,23 @@ const updateManualRole = async (data) => persistManualUserResponse(await request
 
 const getManualAccount = async () => persistManualUserResponse(await request('/access/me'));
 
+const requestForgotPasswordOtp = (email) => request("/auth/manual/forgot-password/request-otp", {
+  method: "POST",
+  body: JSON.stringify({ email })
+});
+
+const resetForgotPassword = (email, otp, newPassword) => request("/auth/manual/forgot-password/reset", {
+  method: "POST",
+  body: JSON.stringify({ email, otp, newPassword })
+});
+
 export {
   request,
   manualLogin,
   requestRegistrationOtp,
   verifyRegistrationOtp,
+  requestForgotPasswordOtp,
+  resetForgotPassword,
   saveManualProfile,
   getManualProfile,
   saveCompleteProfile,
