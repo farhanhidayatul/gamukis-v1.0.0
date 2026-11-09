@@ -4,13 +4,16 @@ import { requestForgotPasswordOtp, resetForgotPassword } from '../../database/ma
 import InputForgotEmail from './component_forgot_password_asset/inputForgotEmail';
 import InputForgotOtp from './component_forgot_password_asset/inputForgotOtp';
 import ButtonForgotSubmit from './component_forgot_password_asset/buttonForgotSubmit';
-import InputPassword from '../component_login/component_login_asset/inputPassword';
+import RadioRecoveryMethod from './component_forgot_password_asset/radioRecoveryMethod';
 import './forgotPasswordKiri.css';
 
 const ForgotPasswordKiri = ({ onError }) => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // 1: Input Email, 2: OTP & Kata Sandi Baru, 3: Sukses
-  const [email, setEmail] = useState('');
+  const [step, setStep] = useState(1); // 1: Input Akun & Metode, 2: OTP & Kata Sandi Baru, 3: Sukses
+  const [identifier, setIdentifier] = useState('');
+  const [recoveryMethod, setRecoveryMethod] = useState('primary'); // 'primary' | 'recovery'
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,15 +24,22 @@ const ForgotPasswordKiri = ({ onError }) => {
   const handleRequestOtp = async (e) => {
     e.preventDefault();
     onError?.(null);
-    if (!email) {
-      onError?.({ source: 'forgot-password', message: 'Harap masukkan alamat email akun Anda.' });
+    if (!identifier) {
+      onError?.({ source: 'forgot-password', message: 'Harap masukkan Username atau Email akun Anda.' });
+      return;
+    }
+    if (recoveryMethod === 'recovery' && !recoveryEmail) {
+      onError?.({ source: 'forgot-password', message: 'Harap masukkan alamat email pemulihan yang Anda kaitkan.' });
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const res = await requestForgotPasswordOtp(email.trim().toLowerCase());
-      setSuccessInfo(res.message || 'Kode OTP telah dikirim ke email Anda.');
+      const res = await requestForgotPasswordOtp(identifier.trim(), {
+        useRecoveryEmail: recoveryMethod === 'recovery',
+        recoveryEmail: recoveryEmail.trim()
+      });
+      setSuccessInfo(res.message || 'Kode OTP telah dikirim.');
       setStep(2);
     } catch (err) {
       onError?.({ source: 'forgot-password', message: err.message || 'Gagal mengirim kode pemulihan.' });
@@ -58,7 +68,8 @@ const ForgotPasswordKiri = ({ onError }) => {
 
     setIsSubmitting(true);
     try {
-      const res = await resetForgotPassword(email.trim().toLowerCase(), otp.trim(), newPassword);
+      const linkEmail = recoveryMethod === 'recovery' && recoveryEmail ? recoveryEmail.trim() : '';
+      const res = await resetForgotPassword(identifier.trim(), otp.trim(), newPassword, linkEmail);
       setSuccessInfo(res.message || 'Kata sandi berhasil diatur ulang!');
       setStep(3);
     } catch (err) {
@@ -68,7 +79,7 @@ const ForgotPasswordKiri = ({ onError }) => {
     }
   };
 
-  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isStep1Valid = Boolean(identifier) && (recoveryMethod === 'primary' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recoveryEmail));
   const isStep2Valid = otp.length === 6 && newPassword.length >= 6 && confirmPassword.length >= 6;
 
   return (
@@ -84,18 +95,40 @@ const ForgotPasswordKiri = ({ onError }) => {
           </div>
         )}
 
-        {/* STEP 1: FORM EMAIL */}
+        {/* STEP 1: FORM IDENTIFIER & METODE PEMULIHAN */}
         {step === 1 && (
           <form onSubmit={handleRequestOtp} className="forgot-step-form">
             <p className="forgot-instruction">
-              Masukkan email yang terdaftar untuk menerima 6 digit kode OTP pemulihan kata sandi.
+              Masukkan Username atau Email akun Anda untuk memulai proses pemulihan kata sandi.
             </p>
 
-            <InputForgotEmail setInputEmail={setEmail} />
+            <InputForgotEmail setInputEmail={setIdentifier} />
+
+            <RadioRecoveryMethod method={recoveryMethod} setMethod={setRecoveryMethod} />
+
+            {recoveryMethod === 'recovery' && (
+              <div className="forgot-input-group">
+                <label className="label-forgot-email" htmlFor="recoveryEmailInput">
+                  Email Pemulihan yang Dikaitkan
+                </label>
+                <input
+                  id="recoveryEmailInput"
+                  type="email"
+                  className="input-field-forgot-email"
+                  placeholder="email-pemulihan@gmail.com"
+                  value={recoveryEmail}
+                  onChange={(e) => setRecoveryEmail(e.target.value)}
+                  required
+                />
+                <span className="forgot-field-hint">
+                  Kode OTP akan dikirimkan ke email cadangan ini.
+                </span>
+              </div>
+            )}
 
             <ButtonForgotSubmit
               label="Kirim Kode OTP"
-              disabled={!isEmailValid || isSubmitting}
+              disabled={!isStep1Valid || isSubmitting}
               loading={isSubmitting}
             />
 
@@ -111,7 +144,7 @@ const ForgotPasswordKiri = ({ onError }) => {
         {step === 2 && (
           <form onSubmit={handleResetPassword} className="forgot-step-form">
             <p className="forgot-instruction">
-              Kode OTP telah dikirim ke <strong>{email}</strong>. Masukkan kode dan kata sandi baru Anda.
+              Masukkan 6 digit kode OTP dan buat kata sandi baru untuk akun Anda.
             </p>
 
             <InputForgotOtp setInputOtp={setOtp} />
@@ -154,7 +187,7 @@ const ForgotPasswordKiri = ({ onError }) => {
                 className="forgot-link-btn"
                 onClick={() => { setStep(1); onError?.(null); }}
               >
-                Ganti Alamat Email
+                Ganti Akun / Metode Pemulihan
               </button>
             </div>
           </form>
