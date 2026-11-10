@@ -1,4 +1,21 @@
-const API_URL = process.env.REACT_APP_API_URL || "https://api.gamukis.site/api";
+const resolveApiUrl = () => {
+  const envUrl = process.env.REACT_APP_API_URL;
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host.includes("test") || host.includes("preview") || host.includes("9iuowj595")) {
+      return "https://api-test.gamukis.site/api";
+    }
+    if (envUrl && envUrl.startsWith("http")) {
+      return envUrl;
+    }
+    if (host.endsWith("gamukis.site") || host.includes("vercel.app")) {
+      return "https://api.gamukis.site/api";
+    }
+  }
+  return envUrl && envUrl.startsWith("http") ? envUrl : "https://api.gamukis.site/api";
+};
+
+const API_URL = resolveApiUrl();
 const TOKEN_KEY = "gamukis_manual_token";
 const USER_KEY = "gamukis_manual_user";
 
