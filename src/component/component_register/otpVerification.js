@@ -16,7 +16,9 @@ const OTPVerification = ({ _email, onVerify, onResend, disabled = false }) => {
       if (devOtp && devOtp.length === 6) {
         setOtp(devOtp.split(""));
       }
-    } catch (_) {}
+    } catch (_) {
+      // Ignore storage access restrictions in sandboxed or privacy environments
+    }
   }, []);
 
   useEffect(() => {

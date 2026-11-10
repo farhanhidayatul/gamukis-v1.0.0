@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Loading from "./loading.js";
 import "../component_loading/progressbar.css";
 import ProgressFill from "./atoms/ProgressFill";
@@ -52,11 +53,12 @@ export default function Progressbar() {
       )}
       <div className="text">
         <p className="textvalue">
-          Lorem ipsum is placeholder text commonly used in the graphic, print,
-          and publishing industries for previewing layouts and visual
+          GAMUKIS adalah platform game edukasi interaktif yang menggabungkan keseruan bermain dengan pembelajaran materi dan tantangan kuis seru. Butuh panduan atau informasi lebih lanjut? Kunjungi
           <span className="thinspace">&thinsp;</span>
           <span className="text-different">
-            <u>Pusat bantuan!</u>
+            <Link to="/tutorial" style={{ color: "inherit", textDecoration: "none" }}>
+              <u>Pusat bantuan!</u>
+            </Link>
           </span>
         </p>
       </div>

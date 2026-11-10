@@ -1512,7 +1512,7 @@ const TutorialScreenPreview = ({ screen, stepNumber, authMode, authMethod, regis
                 </div>
                 <div className="text">
                   <p className="textvalue">
-                    Selamat datang di platform game edukasi interaktif GAMUKIS!&thinsp;
+                    GAMUKIS adalah platform game edukasi interaktif yang menggabungkan keseruan bermain dengan pembelajaran materi dan tantangan kuis seru. Butuh panduan atau informasi lebih lanjut? Kunjungi&thinsp;
                     <span className="text-different"><u>Pusat bantuan!</u></span>
                   </p>
                 </div>
@@ -1537,7 +1537,7 @@ const TutorialScreenPreview = ({ screen, stepNumber, authMode, authMethod, regis
                 </div>
                 <div className="text">
                   <p className="textvalue">
-                    Selamat datang di platform game edukasi interaktif GAMUKIS!&thinsp;
+                    GAMUKIS adalah platform game edukasi interaktif yang menggabungkan keseruan bermain dengan pembelajaran materi dan tantangan kuis seru. Butuh panduan atau informasi lebih lanjut? Kunjungi&thinsp;
                     <span className="text-different"><u>Pusat bantuan!</u></span>
                   </p>
                 </div>

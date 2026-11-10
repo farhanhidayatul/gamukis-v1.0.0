@@ -97,7 +97,9 @@ const requestRegistrationOtp = async ({ username, email, password, profile }) =>
     window.__gamukis_dev_otp = data.devOtp;
     try {
       sessionStorage.setItem("gamukis_dev_otp", data.devOtp);
-    } catch (_) {}
+    } catch (_) {
+      // Ignore storage access restrictions in sandboxed or privacy environments
+    }
   }
   return data;
 };
