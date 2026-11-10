@@ -88,10 +88,19 @@ const manualLogin = async (identifier, password, rememberMe) => {
   return data;
 };
 
-const requestRegistrationOtp = ({ username, email, password, profile }) => request("/auth/manual/register/request-otp", {
-  method: "POST",
-  body: JSON.stringify({ username, email, password, profile })
-});
+const requestRegistrationOtp = async ({ username, email, password, profile }) => {
+  const data = await request("/auth/manual/register/request-otp", {
+    method: "POST",
+    body: JSON.stringify({ username, email, password, profile })
+  });
+  if (data?.devOtp && typeof window !== "undefined") {
+    window.__gamukis_dev_otp = data.devOtp;
+    try {
+      sessionStorage.setItem("gamukis_dev_otp", data.devOtp);
+    } catch (_) {}
+  }
+  return data;
+};
 
 const verifyRegistrationOtp = async (email, otp) => {
   const data = await request("/auth/manual/register/verify-otp", {
