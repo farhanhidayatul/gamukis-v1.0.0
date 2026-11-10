@@ -15,7 +15,7 @@ export const getStoredManualToken = () => {
       window.sessionStorage?.getItem(MANUAL_TOKEN_KEY) ||
       null
     );
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 };
@@ -37,7 +37,7 @@ export const getEffectiveToken = async () => {
   if (!user && typeof waitForAuth === "function") {
     try {
       user = await waitForAuth();
-    } catch (e) {
+    } catch (e) { console.warn("[firebaseDatabase] Fallback:", e?.message || e);
       // fallback
     }
   }
@@ -46,7 +46,7 @@ export const getEffectiveToken = async () => {
     try {
       const idToken = await user.getIdToken();
       if (idToken) return idToken;
-    } catch (e) {
+    } catch (e) { console.warn("[firebaseDatabase] Fallback:", e?.message || e);
       // fallback
     }
   }
@@ -54,7 +54,7 @@ export const getEffectiveToken = async () => {
   if (user && typeof user.getIdToken === "function") {
     try {
       return await user.getIdToken();
-    } catch (e) {
+    } catch (_e) {
       return null;
     }
   }

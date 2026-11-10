@@ -9,7 +9,7 @@
  * and high-performance WebGL sprite batching.
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import PlayerContainer from '../entities/PlayerContainer';
 import BotEntity from '../entities/BotEntity';
 import CoinManager from '../managers/CoinManager';
@@ -241,7 +241,7 @@ export default class WorldScene extends Phaser.Scene {
     }
   }
 
-  update(time, delta) {
+  update(_time, _delta) {
     if (!this.localPlayer || !this.localPlayer.body) return;
 
     if (this.localPlayer.isDead) {

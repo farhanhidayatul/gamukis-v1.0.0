@@ -382,7 +382,7 @@ export const playLevelUpSound = () => {
       osc.start(ctx.currentTime + idx * 0.08);
       osc.stop(ctx.currentTime + idx * 0.08 + 0.24);
     });
-  } catch (e) {
+  } catch (e) { console.warn("[expRankSystem] Fallback:", e?.message || e);
     // Abaikan jika Web Audio tidak diizinkan autoplay
   }
 };
@@ -416,7 +416,7 @@ export const playRankDownSound = () => {
       osc.start(ctx.currentTime + idx * 0.1);
       osc.stop(ctx.currentTime + idx * 0.1 + 0.26);
     });
-  } catch (e) {
+  } catch (e) { console.warn("[expRankSystem] Fallback:", e?.message || e);
     // Abaikan jika Web Audio tidak diizinkan autoplay
   }
 };

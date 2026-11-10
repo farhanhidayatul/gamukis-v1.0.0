@@ -1,6 +1,6 @@
 import '../../pages/result.css';
 
-const ScoreBox = ({ score = 0, totalQuestions = 25, nValue = 4 }) => (
+const ScoreBox = ({ score = 0, _totalQuestions = 25, nValue = 4 }) => (
   <div className="result-card skors card-yellow">
     <div className="result-card-inner">
       <h3>Nilai Akademik</h3>

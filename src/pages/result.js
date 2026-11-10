@@ -25,7 +25,7 @@ const Result = () => {
     try {
       const raw = window.sessionStorage.getItem('gamukis_last_game_result');
       return raw ? (decryptPayload(raw) || {}) : {};
-    } catch (e) {
+    } catch (_e) {
       return {};
     }
   })();
@@ -77,7 +77,7 @@ const Result = () => {
         window.sessionStorage.removeItem('gamukis_game_session_id');
         window.sessionStorage.removeItem('gamukis_guest_has_renamed');
         window.sessionStorage.removeItem('gamukis_guest_custom_name');
-      } catch (e) {}
+      } catch (e) { console.warn("[result] Fallback:", e?.message || e); }
     };
 
     purgeInGameCaches();
@@ -236,7 +236,7 @@ const Result = () => {
         return resultExp;
       }
       return computeForBaseline(DEFAULT_BASELINE_EXP);
-    } catch (e) {
+    } catch (_e) {
       return computeForBaseline(DEFAULT_BASELINE_EXP);
     }
   });
@@ -281,7 +281,7 @@ const Result = () => {
     if (!hasRecordedRef.current && !alreadyRecorded) {
       hasRecordedRef.current = true;
       if (typeof window !== 'undefined') {
-        try { window.sessionStorage.setItem(recordSessionKey, 'true'); } catch (e) {}
+        try { window.sessionStorage.setItem(recordSessionKey, 'true'); } catch (e) { console.warn("[result] Fallback:", e?.message || e); }
       }
       const recordPromise = recordGameScore({
         score: gameScore,
@@ -335,7 +335,7 @@ const Result = () => {
                 if (typeof window.dispatchEvent === 'function') {
                   window.dispatchEvent(new CustomEvent('gamukis-exp-updated', { detail: { userId, exp: curr } }));
                 }
-              } catch (e) {}
+              } catch (e) { console.warn("[result] Fallback:", e?.message || e); }
             }
           }
         })
@@ -362,7 +362,7 @@ const Result = () => {
       try {
         window.localStorage.removeItem('gamukis_anonymous_game_session');
         window.localStorage.removeItem('gamukis_registered_game_session');
-      } catch (e) {}
+      } catch (e) { console.warn("[result] Fallback:", e?.message || e); }
     }
 
     // In class game mode, navigate back to the class page so student can start a fresh session
@@ -393,7 +393,7 @@ const Result = () => {
       try {
         window.localStorage.removeItem('gamukis_anonymous_game_session');
         window.localStorage.removeItem('gamukis_registered_game_session');
-      } catch (e) {}
+      } catch (e) { console.warn("[result] Fallback:", e?.message || e); }
     }
     const cryptoHomeUrl = getOrCreateCryptoRoute('home');
     navigate(cryptoHomeUrl || '/home', { replace: true });

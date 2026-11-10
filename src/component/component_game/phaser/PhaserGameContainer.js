@@ -9,7 +9,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { createPhaserConfig } from './config/phaserConfig';
 import { gameEventBridge, GAME_BRIDGE_EVENTS } from './bridge/GameEventBridge';
 
@@ -43,7 +43,7 @@ const PhaserGameContainer = ({
       if (gameInstanceRef.current) {
         try {
           gameInstanceRef.current.destroy(true);
-        } catch (err) {}
+        } catch (err) { console.warn("[PhaserGameContainer] Fallback:", err?.message || err); }
         gameInstanceRef.current = null;
       }
     };

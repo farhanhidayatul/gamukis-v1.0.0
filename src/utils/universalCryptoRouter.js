@@ -71,7 +71,7 @@ function saveSessionRegistry(registry) {
   if (typeof window === 'undefined') return;
   try {
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(registry));
-  } catch (_) {}
+  } catch (_) { /* ignored */ }
 }
 
 /**

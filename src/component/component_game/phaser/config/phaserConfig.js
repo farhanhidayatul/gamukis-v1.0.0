@@ -8,7 +8,7 @@
  * container binding without global side effects.
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import BootScene from '../scenes/BootScene';
 import WorldScene from '../scenes/WorldScene';
 

@@ -77,7 +77,7 @@ const isApprovedGuruUser = (user) => {
 const normalizeResolvedUser = (rawUser) => {
   if (!rawUser) return null;
   return {
-    ...(getManualUser() || {}),
+    ...getManualUser(),
     ...rawUser,
     role:
       rawUser.role ||

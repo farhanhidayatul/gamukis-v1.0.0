@@ -108,7 +108,7 @@ const savedOption = (key, options, fallback) => {
   try {
     const savedId = JSON.parse(window.localStorage.getItem('gamukis_character_outfit') || '{}')[key];
     return options.find(({ id }) => id === savedId) || fallback;
-  } catch (error) {
+  } catch (_error) {
     return fallback;
   }
 };
@@ -267,7 +267,7 @@ const loadSavedAppearance = () => {
       hairColor,
       skinTone: skinTones.includes(appearance.skinTone) ? appearance.skinTone : skinTones[0]
     };
-  } catch (error) {
+  } catch (_error) {
     return {};
   }
 };

@@ -3,7 +3,7 @@ import "./otpVerification.css";
 import ProgressBar from "./progressBar";
 import { ButtonNext } from "./atoms";
 
-const OTPVerification = ({ email, onVerify, onResend, disabled = false }) => {
+const OTPVerification = ({ _email, onVerify, onResend, disabled = false }) => {
   const [countdown, setCountdown] = useState(60);
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [error, setError] = useState("");

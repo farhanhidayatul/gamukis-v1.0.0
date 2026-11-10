@@ -47,7 +47,7 @@ export function encryptPayload(data, sessionSecret = '') {
     // Convert to UTF-8 safe Base64
     const base64 = btoa(unescape(encodeURIComponent(output)));
     return `${CIPHER_PREFIX}${base64}`;
-  } catch (err) {
+  } catch (_err) {
     // Graceful fallback to plaintext if btoa fails
     return typeof data === 'string' ? data : JSON.stringify(data);
   }

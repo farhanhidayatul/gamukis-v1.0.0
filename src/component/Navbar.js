@@ -7,7 +7,7 @@ import { auth, onAuthStateChanged } from '../database/firebaseAuth';
 import { clearManualSession, getManualUser } from '../database/manualAuth';
 import { signOut } from 'firebase/auth';
 
-const Navbar = ({ src, alt }) => {
+const Navbar = ({ _src, alt }) => {
   const [user, setUser] = useState(null);
   const [manualUser, setManualUser] = useState(() => getManualUser());
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);

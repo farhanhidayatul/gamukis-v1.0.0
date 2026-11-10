@@ -81,7 +81,7 @@ const getFeatureItems = (features) => {
   if (typeof parsedFeatures === 'string') {
     try {
       parsedFeatures = JSON.parse(parsedFeatures);
-    } catch (error) {
+    } catch (_error) {
       parsedFeatures = {};
     }
   }

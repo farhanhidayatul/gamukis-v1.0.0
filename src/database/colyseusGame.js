@@ -175,7 +175,7 @@ export const movePlayer = async (position) => {
   return position;
 };
 
-export const claimCoinAction = async ({ coinId, x, y }) => {
+export const claimCoinAction = async ({ coinId, _x, _y }) => {
   sendCoinClaim(coinId);
   return { ok: true, coinId };
 };
@@ -201,7 +201,7 @@ export const formatColyseusPlayer = (p) => {
   if (p.appearanceJson) {
     try {
       parsedAppearance = JSON.parse(p.appearanceJson);
-    } catch (e) {}
+    } catch (e) { console.warn("[colyseusGame] Fallback:", e?.message || e); }
   }
   return {
     id: p.id,
@@ -250,7 +250,7 @@ export const subscribeToColyseusGame = async ({
   onPlayerLeft,
   onCoinAdded,
   onCoinClaimed,
-  onLeaderboardUpdated,
+  _onLeaderboardUpdated,
   onBotSpawned,
   onBotMoved,
   onBotRemoved,

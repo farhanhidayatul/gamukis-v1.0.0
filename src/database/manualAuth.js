@@ -92,7 +92,7 @@ const getManualUser = () => {
 
   try {
     return JSON.parse(serializedUser);
-  } catch (error) {
+  } catch (_error) {
     localStorage.removeItem(USER_KEY);
     sessionStorage.removeItem(USER_KEY);
     return null;

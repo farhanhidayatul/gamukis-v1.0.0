@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDj8cRmHIn90q5pFE5Kjbvrwxel6bQSPww",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyDj8cRmHIn90q5pFE5Kjbvrwxel6bQSPww",
   authDomain: "ujicoba-52016.firebaseapp.com",
   projectId: "ujicoba-52016",
   appId: "1:681887347941:web:4943d7139fda3edc93500c",

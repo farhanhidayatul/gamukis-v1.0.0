@@ -14,7 +14,7 @@ const getAuthHeaders = async () => {
 export const fetchAdminTutorialContent = async () => {
   try {
     return await manualAuthRequest('/admin/tutorial', { method: 'GET' });
-  } catch (err) {
+  } catch (_err) {
     const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE_URL}/admin/tutorial`, {
       method: 'GET',
@@ -33,7 +33,7 @@ export const updateAdminTutorialContent = async (payload) => {
       method: 'PUT',
       body: JSON.stringify(payload)
     });
-  } catch (err) {
+  } catch (_err) {
     const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE_URL}/admin/tutorial`, {
       method: 'PUT',
@@ -50,7 +50,7 @@ export const updateAdminTutorialContent = async (payload) => {
 export const resetAdminTutorialContent = async () => {
   try {
     return await manualAuthRequest('/admin/tutorial/reset', { method: 'POST' });
-  } catch (err) {
+  } catch (_err) {
     const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE_URL}/admin/tutorial/reset`, {
       method: 'POST',
@@ -72,7 +72,7 @@ export const fetchPublicTutorialContent = async () => {
     if (!res.ok) return null;
     const json = await res.json();
     return json?.data || null;
-  } catch (err) {
+  } catch (_err) {
     return null;
   }
 };

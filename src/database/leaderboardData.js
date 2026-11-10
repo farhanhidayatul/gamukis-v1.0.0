@@ -19,7 +19,7 @@ export const fetchLeaderboard = async (period = 'alltime', limit = 10) => {
   let token = null;
   try {
     token = await getEffectiveToken();
-  } catch (e) {
+  } catch (e) { console.warn("[leaderboardData] Fallback:", e?.message || e);
     // Abaikan jika gagal mendapatkan token
   }
 
@@ -56,7 +56,7 @@ export const recordGameScore = async (scoreData = {}) => {
   let token = null;
   try {
     token = await getEffectiveToken();
-  } catch (e) {
+  } catch (e) { console.warn("[leaderboardData] Fallback:", e?.message || e);
     // Abaikan
   }
 
@@ -119,7 +119,7 @@ export const recordGameScore = async (scoreData = {}) => {
         window.localStorage.setItem(expKey, String(nextExp));
         window.localStorage.setItem('gamukis_user_accumulated_exp', String(nextExp));
       }
-    } catch (e) {}
+    } catch (e) { console.warn("[leaderboardData] Fallback:", e?.message || e); }
   }
 
   return result;
@@ -135,7 +135,7 @@ export const fetchUserGameStats = async (userId = null) => {
   let token = null;
   try {
     token = await getEffectiveToken();
-  } catch (e) {
+  } catch (e) { console.warn("[leaderboardData] Fallback:", e?.message || e);
     // Abaikan
   }
 
@@ -156,7 +156,7 @@ export const fetchUserGameStats = async (userId = null) => {
       method: 'GET',
       headers
     });
-  } catch (networkErr) {
+  } catch (_networkErr) {
     response = null;
   }
 
@@ -168,7 +168,7 @@ export const fetchUserGameStats = async (userId = null) => {
       if (stored !== null) {
         fallbackExp = Math.max(0, parseInt(stored, 10) || 0);
       }
-    } catch (e) {}
+    } catch (e) { console.warn("[leaderboardData] Fallback:", e?.message || e); }
   }
 
   if (!response || !response.ok) {

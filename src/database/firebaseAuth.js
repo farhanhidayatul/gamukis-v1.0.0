@@ -76,7 +76,7 @@ const waitForAuth = async () => {
   if (typeof auth?.authStateReady === 'function') {
     try {
       await auth.authStateReady();
-    } catch (e) {
+    } catch (e) { console.warn("[firebaseAuth] Fallback:", e?.message || e);
       // fallback
     }
     return auth.currentUser;

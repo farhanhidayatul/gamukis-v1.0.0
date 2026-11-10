@@ -20,11 +20,11 @@ const loadStoredAppearance = () => {
     const rawOutfit = window.localStorage.getItem('gamukis_character_outfit');
     if (rawOutfit) {
       try {
-        parsed.outfit = { ...(parsed.outfit || {}), ...JSON.parse(rawOutfit) };
-      } catch (e) {}
+        parsed.outfit = { ...parsed.outfit, ...JSON.parse(rawOutfit) };
+      } catch (e) { console.warn("[profile] Fallback:", e?.message || e); }
     }
     return parsed;
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 };
@@ -162,7 +162,7 @@ const Profile = () => {
 
   const activeUser = useMemo(() => {
     if (firebaseUser && !firebaseUser.isAnonymous) {
-      return { ...firebaseUser, ...(firebaseAccount || {}), role: firebaseAccount?.role ?? null };
+      return { ...firebaseUser, ...firebaseAccount, role: firebaseAccount?.role ?? null };
     }
     return manualUser;
   }, [firebaseUser, firebaseAccount, manualUser]);

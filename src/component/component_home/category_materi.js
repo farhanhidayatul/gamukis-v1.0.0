@@ -245,7 +245,7 @@ const KategoriMateri = () => {
   const getBahasaLogo = () => {
     try {
       return require("../../images/logo_bahasa.svg").default;
-    } catch (e) {
+    } catch (_e) {
       return require("../../images/logo_saintek.svg").default;
     }
   };

@@ -63,7 +63,7 @@ function saveSessionRegistry(registry) {
       }
     }
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(pruned));
-  } catch (_) {}
+  } catch (_) { /* ignored */ }
 }
 
 /**

@@ -352,7 +352,7 @@ const AdminAiQuestionGenerator = ({ embedded = false }) => {
     let savedKey = "";
     try {
       savedKey = localStorage.getItem(`gamukis_ai_api_key_${platformId}`) || "";
-    } catch {}
+    } catch { /* ignored */ }
     setApiKey(savedKey);
     const defaultModel = platform?.models[0]?.id || "default";
     setSelectedModel(defaultModel);
@@ -372,7 +372,7 @@ const AdminAiQuestionGenerator = ({ embedded = false }) => {
       } else {
         localStorage.removeItem(`gamukis_ai_api_key_${selectedPlatform}`);
       }
-    } catch {}
+    } catch { /* ignored */ }
   };
 
   const handleFetchLiveModels = async () => {
@@ -557,7 +557,7 @@ const AdminAiQuestionGenerator = ({ embedded = false }) => {
           }
         }
         setCandidates(candidateList);
-        setSelectedJob((prev) => normalizeJob({ ...prev, ...detail, ...(detail?.job || {}) }));
+        setSelectedJob((prev) => normalizeJob({ ...prev, ...detail, ...detail?.job }));
       } catch (err) {
         if (!isCurrent) return;
         setError(err.message || "Gagal memuat kandidat soal.");
@@ -2033,7 +2033,6 @@ const AdminAiQuestionGenerator = ({ embedded = false }) => {
                 style={{
                   padding: "10px 24px",
                   borderRadius: "8px",
-                  border: "none",
                   background: (!uploadFile || isUploading) ? "#e2e8f0" : "#fcd03e", color: (!uploadFile || isUploading) ? "#94a3b8" : "#292929", border: (!uploadFile || isUploading) ? "1px solid #cbd5e1" : "1px solid #f5b900", fontWeight: 700, fontSize: "0.92rem", boxShadow: (!uploadFile || isUploading) ? "none" : "0 2px 8px rgba(245, 185, 0, 0.25)",
                   cursor: (!uploadFile || isUploading) ? "not-allowed" : "pointer",
                   transition: "background 0.2s"

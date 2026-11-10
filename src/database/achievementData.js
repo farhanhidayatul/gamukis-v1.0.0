@@ -36,7 +36,7 @@ export const fetchMyAchievements = async (userId = null) => {
   let token = null;
   try {
     token = await getEffectiveToken();
-  } catch (e) {
+  } catch (e) { console.warn("[achievementData] Fallback:", e?.message || e);
     // Abaikan
   }
 

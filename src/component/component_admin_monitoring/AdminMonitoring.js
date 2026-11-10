@@ -51,7 +51,7 @@ const AdminMonitoring = ({ rooms: initialRooms = [], isLoading: initialLoading =
           setRooms(freshRooms);
         }
         failures = 0;
-      } catch (err) {
+      } catch (_err) {
         failures = Math.min(failures + 1, 5);
       }
       scheduleNext();
@@ -85,7 +85,7 @@ const AdminMonitoring = ({ rooms: initialRooms = [], isLoading: initialLoading =
         setAnomalies(data.anomalies || []);
         setActiveAnomalyCount(data.activeCount || 0);
       }
-    } catch (err) {
+    } catch (err) { console.warn("[AdminMonitoring] Fallback:", err?.message || err);
       // Passive ignore
     }
   };

@@ -19,13 +19,13 @@ const getSocket = async () => {
         await waitForAuth();
         token = await getEffectiveToken();
       }
-    } catch (e) {}
+    } catch (e) { console.warn("[realtimeGame] Fallback:", e?.message || e); }
   }
 
   if (!token && auth?.currentUser) {
     try {
       token = await auth.currentUser.getIdToken();
-    } catch (e) {
+    } catch (e) { console.warn("[realtimeGame] Fallback:", e?.message || e);
       // fallback
     }
   }
@@ -112,7 +112,7 @@ const subscribeToGame = async ({
     resolveIdentity(snapshot);
     onSnapshot(snapshot);
   };
-  const handlePlayerUpdated = (updatedPlayer) => onPlayerUpdated(updatedPlayer);
+  const handlePlayerUpdated = onPlayerUpdated;
   const handlePlayerLeft = ({ playerId }) => onPlayerLeft(playerId);
   const handleCoinAdded = ({ coinId, coin }) => onCoinAdded(coinId, coin);
   const handleCoinClaimed = ({ coinId, player: updatedPlayer }) => onCoinClaimed(coinId, updatedPlayer);

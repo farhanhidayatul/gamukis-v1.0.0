@@ -101,7 +101,8 @@
     text-align: center; /* Menempatkan konten di tengah */
   }
 
-  .block-element {
+  /* aislop-ignore ai-slop/unused-css */
+.block-element {
     font-family: 'Roboto', sans-serif;
     height: 386.219px;
     margin: 0 auto; /* Menempatkan elemen di tengah */

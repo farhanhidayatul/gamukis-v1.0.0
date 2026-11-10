@@ -251,7 +251,7 @@ const StudentClass = () => {
     setQuizAnswers((previous) => ({
       ...previous,
       [questionId]: {
-        ...(previous[questionId] || {}),
+        ...previous[questionId],
         [String(pairIndex)]: answerText
       }
     }));

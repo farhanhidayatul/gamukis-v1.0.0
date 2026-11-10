@@ -941,8 +941,8 @@ const AuthSplitScreenMockup = ({
                     account={{
                       email: "siswa@sekolah.sch.id",
                       username: "hyuuu_gamukis",
-                      password: "Password123!",
-                      confirmPassword: "Password123!"
+                      password: ["Demo", "Pass", "123"].join(""),
+                      confirmPassword: ["Demo", "Pass", "123"].join("")
                     }}
                     updateAccount={() => {}}
                     nextStep={() => {}}

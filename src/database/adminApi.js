@@ -115,7 +115,7 @@ const confirmAdminMembership = (membershipId, paymentRef) => request(
   }
 );
 
-const downloadAdminMembershipInvoice = (membershipId) => downloadMembershipInvoice(membershipId);
+const downloadAdminMembershipInvoice = downloadMembershipInvoice;
 
 const sendAdminMembershipInvoiceEmail = (membershipId, email) => sendMembershipInvoiceEmail(
   membershipId,

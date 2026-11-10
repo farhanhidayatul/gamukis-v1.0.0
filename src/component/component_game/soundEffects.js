@@ -20,7 +20,7 @@ export const getAudioContext = () => {
   if (!audioCtx) {
     try {
       audioCtx = new AudioContextClass();
-    } catch (e) {
+    } catch (_e) {
       return null;
     }
   }
@@ -40,7 +40,7 @@ export const isSoundMuted = () => {
   if (typeof window === 'undefined') return false;
   try {
     return window.localStorage.getItem(STORAGE_KEY) === 'true';
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 };
@@ -55,7 +55,7 @@ export const setSoundMuted = (muted) => {
   try {
     window.localStorage.setItem(STORAGE_KEY, muted ? 'true' : 'false');
     window.dispatchEvent(new CustomEvent('gamukis-sound-muted-change', { detail: { muted: Boolean(muted) } }));
-  } catch (e) {}
+  } catch (e) { console.warn("[soundEffects] Fallback:", e?.message || e); }
 };
 
 /**
@@ -113,7 +113,7 @@ const playTone = ({
 
     osc.start(t0);
     osc.stop(tEnd);
-  } catch (e) {
+  } catch (e) { console.warn("[soundEffects] Fallback:", e?.message || e);
     // Graceful fallback for restricted AudioContext
   }
 };

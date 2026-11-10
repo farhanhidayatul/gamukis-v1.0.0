@@ -1,3 +1,4 @@
+/* global jest */
 const { TextEncoder, TextDecoder } = require('util');
 const streamWeb = require('stream/web');
 

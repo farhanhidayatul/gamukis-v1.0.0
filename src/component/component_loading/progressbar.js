@@ -32,8 +32,6 @@ export default function Progressbar() {
       return `linear-gradient(100deg, #FCE63E 25%, #D4D55C 25%, #A6C17F 50%, #9FC084 50%, #96BF8B 75%, #96BF8B 75%, #96BF8B ${filled}%)`;
     } else if (filled > 75 && filled <= 100) {
       return `linear-gradient(100deg, #FCE63E 25%, #D4D55C 25%, #A6C17F 50%, #9FC084 50%, #96BF8B 75%, #96BF8B 75%, #6CB7AB 100%, #6CB7AB ${filled}%)`;
-    } else if (filled > 75 && filled <= 100) {
-      return `linear-gradient(100deg, #FCE63E 25%, #D4D55C 25%, #A6C17F 50%, #9FC084 50%, #96BF8B 75%, #96BF8B 75%, #6CB7AB 100%, #6CB7AB ${filled}%)`;
     }
   };
 

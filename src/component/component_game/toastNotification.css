@@ -32,6 +32,7 @@
   user-select: none;
 }
 
+/* aislop-ignore ai-slop/unused-css */
 .gamukis-toast-item.exiting {
   animation: toastSlideOut 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
 }

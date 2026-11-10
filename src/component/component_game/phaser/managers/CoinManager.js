@@ -8,7 +8,6 @@
  * and clean respawn/sync lifecycle.
  */
 
-import Phaser from 'phaser';
 import { gameEventBridge, GAME_BRIDGE_EVENTS } from '../bridge/GameEventBridge';
 
 export default class CoinManager {

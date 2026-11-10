@@ -185,7 +185,7 @@ export const DEFAULT_FALLBACK_COIN_SPOTS = [
   { x: 79, y: 40 }
 ];
 
-export const getLocalFallbackCoins = (baseX = 12, baseY = 12) => {
+export const getLocalFallbackCoins = (_baseX = 12, _baseY = 12) => {
   const coins = {};
   DEFAULT_FALLBACK_COIN_SPOTS.forEach((spot) => {
     const key = spot.x + 'x' + spot.y;
@@ -202,7 +202,7 @@ export const dedupeLeaderboardList = (list, activePid, selfReplacement = null) =
     byId.set(entry.id, entry);
   });
   if (selfReplacement && activePid) {
-    byId.set(activePid, { ...(byId.get(activePid) || {}), ...selfReplacement, id: activePid });
+    byId.set(activePid, { ...byId.get(activePid), ...selfReplacement, id: activePid });
   }
   return Array.from(byId.values());
 };
@@ -215,7 +215,7 @@ const getCookieValue = (key) => {
   try {
     const match = document.cookie.match(new RegExp('(^|;\\s*)' + key + '=([^;]*)'));
     return match ? decodeURIComponent(match[2]) : null;
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 };
@@ -240,7 +240,7 @@ export const getAnonymousSessionCache = () => {
     window.localStorage.removeItem(ANONYMOUS_SESSION_KEY);
     window.sessionStorage?.removeItem(ANONYMOUS_SESSION_KEY);
     return null;
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 };
@@ -280,7 +280,7 @@ export const getActiveSessionCache = (isGuestUser) => {
     window.localStorage.removeItem(key);
     window.sessionStorage?.removeItem(key);
     return null;
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 };
@@ -305,7 +305,7 @@ export const clearActiveSessionCaches = () => {
     window.sessionStorage?.removeItem('gamukis_game_session_id');
     document.cookie = `${ANONYMOUS_SESSION_KEY}=; path=/; max-age=0; SameSite=Lax`;
     document.cookie = `${REGISTERED_SESSION_KEY}=; path=/; max-age=0; SameSite=Lax`;
-  } catch (e) {}
+  } catch (e) { console.warn("[inGame] Fallback:", e?.message || e); }
 };
 
 const playerColors = ["man", "girl"];
@@ -340,14 +340,14 @@ export const loadSavedAppearance = () => {
       if (rawOutfit) {
         const outfit = JSON.parse(rawOutfit);
         if (outfit && typeof outfit === 'object' && !Array.isArray(outfit)) {
-          appearance.outfit = { ...(appearance.outfit || {}), ...outfit };
+          appearance.outfit = { ...appearance.outfit, ...outfit };
         }
       }
-    } catch (e) {
+    } catch (e) { console.warn("[inGame] Fallback:", e?.message || e);
       // safe fallback on corrupted outfit JSON
     }
     return appearance;
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 };
@@ -419,7 +419,7 @@ const InGame = () => {
         return null;
       }
       return loadSavedAppearance();
-    } catch (e) {}
+    } catch (e) { console.warn("[inGame] Fallback:", e?.message || e); }
     return null;
   });
   const [playerColor, setPlayerColor] = useState('');
@@ -456,7 +456,7 @@ const InGame = () => {
           });
           return;
         }
-      } catch (_) {}
+      } catch (_) { /* ignored */ }
     }
     // Clean up resetSession flag from browser history state immediately after initial mount
     // so refreshing (F5) will NOT wipe the active session or coins.
@@ -469,7 +469,7 @@ const InGame = () => {
             resetSession: false
           }
         });
-      } catch (e) {}
+      } catch (e) { console.warn("[inGame] Fallback:", e?.message || e); }
     }
   }, [location.pathname, location.state, navigate]);
 
@@ -744,8 +744,8 @@ const InGame = () => {
       }
       try {
         document.cookie = `${cacheKey}=${encodeURIComponent(obfuscated)}; path=/; max-age=${gameDurationSeconds}; SameSite=Lax`;
-      } catch (ce) {}
-    } catch (e) {}
+      } catch (ce) { console.warn("[inGame] Fallback:", ce?.message || ce); }
+    } catch (e) { console.warn("[inGame] Fallback:", e?.message || e); }
   }, [activeSubject, currentPlayer?.coins, currentPlayer?.health, currentPlayer?.lastQuestionCoins, gameDurationSeconds, isGuest]);
 
   const clearRespawnAndInvulnerableTimers = useCallback(() => {
@@ -827,7 +827,7 @@ const InGame = () => {
     if (typeof window !== 'undefined') {
       try {
         window.sessionStorage.setItem('gamukis_last_game_result', encryptPayload(resultState));
-      } catch (e) {}
+      } catch (e) { console.warn("[inGame] Fallback:", e?.message || e); }
     }
     try {
       // 1. Persist game history to MySQL
@@ -1000,7 +1000,7 @@ const InGame = () => {
       try {
         window.sessionStorage?.setItem('gamukis_guest_has_renamed', 'true');
         window.sessionStorage?.setItem('gamukis_guest_custom_name', finalName);
-      } catch (e) {}
+      } catch (e) { console.warn("[inGame] Fallback:", e?.message || e); }
     }
 
     if (playerId) {
@@ -1168,7 +1168,7 @@ const InGame = () => {
    *
    * In classGameMode, questions come from the server via getNextStudentClassGameQuestion.
    */
-  const fetchNextUnansweredQuestion = (queryPlayerId, milestone) => {
+  const fetchNextUnansweredQuestion = (queryPlayerId, _milestone) => {
     // Class game mode: fetch next question from server
     if (classGameModeRef.current && classGameClassId && classGameSessionId) {
       getNextStudentClassGameQuestion(classGameClassId, classGameSessionId)
@@ -1284,7 +1284,7 @@ const InGame = () => {
             checkCoinMilestoneRef.current(claimResult.player);
             saveAnonymousCache(claimResult.player.coins, claimResult.player.health, claimResult.player.lastQuestionCoins);
           }
-        } catch (err) {
+        } catch (_err) {
           optimisticCoinClaimsRef.current.delete(coinKey);
           setCoins((prev) => ({ ...prev, [coinKey]: { x: gridX, y: gridY } }));
           setPlayers((prev) => {
@@ -1597,7 +1597,7 @@ const InGame = () => {
           byId.set(entry.id, entry);
         });
         if (selfReplacement && activePid) {
-          byId.set(activePid, { ...(byId.get(activePid) || {}), ...selfReplacement, id: activePid });
+          byId.set(activePid, { ...byId.get(activePid), ...selfReplacement, id: activePid });
         }
         return Array.from(byId.values());
       };
@@ -1696,7 +1696,7 @@ const InGame = () => {
             const localEntry = prev[localPid] || initialLocalPlayer;
             const cleaned = pruneStaleLocalEntries(prev, serverPid);
             delete cleaned[localPid];
-            cleaned[serverPid] = { ...(cleaned[serverPid] || {}), ...localEntry, id: serverPid };
+            cleaned[serverPid] = { ...cleaned[serverPid], ...localEntry, id: serverPid };
             return cleaned;
           });
           setRandomPlayers((prev) => {
@@ -1736,7 +1736,7 @@ const InGame = () => {
 
             const currentPlayers = pruneStaleLocalEntries(rawSnapshotPlayers, activePid);
             const fallbackSelf = {
-              ...(currentPlayers[activePid] || {}),
+              ...currentPlayers[activePid],
               ...initialLocalPlayer,
               id: activePid,
               coins: currentPlayers[activePid]?.coins !== undefined ? currentPlayers[activePid].coins : initialLocalPlayer.coins,

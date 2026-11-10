@@ -31,7 +31,7 @@ const getStoredManualToken = () => {
       const token = localStorage.getItem(MANUAL_TOKEN_KEY);
       if (token) return token;
     }
-  } catch (err) {
+  } catch (err) { console.warn("[membershipApi] Fallback:", err?.message || err);
     // Ignore storage access errors
   }
   try {
@@ -39,7 +39,7 @@ const getStoredManualToken = () => {
       const token = sessionStorage.getItem(MANUAL_TOKEN_KEY);
       if (token) return token;
     }
-  } catch (err) {
+  } catch (err) { console.warn("[membershipApi] Fallback:", err?.message || err);
     // Ignore storage access errors
   }
   return null;
@@ -93,7 +93,7 @@ export const membershipRequest = async (path, options = {}) => {
   const headers = {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...(options.headers || {})
+    ...options.headers
   };
 
   const response = await fetch(url, {

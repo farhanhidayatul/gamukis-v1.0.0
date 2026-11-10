@@ -23,7 +23,7 @@ import React, { useState, useEffect } from "react";
  * @returns {Promise<string>} Promise yang menghasilkan dataURL gambar resolusi tinggi
  */
 export const upscalePngToHighRes = (src, minDimension = 384) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     if (!src) {
       return resolve(src);
     }
@@ -79,7 +79,7 @@ export const upscalePngToHighRes = (src, minDimension = 384) => {
 
         const highResDataUrl = canvas.toDataURL("image/png");
         resolve(highResDataUrl);
-      } catch (err) {
+      } catch (_err) {
         // Fallback aman jika canvas terblokir security origin
         resolve(src);
       }

@@ -74,7 +74,6 @@ export const FALLBACK_CLASS_CATEGORIES = [
 ];
 
 export const FALLBACK_CLASSES = [
-  // --- BAHASA (8 MATA PELAJARAN LENGKAP) ---
   {
     id: 'bahasa-indonesia',
     slug: 'bahasa-indonesia',
@@ -475,7 +474,6 @@ export const FALLBACK_CLASSES = [
     ]
   },
 
-  // --- SAINTEK ---
   {
     id: 'saintek-matematika',
     slug: 'matematika-saintek',
@@ -602,7 +600,6 @@ export const FALLBACK_CLASSES = [
     miniQuiz: [{ id: 'quiz-inf-1', question: 'Kompleksitas Binary Search adalah...', options: ['O(log n)', 'O(n)', 'O(n^2)', 'O(1)'], correct: 'O(log n)', explanation: 'Pencarian biner membagi ruang menjadi dua.', difficulty: 'easy' }]
   },
 
-  // --- SOSHUM ---
   {
     id: 'soshum-sejarah',
     slug: 'sejarah-soshum',
@@ -742,7 +739,7 @@ export const fetchClassCategories = async () => {
     }
     const result = await response.json();
     return result.categories || FALLBACK_CLASS_CATEGORIES;
-  } catch (err) {
+  } catch (_err) {
     // Graceful offline fallback
     return FALLBACK_CLASS_CATEGORIES;
   }
@@ -766,7 +763,7 @@ export const fetchClassesByCategory = async (category = null, stage = null) => {
     }
     const result = await response.json();
     return result.classes || [];
-  } catch (err) {
+  } catch (_err) {
     // Graceful offline fallback
     if (!category || category === 'ALL') return FALLBACK_CLASSES;
     const norm = category.toUpperCase();
@@ -788,7 +785,7 @@ export const fetchClassDetail = async (slug) => {
     }
     const result = await response.json();
     return result.classDetail;
-  } catch (err) {
+  } catch (_err) {
     // Graceful offline fallback
     const norm = String(slug).toLowerCase();
     const found = FALLBACK_CLASSES.find((c) => c.slug.toLowerCase() === norm || c.id.toLowerCase() === norm);
@@ -805,7 +802,7 @@ export const fetchClassOfferingDetail = async (slug, offeringId) => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const result = await response.json();
     return result.classDetail || null;
-  } catch (err) {
+  } catch (_err) {
     return null;
   }
 };
@@ -824,7 +821,7 @@ export const fetchDailyRecommendations = async () => {
     }
     const result = await response.json();
     return result.recommendations || FALLBACK_DAILY_RECOMMENDATIONS;
-  } catch (err) {
+  } catch (_err) {
     return FALLBACK_DAILY_RECOMMENDATIONS;
   }
 };
@@ -846,7 +843,7 @@ const buildProgressAuthHeaders = async () => {
         }
       }
     }
-  } catch (_) {}
+  } catch (_) { /* ignored */ }
   return headers;
 };
 
@@ -867,14 +864,14 @@ export const fetchStudentClassProgress = async (studentId = 'default_student', c
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const result = await response.json();
     return result.progress;
-  } catch (err) {
+  } catch (_err) {
     // LocalStorage fallback
     const storageKey = `gamukis_progress_${studentId}_${classSlug || 'all'}`;
     const saved = localStorage.getItem(storageKey);
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {}
+      } catch (e) { console.warn("[studentClassData] Fallback:", e?.message || e); }
     }
     return {
       studentId,
@@ -906,7 +903,7 @@ export const saveStudentClassProgress = async (progressData) => {
       const result = await response.json();
       return result.progress;
     }
-  } catch (err) {
+  } catch (_err) { console.warn("[studentClassData] Fallback:", _err?.message || _err);
     // LocalStorage fallback already set
   }
   return progressData;

@@ -34,6 +34,7 @@
   text-rendering: auto;
 }
 
+/* aislop-ignore ai-slop/unused-css */
 .math-text-container .katex-display {
   margin: 0.5em 0;
 }

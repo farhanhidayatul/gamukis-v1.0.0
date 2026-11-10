@@ -70,7 +70,7 @@ const MIDTRANS_PAYMENT_METHODS = [
 const readManualUser = () => {
   try {
     return getManualUser();
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 };
@@ -112,7 +112,7 @@ const getFeatureItems = (features = {}) => {
   if (typeof parsedFeatures === 'string') {
     try {
       parsedFeatures = JSON.parse(parsedFeatures);
-    } catch (error) {
+    } catch (_error) {
       parsedFeatures = {};
     }
   }
@@ -374,7 +374,7 @@ const MembershipDashboard = () => {
         return;
       }
       window.location.href = paymentUrl;
-    } catch (error) {
+    } catch (error) { console.warn("[membershipDashboard] Fallback:", error?.message || error);
       // Ignore navigation errors in test-only environments.
     }
   };
@@ -425,7 +425,7 @@ const MembershipDashboard = () => {
       } else if (response?.message) {
         setNotice(response.message);
       }
-    } catch (_error) {
+    } catch (_error) { console.warn("[membershipDashboard] Fallback:", _error?.message || _error);
       // Fallback to standard reload when verify endpoint is not mocked in unit tests
     } finally {
       setVerifyingPayment(false);

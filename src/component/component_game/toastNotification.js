@@ -20,7 +20,7 @@ export const emitToast = (message, type = 'info', duration = 3000) => {
   };
   try {
     window.dispatchEvent(new CustomEvent(TOAST_EVENT, { detail }));
-  } catch (e) {
+  } catch (e) { console.warn("[toastNotification] Fallback:", e?.message || e);
     // In restricted or headless test environments without CustomEvent
   }
 };

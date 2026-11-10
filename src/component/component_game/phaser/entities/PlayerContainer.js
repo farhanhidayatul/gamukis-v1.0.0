@@ -9,7 +9,7 @@
  * smooth network interpolation (lerp), and strict null-safety on appearance configs.
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 export const PLAYER_PIVOT_ORIGIN_X = 0.5;
 export const PLAYER_PIVOT_ORIGIN_Y = 1.0; // Anchored at feet
@@ -114,7 +114,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
    */
   applyAppearance(appearance = {}) {
     this.appearance = appearance;
-    const { skinColor, hairStyle, hairColor, shirt, pants } = appearance;
+    const { skinColor, _hairStyle, hairColor, _shirt, _pants } = appearance;
 
     // Body tint or texture variant
     if (skinColor && this.bodySprite) {

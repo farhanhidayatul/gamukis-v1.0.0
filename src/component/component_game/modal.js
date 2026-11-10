@@ -301,7 +301,7 @@ export const MatrixDragDropQuiz = ({
   );
 };
 
-const CoinModal = ({ isOpen, onRequestClose, onQuestionAnswered, onServerAnswer, serverScored, playerId, questionData }) => {
+const CoinModal = ({ isOpen, onRequestClose, onQuestionAnswered, onServerAnswer, serverScored, _playerId, questionData }) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(false);
   const [shuffledOptions, setShuffledOptions] = useState([]);

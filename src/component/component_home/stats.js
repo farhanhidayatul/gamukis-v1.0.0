@@ -138,7 +138,7 @@ const Stats = ({
         if (stored !== null) {
           initialExp = Math.max(0, parseInt(stored, 10) || 0);
         }
-      } catch (e) {}
+      } catch (e) { console.warn("[stats] Fallback:", e?.message || e); }
     }
     return {
       gamesPlayed: 0,
@@ -158,7 +158,7 @@ const Stats = ({
           setFirebaseUser(user && !user.isAnonymous ? user : null);
         });
         return unsubscribe;
-      } catch (e) {}
+      } catch (e) { console.warn("[stats] Fallback:", e?.message || e); }
     }
   }, []);
 
@@ -221,7 +221,7 @@ const Stats = ({
         } else if (guestExp > 0 && isCurrent) {
           setGameStats((prev) => ({ ...prev, totalExp: guestExp, exp: guestExp }));
         }
-      } catch (e) {}
+      } catch (e) { console.warn("[stats] Fallback:", e?.message || e); }
       return undefined;
     }
 
@@ -236,7 +236,7 @@ const Stats = ({
         const expVal = Math.max(0, parseInt(stored, 10) || 0);
         setGameStats((prev) => ({ ...prev, totalExp: expVal, exp: expVal }));
       }
-    } catch (e) {}
+    } catch (e) { console.warn("[stats] Fallback:", e?.message || e); }
 
     // 1. Fetch user detailed profile
     const loadProfile = isFirebase ? getBackendProfile : getManualProfile;
@@ -259,7 +259,7 @@ const Stats = ({
           .then((res) => {
             if (isCurrent && res?.user) {
               setProfileDetail((prev) => ({
-                ...(prev || {}),
+                ...prev,
                 fullName: res.user.fullName || res.user.full_name || prev?.fullName,
                 school: res.user.school || res.user.school_name || prev?.school
               }));
@@ -287,7 +287,7 @@ const Stats = ({
                   const localVal = Math.max(0, parseInt(stored, 10) || 0);
                   resolvedExp = localVal;
                 }
-              } catch (e) {}
+              } catch (e) { console.warn("[stats] Fallback:", e?.message || e); }
 
               if (resolvedExp === null) {
                 resolvedExp = prev.totalExp !== undefined ? prev.totalExp : null;
@@ -352,7 +352,7 @@ const Stats = ({
         if (stored !== null) {
           return Math.max(0, parseInt(stored, 10) || 0);
         }
-      } catch (e) {}
+      } catch (e) { console.warn("[stats] Fallback:", e?.message || e); }
     }
     if (gameStats?.totalScore || gameStats?.totalCoins) {
       return (Number(gameStats.totalScore) || 0) + (Number(gameStats.totalCoins) ? Number(gameStats.totalCoins) * 5 : 0);
@@ -384,7 +384,7 @@ const Stats = ({
     } else if (typeof window !== 'undefined' && window.location) {
       try {
         window.location.href = '/login';
-      } catch (e) {}
+      } catch (e) { console.warn("[stats] Fallback:", e?.message || e); }
     }
   };
 
@@ -397,7 +397,7 @@ const Stats = ({
     } else if (typeof window !== 'undefined' && window.location) {
       try {
         window.location.href = '/register';
-      } catch (e) {}
+      } catch (e) { console.warn("[stats] Fallback:", e?.message || e); }
     }
   };
 

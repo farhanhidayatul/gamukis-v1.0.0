@@ -115,7 +115,7 @@ try {
     true,
     /fireball_shoes_[a-z0-9_]+_sheet\.png$/i
   );
-} catch (e) {
+} catch (e) { console.warn("[playerInfo] Fallback:", e?.message || e);
   // Environments without Webpack require.context safely degrade
 }
 

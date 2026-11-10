@@ -1,6 +1,6 @@
 import { request } from "./manualAuth";
 
-const adminCurriculumRequest = (path, options = {}) => request(path, options);
+const adminCurriculumRequest = request;
 
 /**
  * Fetch all curriculum classes for Admin management.

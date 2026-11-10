@@ -9,7 +9,7 @@
  * and seamless transition to WorldScene.
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import coinImg from '../../../../images/coin.png';
 import charManSvg from '../../../../images/char-man-1.svg';
 import charGirlSvg from '../../../../images/char_girl_1.svg';

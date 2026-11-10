@@ -8,7 +8,7 @@
  * and robust network interpolation.
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 export const BOT_HEALTH_BAR_WIDTH = 32;
 export const BOT_HEALTH_BAR_HEIGHT = 4;
