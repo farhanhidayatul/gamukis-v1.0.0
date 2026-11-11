@@ -3,7 +3,12 @@ import ReactDOM from 'react-dom/client';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import RegisterPage from '../pages/register';
 import RoleChoice from '../component/component_register/molecules/roleChoice';
-import { requestRegistrationOtp, verifyRegistrationOtp } from '../database/manualAuth';
+import {
+  requestRegistrationOtp,
+  saveCompleteProfile,
+  updateManualRole,
+  verifyRegistrationOtp
+} from '../database/manualAuth';
 import {
   authenticateWithBackendGoogle,
   loadGoogleIdentityScript,
@@ -17,6 +22,8 @@ let capturedGsiCallback = null;
 jest.mock('../database/manualAuth', () => ({
   clearManualSession: jest.fn(),
   requestRegistrationOtp: jest.fn(),
+  saveCompleteProfile: jest.fn(),
+  updateManualRole: jest.fn(),
   verifyRegistrationOtp: jest.fn()
 }));
 
@@ -59,8 +66,14 @@ describe('Registration Role Choice (R1–R4)', () => {
   beforeEach(() => {
     capturedGsiCallback = null;
     requestRegistrationOtp.mockImplementation(() => Promise.resolve({ message: 'OTP sent' }));
+    saveCompleteProfile.mockImplementation(() => Promise.resolve({
+      user: { id: 1, username: 'tester', email: 't@example.com', role: null, teacherApplication: { status: 'pending' } }
+    }));
+    updateManualRole.mockImplementation(() => Promise.resolve({
+      user: { id: 1, username: 'tester', email: 't@example.com', role: 'siswa' }
+    }));
     verifyRegistrationOtp.mockImplementation(() => Promise.resolve({
-      user: { id: 1, username: 'tester', email: 't@example.com', role: 'siswa' },
+      user: { id: 1, username: 'tester', email: 't@example.com', role: null },
       token: 'jwt-token'
     }));
     authenticateWithBackendGoogle.mockImplementation(() => Promise.resolve({
@@ -100,6 +113,12 @@ describe('Registration Role Choice (R1–R4)', () => {
     };
 
     const view = await mount(<Wrapper />);
+    expect(view.container.querySelector('.register-form.role-choice-form')).toBeTruthy();
+
+    const stepLabels = Array.from(view.container.querySelectorAll('.progress-step span')).map((el) => el.textContent);
+    expect(stepLabels).toEqual(['Pendaftaran', 'Data diri', 'Verifikasi', 'Pilih Role']);
+    expect(view.container.querySelector('.progress-step:last-child span')?.className).toContain('active-label');
+
     const guruRadio = view.container.querySelector('input[name="register-role"][value="guru"]');
     await changeInput(guruRadio, 'guru');
 
@@ -122,7 +141,7 @@ describe('Registration Role Choice (R1–R4)', () => {
     await view.unmount();
   });
 
-  it('RegisterPage lands on RoleChoice step when redirected from Google login and forwards Guru role to Google register', async () => {
+  it('RegisterPage places RoleChoice at the final step after Google credential and forwards Guru role to Google register', async () => {
     const LocationDisplay = () => {
       const loc = useLocation();
       return <div data-testid="loc">{loc.pathname}</div>;
@@ -137,7 +156,12 @@ describe('Registration Role Choice (R1–R4)', () => {
       </MemoryRouter>
     );
 
-    expect(view.container.querySelector('.role-choice-form')).toBeTruthy();
+    expect(typeof capturedGsiCallback).toBe('function');
+    await act(async () => {
+      await capturedGsiCallback({ credential: 'mock-google-id-token' });
+    });
+
+    expect(view.container.querySelector('.register-form.role-choice-form')).toBeTruthy();
 
     const guruRadio = view.container.querySelector('input[name="register-role"][value="guru"]');
     await changeInput(guruRadio, 'guru');
@@ -147,11 +171,6 @@ describe('Registration Role Choice (R1–R4)', () => {
 
     const nextBtn = view.container.querySelector('.next-button');
     await act(async () => nextBtn.click());
-
-    expect(typeof capturedGsiCallback).toBe('function');
-    await act(async () => {
-      await capturedGsiCallback({ credential: 'mock-google-id-token' });
-    });
 
     expect(authenticateWithBackendGoogle).toHaveBeenCalledWith(
       'mock-google-id-token',

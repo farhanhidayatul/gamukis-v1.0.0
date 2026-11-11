@@ -1,9 +1,6 @@
 .role-choice-form {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 460px;
-  margin: 0 auto;
 }
 
 .role-choice-title {

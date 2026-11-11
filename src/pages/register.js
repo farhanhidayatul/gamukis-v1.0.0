@@ -4,6 +4,8 @@ import { authenticateWithBackendGoogle } from "../database/googleCloudAuth";
 import {
   clearManualSession,
   requestRegistrationOtp,
+  saveCompleteProfile,
+  updateManualRole,
   verifyRegistrationOtp
 } from "../database/manualAuth";
 import "./register.css";
@@ -28,6 +30,7 @@ const RegisterPage = () => {
   const [role, setRole] = useState("siswa");
   const [fullName, setFullName] = useState("");
   const [subject, setSubject] = useState("");
+  const [pendingGoogleToken, setPendingGoogleToken] = useState("");
   const [account, setAccount] = useState({ email: "", username: "", password: "", confirmPassword: "" });
   const [profile, setProfile] = useState({ gender: "", birthDate: "", school: "", address: "" });
   const [error, setError] = useState("");
@@ -47,7 +50,7 @@ const RegisterPage = () => {
       if (location.state.name) {
         setFullName((current) => current || location.state.name);
       }
-      setError("Akun Google belum terdaftar. Silakan pilih peran dan lengkapi pendaftaran akun Anda.");
+      setError("Akun Google belum terdaftar. Silakan lengkapi pendaftaran akun Anda.");
       setStep(2);
     }
   }, [location.state]);
@@ -70,12 +73,9 @@ const RegisterPage = () => {
     try {
       await requestRegistrationOtp({
         ...account,
-        profile,
-        role,
-        fullName: role === "guru" ? fullName.trim() : "",
-        subject: role === "guru" ? subject.trim() : ""
+        profile
       });
-      setStep(5);
+      setStep(4);
     } catch (requestError) {
       setError(requestError.message || "Kode OTP gagal dikirim.");
     } finally {
@@ -84,8 +84,9 @@ const RegisterPage = () => {
   };
 
   const handleVerifyOtp = async (otp) => {
-    const result = await verifyRegistrationOtp(account.email, otp);
-    routeByResolvedRole(navigate, result?.user?.role);
+    await verifyRegistrationOtp(account.email, otp);
+    setFullName((current) => current || account.username || "");
+    setStep(5);
   };
 
   const finishRegistration = async (action) => {
@@ -102,25 +103,46 @@ const RegisterPage = () => {
   };
 
   const handleGoogleCredential = (idToken) => {
+    setError("");
+    setPendingGoogleToken(idToken);
+    setStep(5);
+  };
+
+  const handleCompleteRoleSelection = () => {
     finishRegistration(async () => {
-      if (typeof clearManualSession === "function") {
-        clearManualSession();
-      }
-
-      const session = await authenticateWithBackendGoogle(idToken, "register", {
-        role,
-        fullName: role === "guru" ? fullName.trim() : "",
-        subject: role === "guru" ? subject.trim() : ""
-      });
-
-      if (session?.user && typeof window !== "undefined") {
-        window.localStorage?.setItem("gamukis_manual_user", JSON.stringify(session.user));
-        if (session.token) {
-          window.localStorage?.setItem("gamukis_manual_token", session.token);
+      if (pendingGoogleToken) {
+        if (typeof clearManualSession === "function") {
+          clearManualSession();
         }
-        window.dispatchEvent(new Event("gamukis-manual-auth-change"));
+
+        const session = await authenticateWithBackendGoogle(pendingGoogleToken, "register", {
+          role,
+          fullName: role === "guru" ? fullName.trim() : "",
+          subject: role === "guru" ? subject.trim() : ""
+        });
+
+        if (session?.user && typeof window !== "undefined") {
+          window.localStorage?.setItem("gamukis_manual_user", JSON.stringify(session.user));
+          if (session.token) {
+            window.localStorage?.setItem("gamukis_manual_token", session.token);
+          }
+          window.dispatchEvent(new Event("gamukis-manual-auth-change"));
+        }
+        return session;
       }
-      return session;
+
+      if (role === "guru") {
+        return saveCompleteProfile({
+          role: "guru",
+          fullName: fullName.trim(),
+          subject: subject.trim()
+        });
+      }
+
+      return updateManualRole({
+        role: "siswa",
+        subject: ""
+      });
     });
   };
 
@@ -141,6 +163,35 @@ const RegisterPage = () => {
         <div className="register-right">
           {step === 1 && <IntroductionRegistration nextStep={nextStep} />}
           {step === 2 && (
+            <RegistrationAccount
+              account={account}
+              updateAccount={updateAccount}
+              nextStep={() => setStep(3)}
+              onCredentialSuccess={handleGoogleCredential}
+              onCredentialError={handleGoogleError}
+              disabled={isSubmitting}
+            />
+          )}
+          {step === 3 && (
+            <PersonalInfo
+              profile={profile}
+              updateProfile={updateProfile}
+              nextStep={handleRequestOtp}
+              prevStep={() => setStep(2)}
+              onCredentialSuccess={handleGoogleCredential}
+              onCredentialError={handleGoogleError}
+              disabled={isSubmitting}
+            />
+          )}
+          {step === 4 && (
+            <OTPVerification
+              email={account.email}
+              onVerify={handleVerifyOtp}
+              onResend={handleRequestOtp}
+              disabled={isSubmitting}
+            />
+          )}
+          {step === 5 && (
             <RoleChoice
               role={role}
               fullName={fullName}
@@ -148,37 +199,8 @@ const RegisterPage = () => {
               onChangeRole={setRole}
               onChangeFullName={setFullName}
               onChangeSubject={setSubject}
-              nextStep={() => setStep(3)}
-              prevStep={() => setStep(1)}
-              disabled={isSubmitting}
-            />
-          )}
-          {step === 3 && (
-            <RegistrationAccount
-              account={account}
-              updateAccount={updateAccount}
-              nextStep={() => setStep(4)}
-              onCredentialSuccess={handleGoogleCredential}
-              onCredentialError={handleGoogleError}
-              disabled={isSubmitting}
-            />
-          )}
-          {step === 4 && (
-            <PersonalInfo
-              profile={profile}
-              updateProfile={updateProfile}
-              nextStep={handleRequestOtp}
-              prevStep={() => setStep(3)}
-              onCredentialSuccess={handleGoogleCredential}
-              onCredentialError={handleGoogleError}
-              disabled={isSubmitting}
-            />
-          )}
-          {step === 5 && (
-            <OTPVerification
-              email={account.email}
-              onVerify={handleVerifyOtp}
-              onResend={handleRequestOtp}
+              nextStep={handleCompleteRoleSelection}
+              prevStep={pendingGoogleToken ? () => setStep(2) : undefined}
               disabled={isSubmitting}
             />
           )}

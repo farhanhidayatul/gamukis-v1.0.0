@@ -1,10 +1,8 @@
 import "./progressBar.css";
 
 const ProgressBar = ({ step, currentRoleStep = false }) => {
-  const steps = ["Peran", "Pendaftaran", "Data diri", "Verifikasi"];
-  const activeStep = currentRoleStep
-    ? 1
-    : (step >= 1 && step <= 3 ? step + 1 : step);
+  const steps = ["Pendaftaran", "Data diri", "Verifikasi", "Pilih Role"];
+  const activeStep = currentRoleStep ? 4 : Number(step) || 1;
   const fillClass =
     activeStep >= 4
       ? "full"

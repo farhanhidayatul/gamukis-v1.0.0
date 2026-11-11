@@ -1,5 +1,6 @@
 import ProgressBar from "../progressBar";
 import { ButtonBack, ButtonNext } from "../atoms";
+import "../registrationAccount.css";
 import "./roleChoice.css";
 
 export const REGISTER_SUBJECTS = [
@@ -52,11 +53,11 @@ const RoleChoice = ({
       trimmedSubject.length <= 100);
 
   return (
-    <div className="role-choice-form">
-      <ProgressBar step={0} currentRoleStep />
+    <div className="register-form role-choice-form">
+      <ProgressBar step={4} currentRoleStep />
       <h2 className="role-choice-title">Pilih Peran Akun</h2>
       <p className="role-choice-subtitle">
-        Pilih peran Anda terlebih dahulu sebelum melanjutkan pendaftaran akun.
+        Pilih peran Anda untuk menyelesaikan pendaftaran akun.
       </p>
 
       <fieldset className="role-choice-cards" disabled={disabled}>
