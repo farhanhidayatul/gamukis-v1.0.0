@@ -11,17 +11,6 @@ const OTPVerification = ({ _email, onVerify, onResend, disabled = false }) => {
   const inputRefs = useRef([]);
 
   useEffect(() => {
-    try {
-      const devOtp = sessionStorage.getItem("gamukis_dev_otp");
-      if (devOtp && devOtp.length === 6) {
-        setOtp(devOtp.split(""));
-      }
-    } catch (_) {
-      // Ignore storage access restrictions in sandboxed or privacy environments
-    }
-  }, []);
-
-  useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);

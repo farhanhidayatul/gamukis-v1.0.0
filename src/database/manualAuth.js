@@ -93,14 +93,6 @@ const requestRegistrationOtp = async ({ username, email, password, profile }) =>
     method: "POST",
     body: JSON.stringify({ username, email, password, profile })
   });
-  if (data?.devOtp && typeof window !== "undefined") {
-    window.__gamukis_dev_otp = data.devOtp;
-    try {
-      sessionStorage.setItem("gamukis_dev_otp", data.devOtp);
-    } catch (_) {
-      // Ignore storage access restrictions in sandboxed or privacy environments
-    }
-  }
   return data;
 };
 
