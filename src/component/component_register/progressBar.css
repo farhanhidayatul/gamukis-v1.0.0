@@ -27,9 +27,14 @@
     transition: width 0.3s ease-in-out;
 }
 
-/* Jika step >= 2, isi setengah */
-.progress-fill.half {
-    width: 50%;
+/* Jika step 2 dari 4, isi sepertiga */
+.progress-fill.one-third {
+    width: 33.33%;
+}
+
+/* Jika step 3 dari 4, isi dua pertiga */
+.progress-fill.two-thirds {
+    width: 66.67%;
 }
 
 /* Jika step >= 3, isi penuh */
@@ -104,9 +109,12 @@
         transition: width 0.3s ease-in-out;
     }
     
-    /* Jika step >= 2, isi setengah */
-    .progress-fill.half {
-        width: 50%;
+    .progress-fill.one-third {
+        width: 33.33%;
+    }
+    
+    .progress-fill.two-thirds {
+        width: 66.67%;
     }
     
     /* Jika step >= 3, isi penuh */

@@ -88,10 +88,18 @@ const manualLogin = async (identifier, password, rememberMe) => {
   return data;
 };
 
-const requestRegistrationOtp = async ({ username, email, password, profile }) => {
+const requestRegistrationOtp = async ({ username, email, password, profile, role, fullName, subject }) => {
   const data = await request("/auth/manual/register/request-otp", {
     method: "POST",
-    body: JSON.stringify({ username, email, password, profile })
+    body: JSON.stringify({
+      username,
+      email,
+      password,
+      profile,
+      ...(role ? { role } : {}),
+      ...(fullName ? { fullName } : {}),
+      ...(subject ? { subject } : {})
+    })
   });
   return data;
 };

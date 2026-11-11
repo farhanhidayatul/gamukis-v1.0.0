@@ -251,6 +251,8 @@ const EnemyBot = ({ bot, onDeathComplete }) => {
   useEffect(() => {
     if (isDeadProp && !isDying) {
       setIsDying(true);
+    } else if (!isDeadProp && isDying) {
+      setIsDying(false);
     }
   }, [isDeadProp, isDying]);
 

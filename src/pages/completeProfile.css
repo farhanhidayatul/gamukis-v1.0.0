@@ -264,6 +264,10 @@
 }
 
 .complete-profile-notice {
+  padding: 10px 12px;
+  border: 1px solid #ffd84d;
+  border-radius: 9px;
+  background: #fff8e2;
   color: #735108;
 }
 

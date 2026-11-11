@@ -325,6 +325,13 @@
   box-shadow: 0 4px 0 #f5a623;
 }
 
+.result-container .result-action-replay:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+}
+
 /* Answer card and options (scoped) */
 .result-container .answer-card { background: #ffffff; color: #002244; border-radius: 20px; padding: 24px 24px 24px 44px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12); position: relative; overflow: hidden; }
 .result-container .answer-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 16px; }

@@ -62,6 +62,7 @@ export const GAME_DURATION_MS = 5 * 60 * 1000;
 export const MAX_GAME_DURATION_MS = 48 * 60 * 60 * 1000;
 export const RESPAWN_COOLDOWN_SECONDS = 15;
 export const RESPAWN_INVULNERABILITY_SECONDS = 3;
+export const BOT_RESPAWN_COOLDOWN_MS = 20 * 1000;
 
 export const DEFAULT_BOT_CONFIGS = [
   {
@@ -598,6 +599,37 @@ const InGame = () => {
   const pendingRemoteBatchRef = useRef({});
   const remoteBatchTimerRef = useRef(null);
   const pendingBotBatchRef = useRef({});
+  const botRespawnTimersRef = useRef({});
+
+  const scheduleLocalBotRespawn = useCallback((killedBot) => {
+    if (!killedBot || !killedBot.id) return;
+    const targetId = killedBot.id;
+    if (botRespawnTimersRef.current[targetId]) {
+      clearTimeout(botRespawnTimersRef.current[targetId]);
+    }
+    const maxHp = Number(killedBot.maxHealth) > 0 ? Number(killedBot.maxHealth) : 3;
+    const restoredBot = {
+      ...killedBot,
+      health: maxHp,
+      maxHealth: maxHp,
+      state: 'idle',
+      isDying: false,
+      isTelegraphing: false
+    };
+    botRespawnTimersRef.current[targetId] = window.setTimeout(() => {
+      delete botRespawnTimersRef.current[targetId];
+      setBots((prev) => {
+        const aliveCount = Object.values(prev || {}).filter(
+          (b) => b && !b.isDying && b.state !== 'dead' && Number(b.health) > 0
+        ).length;
+        if (aliveCount >= DEFAULT_BOT_CONFIGS.length) return prev;
+        return {
+          ...prev,
+          [targetId]: restoredBot
+        };
+      });
+    }, BOT_RESPAWN_COOLDOWN_MS);
+  }, []);
   const botBatchTimerRef = useRef(null);
 
   useEffect(() => {
@@ -2044,6 +2076,7 @@ const InGame = () => {
             }
             setBots((prev) => {
               if (!prev[botId]) return prev;
+              scheduleLocalBotRespawn(prev[botId]);
               return {
                 ...prev,
                 [botId]: {
@@ -2213,6 +2246,10 @@ const InGame = () => {
         clearInterval(invulnerableTimerRef.current);
         invulnerableTimerRef.current = null;
       }
+      Object.values(botRespawnTimersRef.current || {}).forEach((timerId) => {
+        clearTimeout(timerId);
+      });
+      botRespawnTimersRef.current = {};
       // Invalidate any subscription still connecting so its late `.then` cleans itself up.
       activeSubscriptionIdRef.current += 1;
       cleanupRealtimeRef.current?.();
@@ -2354,6 +2391,7 @@ const InGame = () => {
                 onDeathComplete={(id) => {
                   setBots((prev) => {
                     if (!prev[id]) return prev;
+                    scheduleLocalBotRespawn(prev[id]);
                     const next = { ...prev };
                     delete next[id];
                     return next;

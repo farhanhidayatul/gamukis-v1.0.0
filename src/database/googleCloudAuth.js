@@ -138,9 +138,16 @@ const resolveApiUrl = () => {
  * @param {string} idToken - Google credential JWT
  * @param {'login'|'register'} mode - Action mode ('login' strictly expects registered account; 'register' signs up new user)
  */
-export const authenticateWithBackendGoogle = async (idToken, mode = 'login') => {
+export const authenticateWithBackendGoogle = async (idToken, mode = 'login', extra = {}) => {
   const apiUrl = resolveApiUrl().replace(/\/+$/, '');
   const targetEndpoint = `${apiUrl}/auth/google`;
+  const payload = {
+    idToken,
+    mode,
+    ...(extra?.role ? { role: extra.role } : {}),
+    ...(extra?.fullName ? { fullName: extra.fullName } : {}),
+    ...(extra?.subject ? { subject: extra.subject } : {})
+  };
 
   const response = await fetch(targetEndpoint, {
     method: 'POST',
@@ -148,7 +155,7 @@ export const authenticateWithBackendGoogle = async (idToken, mode = 'login') => 
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
-    body: JSON.stringify({ idToken, mode })
+    body: JSON.stringify(payload)
   });
 
   const data = await response.json().catch(() => ({}));

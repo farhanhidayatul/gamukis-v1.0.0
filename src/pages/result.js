@@ -16,6 +16,16 @@ import { getOrCreateCryptoRoute } from '../utils/universalCryptoRouter';
 import { decryptPayload } from '../utils/secureStorageCipher';
 import './result.css';
 
+export const RESULT_REPLAY_COOLDOWN_SECONDS = 300;
+export const RESULT_REPLAY_COOLDOWN_STORAGE_KEY = 'gamukis_result_replay_unlock_at';
+
+export const formatReplayCooldown = (totalSeconds) => {
+  const safeSeconds = Math.max(0, Math.ceil(Number(totalSeconds) || 0));
+  const minutes = String(Math.floor(safeSeconds / 60)).padStart(2, '0');
+  const seconds = String(safeSeconds % 60).padStart(2, '0');
+  return `${minutes}:${seconds}`;
+};
+
 const Result = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -339,13 +349,56 @@ const Result = () => {
             }
           }
         })
-        .catch(() => {});
+        .catch((err) => console.warn('[result] Stats sync fallback:', err?.message || err));
     }
 
     return () => {
       isCurrent = false;
     };
   }, [activeUser, isLoggedIn, location.state?.isGuest]);
+
+  const isClassGameMode = Boolean(location.state?.classGameMode && location.state?.classId);
+
+  const [replayCooldownSeconds, setReplayCooldownSeconds] = useState(() => {
+    if (isClassGameMode) return 0;
+    if (typeof location.state?.replayCooldownSeconds === 'number') {
+      return Math.max(0, Math.ceil(location.state.replayCooldownSeconds));
+    }
+    if (typeof window === 'undefined') return RESULT_REPLAY_COOLDOWN_SECONDS;
+    try {
+      const now = Date.now();
+      const rawStored = window.sessionStorage.getItem(RESULT_REPLAY_COOLDOWN_STORAGE_KEY)
+        || window.localStorage.getItem(RESULT_REPLAY_COOLDOWN_STORAGE_KEY);
+      if (rawStored !== null) {
+        const storedUnlockAt = Number(rawStored);
+        if (Number.isFinite(storedUnlockAt)) {
+          if (storedUnlockAt <= now) return 0;
+          return Math.min(
+            RESULT_REPLAY_COOLDOWN_SECONDS,
+            Math.max(1, Math.ceil((storedUnlockAt - now) / 1000))
+          );
+        }
+      }
+      const nextUnlockAt = now + (RESULT_REPLAY_COOLDOWN_SECONDS * 1000);
+      window.sessionStorage.setItem(RESULT_REPLAY_COOLDOWN_STORAGE_KEY, String(nextUnlockAt));
+      window.localStorage.setItem(RESULT_REPLAY_COOLDOWN_STORAGE_KEY, String(nextUnlockAt));
+    } catch (err) {
+      console.warn('[result] Replay cooldown storage fallback:', err?.message || err);
+    }
+    return RESULT_REPLAY_COOLDOWN_SECONDS;
+  });
+
+  useEffect(() => {
+    if (isClassGameMode || replayCooldownSeconds <= 0) return undefined;
+    const intervalId = window.setInterval(() => {
+      setReplayCooldownSeconds((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [isClassGameMode, replayCooldownSeconds]);
+
+  const isReplayDisabled = !isClassGameMode && replayCooldownSeconds > 0;
 
   // Review Soal & Jawaban
   const allAnswers = [
@@ -354,14 +407,17 @@ const Result = () => {
   ];
 
   const handlePlayAgain = () => {
+    if (isReplayDisabled) return;
     if (typeof window !== 'undefined') {
       window.sessionStorage.removeItem('gamukis_game_session_id');
       window.sessionStorage.removeItem('gamukis_last_game_result');
       window.sessionStorage.removeItem('gamukis_guest_has_renamed');
       window.sessionStorage.removeItem('gamukis_guest_custom_name');
+      window.sessionStorage.removeItem(RESULT_REPLAY_COOLDOWN_STORAGE_KEY);
       try {
         window.localStorage.removeItem('gamukis_anonymous_game_session');
         window.localStorage.removeItem('gamukis_registered_game_session');
+        window.localStorage.removeItem(RESULT_REPLAY_COOLDOWN_STORAGE_KEY);
       } catch (e) { console.warn("[result] Fallback:", e?.message || e); }
     }
 
@@ -450,8 +506,12 @@ const Result = () => {
           type="button"
           className="result-action result-action-replay"
           onClick={handlePlayAgain}
+          disabled={isReplayDisabled}
+          aria-disabled={isReplayDisabled}
         >
-          Bermain lagi?
+          {isReplayDisabled
+            ? `Bermain lagi? (${formatReplayCooldown(replayCooldownSeconds)})`
+            : 'Bermain lagi?'}
         </button>
       </nav>
     </div>
