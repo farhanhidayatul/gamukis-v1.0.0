@@ -1,46 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#FCD03E" />
     <meta
       name="description"
-      content="GAMUKIS — Platform pembelajaran interaktif dan arena edugame multiplayer (SAINTEK, SOSHUM, Bahasa) dengan kurikulum berjenjang dan kuis real-time."
+      content="GAMUKIS adalah platform game edukasi interaktif yang menggabungkan keseruan bermain dengan pembelajaran materi dan tantangan kuis seru (SAINTEK, SOSHUM, Bahasa) dengan kurikulum berjenjang dan kuis real-time."
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon.ico"/>
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="GAMUKIS" />
 
+    <!-- Favicon & Touch Icons for Google Search & Browsers -->
+    <link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="48x48" href="%PUBLIC_URL%/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+
+    <!-- Google Tag Manager / Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FLNMFT2FES"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    gtag('config', 'G-FLNMFT2FES');
+      gtag('config', 'G-FLNMFT2FES');
     </script>
-    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+    <!-- PWA Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
+
+    <!-- SEO Meta Tags -->
     <title>GAMUKIS — Platform Pembelajaran Interaktif &amp; Edugame</title>
     <link rel="canonical" href="https://gamukis.site/" />
+
+    <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="GAMUKIS — Interactive Edugame &amp; Classroom Platform" />
-    <meta property="og:description" content="Platform pembelajaran interaktif dan arena edugame multiplayer (SAINTEK, SOSHUM, Bahasa) dengan kurikulum berjenjang dan kuis real-time." />
+    <meta property="og:site_name" content="GAMUKIS" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:title" content="GAMUKIS — Platform Pembelajaran Interaktif &amp; Edugame" />
+    <meta property="og:description" content="GAMUKIS adalah platform game edukasi interaktif yang menggabungkan keseruan bermain dengan pembelajaran materi dan tantangan kuis seru (SAINTEK, SOSHUM, Bahasa)." />
     <meta property="og:url" content="https://gamukis.site/" />
-    <meta property="og:image" content="https://gamukis.site/Gamukis.png" />
+    <meta property="og:image" content="https://gamukis.site/logo512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Logo GAMUKIS" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="GAMUKIS — Platform Pembelajaran Interaktif &amp; Edugame" />
+    <meta name="twitter:description" content="Platform game edukasi interaktif yang menggabungkan keseruan bermain dengan pembelajaran materi dan tantangan kuis seru." />
+    <meta name="twitter:image" content="https://gamukis.site/logo512.png" />
+
+    <!-- Schema.org JSON-LD Structured Data for Google Search -->
     <script type="application/ld+json">
-      {"@context":"https://schema.org","@type":"WebApplication","name":"GAMUKIS","url":"https://gamukis.site","applicationCategory":"EducationalApplication","operatingSystem":"Web","description":"Platform pembelajaran interaktif dan arena edugame multiplayer (SAINTEK, SOSHUM, Bahasa) dengan kurikulum berjenjang, kelas guru-siswa, dan AI Question Generator."}
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://gamukis.site/#website",
+            "url": "https://gamukis.site/",
+            "name": "GAMUKIS",
+            "description": "Platform pembelajaran interaktif dan arena edugame multiplayer (SAINTEK, SOSHUM, Bahasa) dengan kurikulum berjenjang dan kuis real-time.",
+            "publisher": {
+              "@id": "https://gamukis.site/#organization"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://gamukis.site/#organization",
+            "name": "GAMUKIS",
+            "url": "https://gamukis.site/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://gamukis.site/logo512.png",
+              "width": 512,
+              "height": 512
+            },
+            "image": "https://gamukis.site/logo512.png"
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://gamukis.site/#webapp",
+            "name": "GAMUKIS",
+            "url": "https://gamukis.site/",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Web",
+            "description": "Platform pembelajaran interaktif dan arena edugame multiplayer (SAINTEK, SOSHUM, Bahasa) dengan kurikulum berjenjang, kelas guru-siswa, dan AI Question Generator."
+          }
+        ]
+      }
     </script>
   </head>
   <body>
@@ -60,15 +112,5 @@
       </main>
     </noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
