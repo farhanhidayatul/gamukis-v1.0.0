@@ -188,6 +188,7 @@ const resetForgotPassword = (identifier, otp, newPassword, linkAsRecoveryEmail =
 });
 
 export {
+  resolveApiUrl,
   request,
   manualLogin,
   requestRegistrationOtp,

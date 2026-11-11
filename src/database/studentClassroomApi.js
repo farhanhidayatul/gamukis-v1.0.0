@@ -1,7 +1,12 @@
-import { request as manualRequest } from "./manualAuth";
+import { request as manualRequest, resolveApiUrl } from "./manualAuth";
 import { getEffectiveToken } from "./firebaseDatabase";
 
-const API_URL = process.env.REACT_APP_API_URL || "https://api.gamukis.site/api";
+const getApiUrl = () => {
+  if (typeof resolveApiUrl === "function") {
+    return resolveApiUrl();
+  }
+  return process.env.REACT_APP_API_URL || "https://api.gamukis.site/api";
+};
 
 const authRequest = async (path, options = {}) => {
   const hasManualToken =
@@ -18,7 +23,7 @@ const authRequest = async (path, options = {}) => {
     return manualRequest(path, options);
   }
 
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await fetch(`${getApiUrl()}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -82,14 +87,21 @@ const getNextStudentClassGameQuestion = (classId, gameSessionId) =>
     `/classrooms/${encodeURIComponent(classId)}/game-sessions/${encodeURIComponent(gameSessionId)}/questions/next`
   );
 
-const submitStudentClassGameAnswer = (classId, gameSessionId, answer) =>
-  authRequest(
+const submitStudentClassGameAnswer = (classId, gameSessionId, answer = {}) => {
+  const qId = answer?.questionId || "0";
+  const fallbackKey = `ans_${Date.now()}_${Math.random().toString(36).slice(2, 12)}_${qId}`;
+  const payload = {
+    ...answer,
+    idempotencyKey: answer?.idempotencyKey || fallbackKey
+  };
+  return authRequest(
     `/classrooms/${encodeURIComponent(classId)}/game-sessions/${encodeURIComponent(gameSessionId)}/answers`,
     {
       method: "POST",
-      body: JSON.stringify(answer)
+      body: JSON.stringify(payload)
     }
   );
+};
 
 const completeStudentClassGameSession = (classId, gameSessionId) =>
   authRequest(

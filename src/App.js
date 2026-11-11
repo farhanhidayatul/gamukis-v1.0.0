@@ -79,10 +79,10 @@ const App = () => {
         <Route path="/kelas" element={<StudentClass />} />
         <Route path="/kelas-siswa" element={<StudentClass />} />
         <Route path="/kelas/:slug" element={<StudentClass />} />
-        <Route path="/guru/dashboard" element={<RoleProtectedRoute allowedRoles={["guru"]}><TeacherDashboard /></RoleProtectedRoute>} />
-        <Route path="/guru/classes/new" element={<RoleProtectedRoute allowedRoles={["guru"]}><TeacherClassEditor /></RoleProtectedRoute>} />
-        <Route path="/guru/classes/:classId/edit" element={<RoleProtectedRoute allowedRoles={["guru"]}><TeacherClassEditor /></RoleProtectedRoute>} />
-        <Route path="/guru/classes/:classId/ai-soal" element={<RoleProtectedRoute allowedRoles={["guru"]}><TeacherAiQuestionGenerator /></RoleProtectedRoute>} />
+        <Route path="/guru/dashboard" element={<RoleProtectedRoute allowedRoles={["guru", "admin", "administrator"]}><TeacherDashboard /></RoleProtectedRoute>} />
+        <Route path="/guru/classes/new" element={<RoleProtectedRoute allowedRoles={["guru", "admin", "administrator"]}><TeacherClassEditor /></RoleProtectedRoute>} />
+        <Route path="/guru/classes/:classId/edit" element={<RoleProtectedRoute allowedRoles={["guru", "admin", "administrator"]}><TeacherClassEditor /></RoleProtectedRoute>} />
+        <Route path="/guru/classes/:classId/ai-soal" element={<RoleProtectedRoute allowedRoles={["guru", "admin", "administrator"]}><TeacherAiQuestionGenerator /></RoleProtectedRoute>} />
         <Route path="/siswa/dashboard" element={<RoleProtectedRoute allowedRoles={["siswa"]}><StudentDashboard /></RoleProtectedRoute>} />
         <Route path="/siswa/classes/:classId" element={<RoleProtectedRoute allowedRoles={["siswa"]}><TeacherClassroom /></RoleProtectedRoute>} />
         {/* Admin Dashboard: Dynamic Crypto Hash Slugs (Jurus 2 URL Obfuscation) */}

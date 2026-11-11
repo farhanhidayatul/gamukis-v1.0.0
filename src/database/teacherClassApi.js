@@ -1,15 +1,21 @@
 import {
   clearManualSession,
   getManualUser,
-  request as manualRequest
+  request as manualRequest,
+  resolveApiUrl
 } from "./manualAuth";
 import { auth, waitForAuth } from "./firebaseAuth";
 import { getEffectiveToken } from "./firebaseDatabase";
 
-const API_URL = process.env.REACT_APP_API_URL || "https://api.gamukis.site/api";
+const getApiUrl = () => {
+  if (typeof resolveApiUrl === "function") {
+    return resolveApiUrl();
+  }
+  return process.env.REACT_APP_API_URL || "https://api.gamukis.site/api";
+};
 
 const fetchWithToken = async (path, token, options = {}) => {
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await fetch(`${getApiUrl()}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -67,7 +73,7 @@ const authRequest = async (path, options = {}) => {
 const isApprovedGuruUser = (user) => {
   if (!user) return false;
   const role = String(user?.role || user?.userRole || user?.profile?.role || "").toLowerCase();
-  if (role === "guru") return true;
+  if (role === "admin" || role === "administrator" || role === "guru") return true;
   const appStatus = String(
     user?.teacherApplication?.status || user?.teacherApplicationStatus || ""
   ).toLowerCase();

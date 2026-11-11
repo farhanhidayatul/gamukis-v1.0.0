@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getManualUser } from "../database/manualAuth";
 import { getHistory, getPendingTeachers, getRooms } from "../database/adminApi";
 import { resolveSectionFromDynamicToken, buildDynamicAdminUrl } from "../utils/adminCryptoRouter";
@@ -39,6 +39,7 @@ const SECTION_META = {
 
 const AdminDashboard = ({ section }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { hashSlug } = useParams();
   const [user] = useState(() => getManualUser());
   const [teachers, setTeachers] = useState([]);
@@ -59,11 +60,13 @@ const AdminDashboard = ({ section }) => {
     if (section) {
       setActiveSection(section);
       // Auto-replace cleartext URL with dynamic crypto token in the browser URL bar
-      navigate(buildDynamicAdminUrl(section), { replace: true });
+      if (!location.pathname.startsWith('/admin/s/')) {
+        navigate(buildDynamicAdminUrl(section), { replace: true });
+      }
     } else if (hashSlug) {
       setActiveSection(resolveSectionFromDynamicToken(hashSlug));
     }
-  }, [section, hashSlug, navigate]);
+  }, [section, hashSlug, location.pathname, navigate]);
 
   useEffect(() => {
     if (!user || isKnownNonAdmin) { setIsLoading(false); return undefined; }

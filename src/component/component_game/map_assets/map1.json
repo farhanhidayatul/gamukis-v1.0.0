@@ -1111,6 +1111,18 @@
                  "width":82.3333333333334,
                  "x":685.666666666667,
                  "y":265
+                }, 
+                {
+                 "height":96,
+                 "id":120,
+                 "name":"house_1_left",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":208,
+                 "y":240
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2286,16 +2298,43 @@
          "tilewidth":16
         }, 
         {
+         "columns":5,
          "firstgid":9892,
-         "source":"House_Hay_1.tsx"
+         "image":"House_Hay_1.png",
+         "imageheight":103,
+         "imagewidth":88,
+         "margin":0,
+         "name":"House_Hay_1",
+         "spacing":0,
+         "tilecount":30,
+         "tileheight":16,
+         "tilewidth":16
         }, 
         {
+         "columns":9,
          "firstgid":9922,
-         "source":"House_Hay_2.tsx"
+         "image":"House_Hay_2.png",
+         "imageheight":112,
+         "imagewidth":157,
+         "margin":0,
+         "name":"House_Hay_2",
+         "spacing":0,
+         "tilecount":63,
+         "tileheight":16,
+         "tilewidth":16
         }, 
         {
+         "columns":11,
          "firstgid":9985,
-         "source":"House_Hay_3.tsx"
+         "image":"House_Hay_3.png",
+         "imageheight":128,
+         "imagewidth":180,
+         "margin":0,
+         "name":"House_Hay_3",
+         "spacing":0,
+         "tilecount":88,
+         "tileheight":16,
+         "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",

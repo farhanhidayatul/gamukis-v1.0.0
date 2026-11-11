@@ -14,8 +14,10 @@ import TeacherClasses from "../component/component_teacher_classes/TeacherClasse
 import gamukisLogo from "../images/Gamukis.png";
 
 const getUserRole = (user) => {
+  const role = String(user?.role || user?.userRole || user?.profile?.role || "").toLowerCase();
+  if (role === "admin" || role === "administrator" || role === "guru") return role;
   if (isApprovedGuruUser(user)) return "guru";
-  return String(user?.role || user?.userRole || user?.profile?.role || "").toLowerCase();
+  return role;
 };
 
 const TeacherDashboard = () => {
@@ -95,7 +97,8 @@ const TeacherDashboard = () => {
     );
   }
 
-  if (role !== "guru") {
+  const isAuthorizedRole = role === "guru" || role === "admin" || role === "administrator";
+  if (!isAuthorizedRole) {
     return (
       <main className="teacher-dashboard-message">
         <h1>Akses khusus Guru yang disetujui</h1>

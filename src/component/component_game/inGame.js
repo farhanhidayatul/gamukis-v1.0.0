@@ -1173,7 +1173,9 @@ const InGame = () => {
     if (classGameModeRef.current && classGameClassId && classGameSessionId) {
       getNextStudentClassGameQuestion(classGameClassId, classGameSessionId)
         .then((serverQuestion) => {
-          if (!serverQuestion || !serverQuestion.questionId) {
+          const q = serverQuestion?.question || serverQuestion;
+          const questionId = q?.questionId || q?.id;
+          if (!q || !questionId) {
             // No more questions — keep playing until timer finishes
             const pendingQuestion = pendingQuestionRef.current;
             if (pendingQuestion) {
@@ -1185,17 +1187,17 @@ const InGame = () => {
           }
           // Map server question DTO to modal format
           const modalQ = {
-            question: serverQuestion.prompt,
-            prompt: serverQuestion.prompt,
-            options: (serverQuestion.options || []).map((o) => (typeof o === 'string' ? o : o.text || o.optionText || '')),
+            question: q.prompt,
+            prompt: q.prompt,
+            options: (q.options || []).map((o) => (typeof o === 'string' ? o : o.text || o.optionText || '')),
             correct: null, // server-scored; not revealed to client
             _classQuestion: true,
-            _questionId: serverQuestion.questionId || serverQuestion.id,
-            _serverOptions: serverQuestion.options || [],
-            imageUrl: serverQuestion.imageUrl || serverQuestion.imageKey || null,
-            imageBase64: serverQuestion.imageBase64 || null,
-            interactionType: serverQuestion.interactionType || serverQuestion.questionType || 'single_choice',
-            matrixData: serverQuestion.matrixData || null
+            _questionId: questionId,
+            _serverOptions: q.options || [],
+            imageUrl: q.imageUrl || q.imageKey || null,
+            imageBase64: q.imageBase64 || null,
+            interactionType: q.interactionType || q.questionType || 'single_choice',
+            matrixData: q.matrixData || null
           };
           setModalContent(modalQ);
           setIsModalOpen(true);
@@ -2405,9 +2407,11 @@ const InGame = () => {
           if (!classGameClassId || !classGameSessionId) return;
           const questionId = modalContent?._questionId;
           if (!questionId) return;
+          const idempotencyKey = `ans_${Date.now()}_${Math.random().toString(36).slice(2, 12)}_${questionId}`;
           submitStudentClassGameAnswer(classGameClassId, classGameSessionId, {
             questionId,
-            selectedOptionId
+            selectedOptionId,
+            idempotencyKey
           })
             .then((result) => {
               const isCorrect = Boolean(result?.isCorrect);

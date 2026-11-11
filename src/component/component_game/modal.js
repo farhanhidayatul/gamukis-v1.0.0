@@ -336,11 +336,17 @@ const CoinModal = ({ isOpen, onRequestClose, onQuestionAnswered, onServerAnswer,
       if (serverScored) {
         // Server-scored mode: resolve optionId from _serverOptions and notify parent
         const serverOptions = questionData?._serverOptions || [];
-        const matchedOption = serverOptions.find((o) => o.text === answer);
-        const selectedOptionId = matchedOption?.optionId || answer;
+        const matchedOption = serverOptions.find(
+          (o) => (o.text || o.optionText) === answer || o.text === answer || o.optionText === answer
+        );
+        const selectedOptionId = Number(matchedOption?.id ?? matchedOption?.optionId);
 
-        if (typeof onServerAnswer === 'function') {
-          onServerAnswer(selectedOptionId);
+        if (Number.isSafeInteger(selectedOptionId) && selectedOptionId >= 1) {
+          if (typeof onServerAnswer === 'function') {
+            onServerAnswer(selectedOptionId);
+          }
+        } else {
+          console.warn('[CoinModal] Option ID is invalid or cannot be resolved:', { answer, matchedOption });
         }
 
         // Close modal after brief pause (no local correctness indicator)

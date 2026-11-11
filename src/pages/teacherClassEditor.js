@@ -28,9 +28,13 @@ const STEPS = [
   { id: "publish", label: "4. Publikasikan" }
 ];
 
+const isAuthorizedAuthorRole = (role) =>
+  role === "guru" || role === "admin" || role === "administrator";
+
 const getUserRole = (user) => {
-  if (typeof isApprovedGuruUser === "function" && isApprovedGuruUser(user)) return "guru";
   const direct = String(user?.role || user?.userRole || user?.profile?.role || "").toLowerCase();
+  if (isAuthorizedAuthorRole(direct)) return direct;
+  if (typeof isApprovedGuruUser === "function" && isApprovedGuruUser(user)) return "guru";
   if (direct) return direct;
   if (String(user?.teacherApplication?.status || "").toLowerCase() === "approved") return "guru";
   return "";
@@ -40,7 +44,7 @@ const TeacherClassEditor = () => {
   const { classId } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(() => getManualUser());
-  const [isCheckingAuth, setIsCheckingAuth] = useState(() => getUserRole(getManualUser()) !== "guru");
+  const [isCheckingAuth, setIsCheckingAuth] = useState(() => !isAuthorizedAuthorRole(getUserRole(getManualUser())));
   const [activeStep, setActiveStep] = useState("details");
   const [classItem, setClassItem] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -56,7 +60,7 @@ const TeacherClassEditor = () => {
 
     const initEditor = async () => {
       let currentUser = user;
-      if (getUserRole(currentUser) !== "guru" && typeof syncCurrentAccountRole === "function") {
+      if (!isAuthorizedAuthorRole(getUserRole(currentUser)) && typeof syncCurrentAccountRole === "function") {
         try {
           const synced = await syncCurrentAccountRole();
           if (!isCurrent) return;
@@ -71,7 +75,7 @@ const TeacherClassEditor = () => {
       if (!isCurrent) return;
       setIsCheckingAuth(false);
 
-      if (!classId || getUserRole(currentUser) !== "guru") {
+      if (!classId || !isAuthorizedAuthorRole(getUserRole(currentUser))) {
         setIsLoading(false);
         return;
       }
@@ -106,7 +110,7 @@ const TeacherClassEditor = () => {
     );
   }
 
-  if (!user || role !== "guru") {
+  if (!user || !isAuthorizedAuthorRole(role)) {
     return (
       <main className="teacher-dashboard-message" data-testid="teacher-editor-forbidden">
         <h1>Akses Editor Kelas Ditolak</h1>
