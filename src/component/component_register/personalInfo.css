@@ -61,7 +61,7 @@
   align-items: center !important;
   justify-content: center !important;
   background-color: #f1f5f9 !important;
-  color: #334155 !important;
+  color: #1e293b !important;
   border: 1.5px solid #cbd5e1 !important;
   border-radius: 12px !important;
   font-size: 15px !important;
@@ -94,7 +94,7 @@
   align-items: center !important;
   justify-content: center !important;
   background-color: #FCD03E !important;
-  color: #ffffff !important;
+  color: #1e293b !important;
   border: none !important;
   border-radius: 12px !important;
   font-size: 15px !important;
@@ -106,6 +106,7 @@
 
 .personalInfo-form .register-action-group .next-button:hover:not(:disabled) {
   background-color: #eab308 !important;
+  color: #0f172a !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 14px rgba(234, 179, 8, 0.35) !important;
 }
