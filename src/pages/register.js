@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { authenticateWithBackendGoogle } from "../database/googleCloudAuth";
 import {
   clearManualSession,
@@ -21,6 +21,21 @@ const RegisterPage = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.fromGoogleLogin) {
+      if (location.state.email) {
+        setAccount((current) => ({
+          ...current,
+          email: location.state.email,
+          username: location.state.name ? location.state.name.replace(/[^a-zA-Z0-9]/g, "") : current.username
+        }));
+      }
+      setError("Akun Google belum terdaftar. Silakan lengkapi pendaftaran akun Anda.");
+      setStep(2);
+    }
+  }, [location.state]);
 
   const nextStep = () => setStep((prev) => prev + 1);
 
@@ -80,7 +95,7 @@ const RegisterPage = () => {
         clearManualSession();
       }
 
-      const session = await authenticateWithBackendGoogle(idToken);
+      const session = await authenticateWithBackendGoogle(idToken, 'register');
 
       if (session?.user && typeof window !== "undefined") {
         window.localStorage?.setItem("gamukis_manual_user", JSON.stringify(session.user));

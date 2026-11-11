@@ -29,6 +29,7 @@ const BackgroundKiri = ({ onLoginError }) => {
         setIsSubmitting(true);
         try {
             const loginResult = await loginAction();
+            if (!loginResult) return;
             let userObj = loginResult?.user || null;
             let role = resolveEffectiveRole(userObj);
 
@@ -69,17 +70,31 @@ const BackgroundKiri = ({ onLoginError }) => {
                 clearManualSession();
             }
 
-            const session = await authenticateWithBackendGoogle(idToken);
+            try {
+                const session = await authenticateWithBackendGoogle(idToken, 'login');
 
-            if (session?.user && typeof window !== 'undefined') {
-                // Always persist Google login in localStorage to prevent session dropping
-                window.localStorage?.setItem('gamukis_manual_user', JSON.stringify(session.user));
-                if (session.token) {
-                    window.localStorage?.setItem('gamukis_manual_token', session.token);
+                if (session?.user && typeof window !== 'undefined') {
+                    // Always persist Google login in localStorage to prevent session dropping
+                    window.localStorage?.setItem('gamukis_manual_user', JSON.stringify(session.user));
+                    if (session.token) {
+                        window.localStorage?.setItem('gamukis_manual_token', session.token);
+                    }
+                    window.dispatchEvent(new Event('gamukis-manual-auth-change'));
                 }
-                window.dispatchEvent(new Event('gamukis-manual-auth-change'));
+                return session;
+            } catch (err) {
+                if (err?.code === 'USER_NOT_REGISTERED' || err?.notRegistered) {
+                    navigate('/register', {
+                        state: {
+                            fromGoogleLogin: true,
+                            email: err?.googleData?.email,
+                            name: err?.googleData?.name
+                        }
+                    });
+                    return null;
+                }
+                throw err;
             }
-            return session;
         }, 'google');
     };
 

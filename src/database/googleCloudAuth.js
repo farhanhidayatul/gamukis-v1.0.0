@@ -116,11 +116,30 @@ export const promptGoogleSignIn = async () => {
   });
 };
 
+const resolveApiUrl = () => {
+  const envUrl = process.env.REACT_APP_API_URL;
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host.includes("test") || host.includes("preview") || host.includes("9iuowj595")) {
+      return "https://api-test.gamukis.site/api";
+    }
+    if (envUrl && envUrl.startsWith("http")) {
+      return envUrl;
+    }
+    if (host.endsWith("gamukis.site") || host.includes("vercel.app")) {
+      return "https://api.gamukis.site/api";
+    }
+  }
+  return envUrl && envUrl.startsWith("http") ? envUrl : "https://api.gamukis.site/api";
+};
+
 /**
  * Sends Google credential (ID Token) to Gamukis Backend to exchange for native session JWT.
+ * @param {string} idToken - Google credential JWT
+ * @param {'login'|'register'} mode - Action mode ('login' strictly expects registered account; 'register' signs up new user)
  */
-export const authenticateWithBackendGoogle = async (idToken) => {
-  const apiUrl = (process.env.REACT_APP_API_URL || 'https://api.gamukis.site/api').replace(/\/+$/, '');
+export const authenticateWithBackendGoogle = async (idToken, mode = 'login') => {
+  const apiUrl = resolveApiUrl().replace(/\/+$/, '');
   const targetEndpoint = `${apiUrl}/auth/google`;
 
   const response = await fetch(targetEndpoint, {
@@ -129,10 +148,23 @@ export const authenticateWithBackendGoogle = async (idToken) => {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
-    body: JSON.stringify({ idToken })
+    body: JSON.stringify({ idToken, mode })
   });
 
   const data = await response.json().catch(() => ({}));
+
+  if (response.status === 404 && data?.code === 'USER_NOT_REGISTERED') {
+    const notRegisteredError = new Error(data.message || 'Akun Google belum terdaftar.');
+    notRegisteredError.code = 'USER_NOT_REGISTERED';
+    notRegisteredError.notRegistered = true;
+    notRegisteredError.googleData = {
+      email: data.email,
+      name: data.name,
+      picture: data.picture
+    };
+    throw notRegisteredError;
+  }
+
   if (!response.ok || !data.success) {
     throw new Error(data.message || 'Verifikasi login Google di server gagal.');
   }
