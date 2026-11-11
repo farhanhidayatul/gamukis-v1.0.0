@@ -60,9 +60,9 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background-color: #f1f5f9 !important;
-  color: #1e293b !important;
-  border: 1.5px solid #cbd5e1 !important;
+  background-color: #eaf4ff !important;
+  color: #1d4ed8 !important;
+  border: 1.5px solid #93c5fd !important;
   border-radius: 12px !important;
   font-size: 15px !important;
   font-weight: 700 !important;
@@ -72,11 +72,11 @@
 }
 
 .personalInfo-form .register-action-group .register-back-button:hover {
-  background-color: #e2e8f0 !important;
-  color: #0f172a !important;
-  border-color: #94a3b8 !important;
+  background-color: #0e81ff !important;
+  color: #ffffff !important;
+  border-color: #0e81ff !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 14px rgba(14, 129, 255, 0.25) !important;
 }
 
 .personalInfo-form .register-action-group .register-back-button:active {

@@ -1,4 +1,4 @@
-/* Tombol Kembali Form Registrasi GAMUKIS */
+/* Tombol Kembali Form Registrasi GAMUKIS (Gamukis Soft Blue Style) */
 button.register-back-button,
 .register-back-button {
   width: 100%;
@@ -9,9 +9,9 @@ button.register-back-button,
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f1f5f9;
-  color: #1e293b;
-  border: 1.5px solid #cbd5e1;
+  background-color: #eaf4ff;
+  color: #1d4ed8;
+  border: 1.5px solid #93c5fd;
   border-radius: 12px;
   font-size: 15px;
   font-weight: 700;
@@ -25,11 +25,11 @@ button.register-back-button,
 
 button.register-back-button:hover,
 .register-back-button:hover {
-  background-color: #e2e8f0;
-  color: #0f172a;
-  border-color: #94a3b8;
+  background-color: #0e81ff;
+  color: #ffffff;
+  border-color: #0e81ff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 14px rgba(14, 129, 255, 0.25);
 }
 
 button.register-back-button:active,
