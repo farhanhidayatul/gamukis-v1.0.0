@@ -32,3 +32,54 @@
     border-radius: 14px;
   }
 }
+
+.personalInfo-form .register-action-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.personalInfo-form .register-action-group > * {
+  flex: 1;
+}
+
+.personalInfo-form .register-action-group .register-back-button,
+.personalInfo-form .register-action-group .next-button {
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+
+.personalInfo-form .register-action-group .next-button {
+  background-color: #FCD03E;
+  color: #ffffff;
+  border: none;
+}
+
+.personalInfo-form .register-action-group .next-button:hover:not(:disabled) {
+  background-color: #eab308;
+}
+
+.personalInfo-form .register-action-group .next-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .personalInfo-form .register-action-group .register-back-button,
+  .personalInfo-form .register-action-group .next-button {
+    height: 40px;
+    font-size: 13px;
+  }
+}

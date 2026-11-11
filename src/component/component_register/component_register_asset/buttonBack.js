@@ -2,7 +2,7 @@ import "./buttonBack.css";
 
 const ButtonBack = ({ onClick, text = "Kembali" }) => {
   return (
-    <button type="button" className="back-button" onClick={onClick}>
+    <button type="button" className="register-back-button" onClick={onClick}>
       {text}
     </button>
   );
